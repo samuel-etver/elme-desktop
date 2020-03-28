@@ -1,0 +1,53 @@
+{
+  "author": "Samuel Etver",
+  "name": "elme",
+  "version": "0.1.0",
+  "private": true,
+  "main": "public/electron.js",
+  "homepage": "./",
+  "dependencies": {
+    "@testing-library/jest-dom": "^4.2.4",
+    "@testing-library/react": "^9.3.2",
+    "@testing-library/user-event": "^7.1.2",
+    "antd": "^4.0.4",
+    "concurrently": "^5.1.0",
+    "cross-env": "^7.0.2",
+    "electron": "^8.2.0",
+    "electron-is-dev": "^1.1.0",
+    "jsmodbus": "^3.1.6",
+    "mobx": "^5.15.4",
+    "mobx-react": "^6.1.8",
+    "react": "^16.13.1",
+    "react-dom": "^16.13.1",
+    "react-scripts": "3.4.1",
+    "wait-on": "^4.0.1"
+  },
+  "scripts": {
+    "react-start": "react-scripts start",
+    "react-build": "react-scripts build",
+    "react-test": "react-scripts test",
+    "react-eject": "react-scripts eject",
+    "electron-build": "electron-builder",
+    "build": "npm run react-build",
+    "start": "concurrently \"cross-env BROWSER=none npm run react-start\" \"wait-on http://localhost:3000 && electron .\""
+  },
+  "eslintConfig": {
+    "extends": "react-app"
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "chai": "^4.2.0",
+    "mocha": "^7.1.1"
+  }
+}

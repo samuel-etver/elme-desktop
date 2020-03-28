@@ -1,0 +1,52 @@
+.ValuePaneItem {
+    display: flex;
+    align-items: flex-end;
+    flex-grow: 0;
+    flex-shrink: 0;
+    margin-left: 4px;
+    font-size: 32px;
+    font-weight: bold;
+    color: #050;
+    text-shadow: 0px 0px 18px #fff;
+    margin-right: 4px;
+    margin-bottom: 4px;
+    padding-right: 4px;
+}
+
+.ValuePane {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow:hidden;
+    border-radius: 17px;
+    border-color: #030;
+    border-style: solid;
+    border-width: 5px;
+    height: 56px;
+    background-color: #0a0;
+    position: relative;
+    box-shadow: 2px 2px 7px #060;
+    padding: 5px 0;
+    justify-content: flex-end;
+}
+
+.ValuePane .Caption {
+    flex-grow: 1;
+}
+
+.ValuePane .Value {
+    width: 160px;
+    border-width: 1px;
+    border-style: solid;
+    border-color: #0f0;
+    background-color: #040;
+    border-radius: 5px;
+    justify-content: flex-end;
+    text-shadow: 0px 0px 8px black;
+    margin-bottom: 0px;
+    padding-bottom: 2px;
+    color: white;
+}
+
+.ValuePane .Units {
+    width: 80px;
+}
