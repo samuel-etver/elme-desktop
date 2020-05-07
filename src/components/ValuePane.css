@@ -3,14 +3,14 @@
     align-items: flex-end;
     flex-grow: 0;
     flex-shrink: 0;
-    margin-left: 4px;
+    margin-left: 8px;
     font-size: 32px;
     font-weight: bold;
     color: #050;
     text-shadow: 0px 0px 18px #fff;
     margin-right: 4px;
     margin-bottom: 4px;
-    padding-right: 4px;
+    padding-right: 8px;
 }
 
 .ValuePane {

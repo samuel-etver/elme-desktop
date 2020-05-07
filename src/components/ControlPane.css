@@ -1,0 +1,44 @@
+
+.ControlPane {
+    height: 48px;
+    background-image: linear-gradient(to right, #bb99bb 0%, #884444 30%);
+    border: 2px solid;
+    border-image-slice: 1;
+    border-image-source: linear-gradient(to right, #cc88cc 0%, #995599 30%);
+    overflow: hidden;
+    flex-wrap: nowrap;
+    display: flex;
+    padding: 8px 16px;
+}
+
+.ControlButton {
+    display: flex;
+    width: 160px;
+    font-weight: bold;
+    font-size: 17px;
+    border-radius: 30px;
+    align-items: center;
+    justify-content: center;
+    border-width: 8px;
+    border-style: solid;
+    border-image-source: linear-gradient(to right, #ff000055, #00ff0055);
+    border-image-slice: 1;
+    background:
+      linear-gradient(145deg, rgba(255,255,255,0.9) 0% 0%, rgba(255,255,255,0) 30% 15%),
+      linear-gradient(45deg, #44000044, #00550088 40%)
+/*      linear-gradient(#e657ff 0%, #c202f8 50%, #a10bee 100%),*/
+      /*linear-gradient(#ea6aff, #aa22ef),*/
+      /*linear-gradient(#ef84ff, #ba44f2),*/
+      ;
+    color: white;
+    margin-right: 20px;
+/*
+  -fx-background-color:
+      linear-gradient(#d65bff, #8400e6),
+      linear-gradient(#ef84ff, #ba44f2),
+      linear-gradient(#ea6aff, #aa22ef),
+      linear-gradient(#e657ff 0%, #c202f8 50%, #a10bee 100%),
+      linear-gradient(from 0% 0% to 15% 50%, rgba(255,255,255,0.9), rgba(255,255,255,0))
+      ;
+  -fx-text-fill: white;*/
+}

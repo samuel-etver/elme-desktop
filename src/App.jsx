@@ -1,32 +1,37 @@
 import React from 'react';
-import logo from './logo.svg';
 import './App.css';
-import ValuePane from './components/ValuePane.jsx';
+import RtValuesPage from './components/RtValuesPage';
+import ControlPane from './components/ControlPane';
 const electron = window.require('electron');
-const ipcRenderer = electron.ipcRenderer;
-/*  <ValuePane caption = {{text: 'aaa'}}
-             value   = {{text: 'bbb'}}
-             units   = {{text:'mm'}} />*/
+const ipc = electron.ipcRenderer;
+const Constants = require('./Constants');
+const MainEventManager = require('./MainEventManager');
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit this <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React {ipcRenderer.toString()}
-        </a>
-      </header>
-    </div>
-  );
+class App extends React.Component {
+    render() {
+        return (
+            <div className="App">
+                <ControlPane />
+                <RtValuesPage />
+            </div>
+        );
+    }
+
+    componentDidMount() {
+        window.onload = onLoad;
+    }
+}
+
+function log(arg) {
+    ipc.send('log', arg);
+}
+
+function onLoad() {
+    ipc.on('device-data-ready', (event, arg) => onDeviceDataReady(arg));
+}
+
+function onDeviceDataReady(deviceData) {
+    log(deviceData.inductorTemperature1);
 }
 
 export default App;

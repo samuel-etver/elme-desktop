@@ -1,0 +1,21 @@
+
+.RtValuesPage {
+    width: 800px;
+    height: 700px;
+}
+
+.RtValuesPane {
+  border-width: 3px;
+  border-style: solid;
+  border-color: black;
+  height: 600px;
+  background: blue;
+  display: flex;
+  flex-wrap: wrap;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 20px;
+  border-radius: 21px;
+  box-shadow: 2px 2px 15px #000000;
+  margin: 16px;
+}

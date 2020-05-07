@@ -1,75 +1,108 @@
 const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
+const ipc = electron.ipcMain;
 const path = require('path');
+const fs = require('fs');
 const isDev = require('electron-is-dev');
-/*const modbus = require('jsmodbus');
-const net = require('net');
-const socket = new net.Socket();
-const options = {
-  'host': '10.8.10.101',
-  'port': '502'
-}
-const client = new modbus.client.TCP(socket, 1);
+const Constants = require('../src/Constants');
+const GlobalStorage = require('../src/GlobalStorage');
+const MainEventManager = require('../src/MainEventManager');
+const Config = require('../src/Config');
+const DeviceComm = require('../src/DeviceComm');
 
-socket.on('connect', function () {
-  console.log('CONNECTEd');
-  client.readInputRegisters(
-    0, 50
-    )
-    .then(function (resp) {
-      console.log("READ!");
-      let buf =  resp.response._body._valuesAsBuffer;
-      buf = Buffer.from([buf.readUInt8(1), buf.readUInt8(0), 0x99, 0x42])
-      console.log(buf.readFloatLE(0));
-      setTimeout(() => {
-        client.readInputRegisters(
-          0, 50
-        ).then(function(resp) {
-          let buf =  resp.response._body._valuesAsBuffer;
-          buf = Buffer.from([buf.readUInt8(1), buf.readUInt8(0), 0x99, 0x42])
-          console.log(buf.readFloatLE(0) + 1);
-        });
-      }, 1000);
-    }).catch(function () {
-      console.log("ERROR!");
-      console.error(arguments)
-      socket.end()
-    });
-});
-
-socket.on('error', console.error)
-socket.connect(options);
-*/
+var mainEventManager;
+var globalStorage;
+var deviceComm;
 var mainWindow;
 
-function createWindow() {
-  mainWindow = new BrowserWindow(
-    {
-      width: 600,
-      height: 500,
-      webPreferences: {
-      //  preload: path.join(__dirname, 'preload.js'),
-        nodeIntegration: true
-      }
-    }
-  );
+init();
+loadConfig();
+saveConfig();
 
-  mainWindow.loadURL(isDev
-    ? 'http://localhost:3000'
-    : `file://${path.join(__dirname, "../build/index.html")}`
-  );
-  mainWindow.on('closed', () => (mainWindow = null));
+function createWindow() {
+    mainWindow = new BrowserWindow(
+      {
+        width: 900,
+        height: 700,
+        webPreferences: {
+        //  preload: path.join(__dirname, 'preload.js'),
+          nodeIntegration: true
+        }
+      }
+    );
+
+    mainWindow.loadURL(isDev
+      ? 'http://localhost:3000'
+      : `file://${path.join(__dirname, "../build/index.html")}`
+    );
+    mainWindow.on('closed', () => (mainWindow = null));
+
+    mainEventManager.publish('app-load');
+    mainEventManager.subscribe('device-data-ready', onDeviceDataReady);
+
+    ipc.on('log', onLog);
 }
 
 app.on('ready', createWindow);
 app.on('window-all-closed', () => {
-  if ( process.platform !== 'darwin') {
-    app.quit();
-  }
+    mainEventManager.publish('app-close');
+    if ( process.platform !== 'darwin') {
+        app.quit();
+    }
 });
 app.on('activate', () => {
-  if ( mainWindow === null ) {
-    createWindow();
-  }
+    if ( mainWindow === null ) {
+        createWindow();
+    }
 });
+
+
+function init() {
+    mainEventManager = MainEventManager.getInstance();
+    globalStorage = GlobalStorage.getInstance();
+    globalStorage.homeDir = path.join(process.env.APPDATA,
+                                      Constants.appName);
+    globalStorage.configDir = globalStorage.homeDir;
+    globalStorage.configFilePath = path.join(globalStorage.configDir,
+                                             Constants.configFileName);
+
+    deviceComm = DeviceComm.getInstance();
+    console.log('CONNECTED=' + deviceComm.isConnected())
+}
+
+
+function loadConfig() {
+    let cfg = new Config();
+    cfg.load(globalStorage.configFilePath);
+    for (let key of Constants.configVars) {
+        globalStorage.config[key] = cfg.get(key)||'';
+    }
+    globalStorage.config.devicePort = '502';
+    globalStorage.config.deviceIp = '10.8.10.101';
+
+}
+
+
+function saveConfig() {
+    if ( !fs.existsSync(globalStorage.configDir) )  {
+        fs.mkdirSync(globalStorage.configDir, {recursive: true});
+    }
+
+    let cfg = new Config();
+    for (let key of Constants.configVars) {
+        cfg.set(key, globalStorage.config[key]);
+    }
+    cfg.save(globalStorage.configFilePath);
+}
+
+
+function onDeviceDataReady() {
+    mainWindow.send('device-data-ready', globalStorage.deviceData);
+}
+
+
+function onLog(event, arg) {
+    console.log(arg);
+    event.returnValue = null;
+}
