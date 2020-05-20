@@ -1,12 +1,11 @@
 'use strict';
 
-const config = require('../src/config');
 const modbus = require('jsmodbus');
 const net = require('net');
-const Constants = require('../src/Constants');
-const GlobalStorage = require('../src/GlobalStorage');
-const MainEventManager = require('../src/MainEventManager');
-const DeviceData = require('../src/DeviceData');
+const Constants = require('../common/Constants');
+const GlobalStorage = require('../common/GlobalStorage');
+const MainEventManager = require('../common/MainEventManager');
+const DeviceData = require('../common/DeviceData');
 
 var DeviceComm = (function() {
     let instance;
