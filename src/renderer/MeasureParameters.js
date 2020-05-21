@@ -3,7 +3,7 @@ var MeasureParameters = new function() {
     var instance = this;
 
     var temperatureUnits = '\u2103';
-    var waterflowUnits = 'м\u00B3/c';
+    var waterFlowUnits = 'м\u00B3/c';
 
     var parameters = {};
 
@@ -33,9 +33,9 @@ var MeasureParameters = new function() {
     create('heatingTemperature',
            'Подогрев',
            temperatureUnits);
-    create('waterflow',
+    create('waterFlow',
            'Расход воды',
-           waterflowUnits);
+           waterFlowUnits);
 
     this.get = function(name) {
         return parameters[name];

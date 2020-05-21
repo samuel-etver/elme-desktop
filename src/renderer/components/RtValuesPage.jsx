@@ -18,8 +18,9 @@ class RtValuesPane extends React.Component {
             thermostatTemperature2: null,
             sprayerTemperature: null,
             heatingTemperature: null,
-            waterflow: null
+            waterFlow: null
         };
+        this.onDeviceDataReady = this.onDeviceDataReady.bind(this);
     }
 
 
@@ -31,7 +32,7 @@ class RtValuesPane extends React.Component {
         var thermostatTemperature2Param = measureParams.get('thermostatTemperature2');
         var sprayerTemperatureParam = measureParams.get('sprayerTemperature');
         var heatingTemperatureParam = measureParams.get('heatingTemperature');
-        var waterflowParam = measureParams.get('waterflow');
+        var waterFlowParam = measureParams.get('waterFlow');
         return (
             <div class="RtValuesPane">
                 <ValuePane caption = {inductorTemperature1Param.caption}
@@ -52,20 +53,21 @@ class RtValuesPane extends React.Component {
                 <ValuePane caption = {heatingTemperatureParam.caption}
                              value = {this.temperatureToStr(this.state.heatingTemperature)}
                              units = {heatingTemperatureParam.units} />
-                <ValuePane caption = {waterflowParam.caption}
-                             value = {this.waterflowToStr(this.state.waterflow)}
-                             units = {waterflowParam.units} />
+                <ValuePane caption = {waterFlowParam.caption}
+                             value = {this.waterFlowToStr(this.state.waterFlow)}
+                             units = {waterFlowParam.units} />
             </div>
         );
     }
 
 
     componentDidMount() {
-        mainEventManager.subscribe('rt-device-data-ready', () => this.onDeviceDataReady());
+        mainEventManager.subscribe('rt-device-data-ready', this.onDeviceDataReady);
     }
 
 
     componentWillUnmount() {
+        mainEventManager.unsubscribe('rt-device-data-ready', this.onDeviceDataReady);
     }
 
 
@@ -75,7 +77,7 @@ class RtValuesPane extends React.Component {
     }
 
 
-    waterflowToStr(flow) {
+    waterFlowToStr(flow) {
         let value = parseFloat(flow);
         return isNaN(value) ? '' : value.toFixed(1);
     }
@@ -90,7 +92,7 @@ class RtValuesPane extends React.Component {
             thermostatTemperature2: deviceData.thermostatTemperature2,
             sprayerTemperature: deviceData.sprayerTemperature,
             heatingTemperature: deviceData.heatingTemperature,
-            waterflow: deviceData.waterflow
+            waterFlow: deviceData.waterFlow
         });
     }
 }
