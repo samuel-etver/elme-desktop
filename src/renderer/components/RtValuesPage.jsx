@@ -8,22 +8,25 @@ import GlobalStorage from '../../common/GlobalStorage';
 const mainEventManager = MainEventManager.getInstance();
 const globalStorage = GlobalStorage.getInstance();
 
-var i = 0;
-
 class RtValuesPane extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            inductor1Temperature: null,
-            inductor2Temperature: null
+            inductorTemperature1: null,
+            inductorTemperature2: null,
+            thermostatTemperature1: null,
+            thermostatTemperature2: null,
+            sprayerTemperature: null,
+            heatingTemperature: null,
+            waterflow: null
         };
     }
 
 
     render() {
         var measureParams = new MeasureParameters();
-        var inductor1TemperatureParam = measureParams.get('inductor1Temperature');
-        var inductor2TemperatureParam = measureParams.get('inductor2Temperature');
+        var inductorTemperature1Param = measureParams.get('inductorTemperature1');
+        var inductorTemperature2Param = measureParams.get('inductorTemperature2');
         var thermostatTemperature1Param = measureParams.get('thermostatTemperature1');
         var thermostatTemperature2Param = measureParams.get('thermostatTemperature2');
         var sprayerTemperatureParam = measureParams.get('sprayerTemperature');
@@ -31,26 +34,26 @@ class RtValuesPane extends React.Component {
         var waterflowParam = measureParams.get('waterflow');
         return (
             <div class="RtValuesPane">
-                <ValuePane caption = {inductor1TemperatureParam.caption}
-                             value = {this.temperatureToStr(this.state.inductor1Temperature)}
-                             units = {inductor1TemperatureParam.units} />
-                <ValuePane caption = {inductor2TemperatureParam.caption}
-                             value = {'bbb'}
-                             units = {inductor2TemperatureParam.units} />
+                <ValuePane caption = {inductorTemperature1Param.caption}
+                             value = {this.temperatureToStr(this.state.inductorTemperature1)}
+                             units = {inductorTemperature1Param.units} />
+                <ValuePane caption = {inductorTemperature2Param.caption}
+                             value = {this.temperatureToStr(this.state.inductorTemperature2)}
+                             units = {inductorTemperature2Param.units} />
                 <ValuePane caption = {thermostatTemperature1Param.caption}
-                             value = {'bbb'}
+                             value = {this.temperatureToStr(this.state.thermostatTemperature1)}
                              units = {thermostatTemperature1Param.units} />
                 <ValuePane caption = {thermostatTemperature2Param.caption}
-                             value = {'bbb'}
+                             value = {this.temperatureToStr(this.state.thermostatTemperature2)}
                              units = {thermostatTemperature2Param.units} />
                 <ValuePane caption = {sprayerTemperatureParam.caption}
-                             value = {'bbb'}
+                             value = {this.temperatureToStr(this.state.sprayerTemperature)}
                             units  = {sprayerTemperatureParam.units} />
                 <ValuePane caption = {heatingTemperatureParam.caption}
-                             value = {'bbb'}
+                             value = {this.temperatureToStr(this.state.heatingTemperature)}
                              units = {heatingTemperatureParam.units} />
                 <ValuePane caption = {waterflowParam.caption}
-                             value = {'bbb'}
+                             value = {this.waterflowToStr(this.state.waterflow)}
                              units = {waterflowParam.units} />
             </div>
         );
@@ -63,7 +66,6 @@ class RtValuesPane extends React.Component {
 
 
     componentWillUnmount() {
-
     }
 
 
@@ -73,20 +75,30 @@ class RtValuesPane extends React.Component {
     }
 
 
+    waterflowToStr(flow) {
+        let value = parseFloat(flow);
+        return isNaN(value) ? '' : value.toFixed(1);
+    }
+
+
     onDeviceDataReady() {
         let deviceData = globalStorage['deviceData'];
-        i++;
         this.setState({
-            inductor1Temperature: deviceData.inductorTemperature1 + i,
+            inductorTemperature1: deviceData.inductorTemperature1,
+            inductorTemperature2: deviceData.inductorTemperature2,
+            thermostatTemperature1: deviceData.thermostatTemperature1,
+            thermostatTemperature2: deviceData.thermostatTemperature2,
+            sprayerTemperature: deviceData.sprayerTemperature,
+            heatingTemperature: deviceData.heatingTemperature,
+            waterflow: deviceData.waterflow
         });
     }
 }
 
 function RtValuesPage() {
-    return <div class="RtValuesPage">
-    <RtValuesPane />
-
-    </div>
+    return  <div class="RtValuesPage">
+                <RtValuesPane />
+            </div>
 }
 
 export default RtValuesPage;

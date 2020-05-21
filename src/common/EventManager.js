@@ -15,7 +15,6 @@ class EventManager {
 
 
     publish(event, ...args) {
-      //  console.log(event);
         let allListeners = this.subscribers[event];
         allListeners&&(allListeners.forEach(listener => {
             new Promise(() => listener(event, ...args));

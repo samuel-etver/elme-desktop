@@ -15,10 +15,10 @@ var MeasureParameters = new function() {
         }
     }
 
-    create('inductor1Temperature',
+    create('inductorTemperature1',
            'Температура индуктора 1',
            temperatureUnits);
-    create('inductor2Temperature',
+    create('inductorTemperature2',
            'Температура индуктора 2',
            temperatureUnits);
     create('thermostatTemperature1',
@@ -35,7 +35,7 @@ var MeasureParameters = new function() {
            temperatureUnits);
     create('waterflow',
            'Расход воды',
-           waterflowUnits);          
+           waterflowUnits);
 
     this.get = function(name) {
         return parameters[name];
