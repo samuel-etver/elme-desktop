@@ -145,9 +145,14 @@ var DeviceComm = (function() {
 })();
 
 
-(function() {
-    DeviceComm.getInstance();
+var DeviceMock = (function() {
 })();
 
 
-module.exports = DeviceComm;
+var Device =  Constants.deviceMock
+  ? DeviceMock
+  : DeviceComm;
+Device.getInstance();
+
+
+module.exports = Device;

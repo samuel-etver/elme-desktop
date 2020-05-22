@@ -1,0 +1,6 @@
+
+.notification-pane {
+    background-color: red;
+    height: 40px;
+    border-bottom: 1px solid darkred;
+}

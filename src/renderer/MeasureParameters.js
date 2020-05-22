@@ -1,5 +1,5 @@
 
-var MeasureParameters = new function() {
+var MeasureParameters = new (function() {
     var instance = this;
 
     var temperatureUnits = '\u2103';
@@ -44,6 +44,6 @@ var MeasureParameters = new function() {
     return function() {
         return instance;
     }
-}
+})();
 
 export default MeasureParameters;

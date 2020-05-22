@@ -2,11 +2,6 @@ import React from 'react';
 import './ValuePane.css';
 
 class ValuePane extends React.Component  {
-    constructor(props) {
-        super(props);
-    }
-
-
     render() {
         return (
             <div class="ValuePane">

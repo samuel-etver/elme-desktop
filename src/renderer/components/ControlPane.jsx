@@ -16,8 +16,13 @@ class ControlButton extends React.Component {
 
 
     render() {
+        let style = this.props.style;
+        if ( !style ) {
+            style = '';
+        }
+        style = "control-button " + style;
         return (
-            <button class="ControlButton" onClick={this.onClick}>
+            <button class={style} onClick={this.onClick}>
                 {this.props.caption}
             </button>
         );
@@ -32,17 +37,30 @@ class ControlButton extends React.Component {
 class ControlPane extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            selected: 'rt-values'
+        };
         this.onButtonClick = this.onButtonClick.bind(this);
+        this.onButtonSelect = this.onButtonSelect.bind(this);
     }
 
 
     render() {
+        var toStyle = function(selected) {
+            return selected ? 'selected' : '';
+        };
+        let selected = this.state.selected;
+        let valuesStyle = toStyle(selected === 'rt-values');
+        let chartsStyle = toStyle(selected === 'rt-charts');
+        let archiveStyle = toStyle(selected === 'rt-archive');
+        let marksEditStyle = toStyle(selected === 'rt-marks-edit');
+
         return (
-            <div class="ControlPane">
-                <ControlButton type="rt-values"     caption="ВЕЛИЧИНЫ" />
-                <ControlButton type="rt-charts"     caption="ГРАФИКИ"  />
-                <ControlButton type="rt-archive"    caption="АРХИВ"    />
-                <ControlButton type="rt-marks-edit" caption="РАЗМЕТКА" />
+            <div class="control-pane">
+                <ControlButton type="rt-values"     caption="ВЕЛИЧИНЫ" style={valuesStyle}/>
+                <ControlButton type="rt-charts"     caption="ГРАФИКИ"  style={chartsStyle}/>
+                <ControlButton type="rt-archive"    caption="АРХИВ"    style={archiveStyle}/>
+                <ControlButton type="rt-marks-edit" caption="РАЗМЕТКА" style={marksEditStyle}/>
             </div>
         );
     }
@@ -50,16 +68,25 @@ class ControlPane extends React.Component {
 
     componentDidMount() {
         privateEventManager.subscribe('button-click', this.onButtonClick);
+        mainEventManager.subscribe('control-pane-button-select', this.onButtonSelect);
     }
 
 
     componentWillUnmount() {
         privateEventManager.unsubscribe('button-click', this.onButtonClick);
+        mainEventManager.unsubscribe('control-pane-button-select', this.onButtonSelect);
     }
 
 
     onButtonClick(event, type) {
-        mainEventManager.publish('control-panel-button-click');
+        mainEventManager.publish('control-pane-button-click', type);
+    }
+
+
+    onButtonSelect(event, type) {
+        this.setState({
+            selected: type
+        });
     }
 }
 

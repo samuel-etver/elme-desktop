@@ -68,7 +68,6 @@ function init() {
                                              Constants.configFileName);
 
     deviceComm = DeviceComm.getInstance();
-    console.log('CONNECTED=' + deviceComm.isConnected())
 }
 
 

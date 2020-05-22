@@ -1,5 +1,5 @@
 
-.ControlPane {
+.control-pane {
     height: 48px;
     background-image: linear-gradient(to right, #bb99bb 0%, #884444 30%);
     border: 2px solid;
@@ -11,18 +11,17 @@
     padding: 8px 16px;
 }
 
-.ControlButton {
-    display: flex;
+.control-button {
     width: 160px;
     font-weight: bold;
     font-size: 17px;
     border-radius: 30px;
     align-items: center;
     justify-content: center;
-    border-width: 8px;
+    border-width: 1px;
     border-style: solid;
-    border-image-source: linear-gradient(to right, #ff000055, #00ff0055);
-    border-image-slice: 1;
+    border-color: green;
+    outline-style: none;
     background:
       linear-gradient(145deg, rgba(255,255,255,0.9) 0% 0%, rgba(255,255,255,0) 30% 15%),
       linear-gradient(45deg, #44000044, #00550088 40%)
@@ -41,4 +40,11 @@
       linear-gradient(from 0% 0% to 15% 50%, rgba(255,255,255,0.9), rgba(255,255,255,0))
       ;
   -fx-text-fill: white;*/
+}
+
+.selected {
+    border: 1px solid black;
+    background-color: yellow;
+    color: black;
+
 }
