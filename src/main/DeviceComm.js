@@ -7,12 +7,13 @@ const GlobalStorage = require('../common/GlobalStorage');
 const MainEventManager = require('../common/MainEventManager');
 const DeviceData = require('../common/DeviceData');
 
+const globalStorage = GlobalStorage.getInstance();
+const eventManager = MainEventManager.getInstance();
+
 var DeviceComm = (function() {
     let instance;
     let socket;
     let client;
-    let globalStorage = GlobalStorage.getInstance();
-    let eventManager = MainEventManager.getInstance();
     let timerId;
     let connected = false;
 
@@ -40,7 +41,7 @@ var DeviceComm = (function() {
 
 
     function stop() {
-        timerId && clearTimer(timerId);
+        timerId && clearTimeout(timerId);
         publish('device-stop');
         socket.end();
     }
@@ -129,9 +130,97 @@ var DeviceComm = (function() {
         timerId = setTimeout(onTimer, Constants.deviceReadInterval);
     }
 
+    return {
+        getInstance: function() {
+            if ( !instance ) {
+                instance = init();
+            }
+            return instance;
+        }
+    };
+})();
 
-    function publish(event, ...args) {
-        eventManager.publish(event, ...args);
+
+var DeviceMock = (function() {
+    let instance;
+    let timerId;
+    let connected = false;
+
+    function init() {
+        eventManager.subscribe('app-load', start);
+        eventManager.subscribe('app-close', stop);
+
+        return {
+            isConnected: () => connected,
+        }
+    }
+
+    function start() {
+        publish('device-start');
+        reconnect();
+    }
+
+
+    function stop() {
+        timerId && clearTimeout(timerId);
+        publish('device-stop');
+    }
+
+
+    function reconnect() {
+        publish('device-reconnect');
+        setTimeout(connect, 100);
+    }
+
+
+    function connect() {
+      connected = false;
+      publish('device-connect');
+      onConnect();
+    }
+
+
+    function onConnect() {
+        connected = true;
+        publish('device-connected');
+        timerId = setTimeout(onTimer, Constants.deviceReadInterval);
+    }
+
+
+    function onTimer() {
+        onReadSuccess();
+    }
+
+
+    function onReadSuccess(...args) {
+        publish('device-read-success', ...args);
+
+        var generateValue = x => x + (10.0*Math.random() - 5);
+
+        let currDate = new Date();
+        let inductorTemperature1 = generateValue(10);
+        let inductorTemperature2 = generateValue(20);
+        let thermostatTemperature1 = generateValue(30);
+        let thermostatTemperature2 = generateValue(40);
+        let sprayerTemperature = generateValue(50);
+        let heatingTemperature = generateValue(60);
+        let waterFlow = generateValue(70);
+
+        let deviceData = new DeviceData();
+        deviceData.date = currDate;
+        deviceData.inductorTemperature1 = inductorTemperature1;
+        deviceData.inductorTemperature2 = inductorTemperature2;
+        deviceData.thermostatTemperature1 = thermostatTemperature1;
+        deviceData.thermostatTemperature2 = thermostatTemperature2;
+        deviceData.sprayerTemperature = sprayerTemperature;
+        deviceData.heatingTemperature = heatingTemperature;
+        deviceData.waterFlow = waterFlow;
+
+        globalStorage.deviceData = deviceData;
+
+        publish('device-data-ready');
+
+        timerId = setTimeout(onTimer, Constants.deviceReadInterval);
     }
 
     return {
@@ -145,14 +234,14 @@ var DeviceComm = (function() {
 })();
 
 
-var DeviceMock = (function() {
-})();
-
-
 var Device =  Constants.deviceMock
   ? DeviceMock
   : DeviceComm;
 Device.getInstance();
+
+function publish(event, ...args) {
+    eventManager.publish(event, ...args);
+}
 
 
 module.exports = Device;

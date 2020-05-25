@@ -10,5 +10,5 @@ module.exports = {
         'devicePort',
     ],
     deviceReadInterval: 1000,
-    deviceMock: false,
+    deviceMock: true,
 };
