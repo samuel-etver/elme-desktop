@@ -1,5 +1,7 @@
 import React from 'react';
 import './RtChartsPage.css';
+import './MeasureParametersComboBox';
+import MeasureParametersComboBox from './MeasureParametersComboBox';
 
 class RtChartsPage extends React.Component {
     render() {
@@ -7,8 +9,9 @@ class RtChartsPage extends React.Component {
         if ( this.props.style ) {
             style += this.props.style;
         }
-        return <div class={style}>
-               </div>
+        return  <div class={style}>
+                    <MeasureParametersComboBox />
+                </div>
     }
 }
 

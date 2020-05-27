@@ -4,18 +4,18 @@ import './ValuePane.css';
 class ValuePane extends React.Component  {
     render() {
         return (
-            <div class="ValuePane">
-                <div class="Caption ValuePaneItem">
+            <div class="value-pane">
+                <div class="caption value-pane-item">
                     <div>
                         {this.props.caption}
                     </div>
                 </div>
-                <div class="Value ValuePaneItem">
+                <div class="value value-pane-item">
                     <div>
                         {this.props.value}
                     </div>
                 </div>
-                <div class="Units ValuePaneItem">
+                <div class="units value-pane-item">
                     <div>
                         {this.props.units}
                     </div>

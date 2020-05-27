@@ -6,12 +6,14 @@ var MeasureParameters = new (function() {
     var waterFlowUnits = 'м\u00B3/c';
 
     var parameters = {};
+    var id = 0;
 
     var create = function(name, caption, units) {
          parameters[name] = {
             name: name,
             caption: caption,
-            units: units
+            units: units,
+            id: id++            
         }
     }
 

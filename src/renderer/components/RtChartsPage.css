@@ -1,6 +1,8 @@
 
 .rt-charts-page {
     position: absolute;
+    box-sizing: border-box;
+    padding: 16px;
     background-color: yellow;
     width: 100%;
     height: var(--page-height);

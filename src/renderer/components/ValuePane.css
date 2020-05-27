@@ -1,4 +1,4 @@
-.ValuePaneItem {
+.value-pane-item {
     display: flex;
     align-items: flex-end;
     flex-grow: 0;
@@ -16,7 +16,7 @@
     padding-left: 12px;
 }
 
-.ValuePane {
+.value-pane {
     display: flex;
     flex-wrap: nowrap;
     overflow:hidden;
@@ -31,11 +31,11 @@
     justify-content: flex-end;
 }
 
-.ValuePane .Caption {
+.value-pane .caption {
     flex-grow: 1;
 }
 
-.ValuePane .Value {
+.value-pane .value {
     width: 160px;
     border-width: 12x;
     border-style: ridge;
@@ -49,6 +49,6 @@
     color: white;
 }
 
-.ValuePane .Units {
+.value-pane .units {
     width: 80px;
 }

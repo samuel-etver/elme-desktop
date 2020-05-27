@@ -24,11 +24,7 @@
     outline-style: none;
     background:
       linear-gradient(145deg, rgba(255,255,255,0.9) 0% 0%, rgba(255,255,255,0) 30% 15%),
-      linear-gradient(45deg, #44000044, #00550088 40%)
-/*      linear-gradient(#e657ff 0%, #c202f8 50%, #a10bee 100%),*/
-      /*linear-gradient(#ea6aff, #aa22ef),*/
-      /*linear-gradient(#ef84ff, #ba44f2),*/
-      ;
+      linear-gradient(45deg, #44000044, #00550088 40%);
     color: white;
     margin-right: 20px;
 }
