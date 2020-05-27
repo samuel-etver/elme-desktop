@@ -1,10 +1,10 @@
 
 .control-pane {
     height: 48px;
-    background-image: linear-gradient(to right, #bb99bb 0%, #884444 30%);
-    border: 2px solid;
-    border-image-slice: 1;
-    border-image-source: linear-gradient(to right, #cc88cc 0%, #995599 30%);
+    background-image: linear-gradient(to right, #bb99bb 0%, #884444 0%);
+    border-width: 2px 0px;
+    border-style: groove;
+    border-color: #cc88cc;
     overflow: hidden;
     flex-wrap: nowrap;
     display: flex;
@@ -31,20 +31,10 @@
       ;
     color: white;
     margin-right: 20px;
-/*
-  -fx-background-color:
-      linear-gradient(#d65bff, #8400e6),
-      linear-gradient(#ef84ff, #ba44f2),
-      linear-gradient(#ea6aff, #aa22ef),
-      linear-gradient(#e657ff 0%, #c202f8 50%, #a10bee 100%),
-      linear-gradient(from 0% 0% to 15% 50%, rgba(255,255,255,0.9), rgba(255,255,255,0))
-      ;
-  -fx-text-fill: white;*/
 }
 
 .selected {
-    border: 1px solid black;
+    border: 1px solid #040;
     background-color: yellow;
     color: black;
-
 }

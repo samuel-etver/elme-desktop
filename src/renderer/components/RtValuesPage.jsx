@@ -34,7 +34,7 @@ class RtValuesPane extends React.Component {
         var heatingTemperatureParam = measureParams.get('heatingTemperature');
         var waterFlowParam = measureParams.get('waterFlow');
         return (
-            <div class="RtValuesPane">
+            <div class="rt-values-pane">
                 <ValuePane caption = {inductorTemperature1Param.caption}
                              value = {this.temperatureToStr(this.state.inductorTemperature1)}
                              units = {inductorTemperature1Param.units} />
@@ -97,10 +97,16 @@ class RtValuesPane extends React.Component {
     }
 }
 
-function RtValuesPage() {
-    return  <div class="RtValuesPage">
-                <RtValuesPane />
-            </div>
+class RtValuesPage extends React.Component {
+    render() {
+        let style = 'rt-values-page ';
+        if ( this.props.style ) {
+            style += this.props.style;
+        }
+        return  <div class={style}>
+                    <RtValuesPane />
+                </div>
+    }
 }
 
 export default RtValuesPage;

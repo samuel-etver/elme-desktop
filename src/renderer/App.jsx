@@ -3,6 +3,8 @@
 import React from 'react';
 import './App.css';
 import RtValuesPage from './components/RtValuesPage';
+import RtChartsPage from './components/RtChartsPage';
+import ArchivePage from './components/ArchivePage';
 import ControlPane from './components/ControlPane';
 import NotificationPane from './components/NotificationPane';
 const electron = window.require('electron');
@@ -19,16 +21,35 @@ const mainEventManager = MainEventManager.getInstance();
 class App extends React.Component {
     constructor(props) {
         super(props);
+        this.state = {
+            activatePage: 'rt-values',
+        }
         super.onControlPaneButtonClick = this.onControlPaneButtonClick.bind(this);
     }
 
 
     render() {
+        let getPageStyle = type => {
+            let page = this.state.activatePage;
+            if ( page === type ) {
+                return 'front-page';
+            }
+            return 'back-page hidden';
+        }
+
+        let valuesPageStyle = getPageStyle('rt-values');
+        let chartsPageStyle = getPageStyle('rt-charts');
+        let archivePageStyle = getPageStyle('archive');
+
         return (
             <div className="App">
                 <NotificationPane />
                 <ControlPane />
-                <RtValuesPage />
+                <div>
+                    <RtValuesPage style={valuesPageStyle}/>
+                    <RtChartsPage style={chartsPageStyle}/>
+                    <ArchivePage  style={archivePageStyle}/>
+                </div>
             </div>
         );
     }
@@ -46,8 +67,11 @@ class App extends React.Component {
 
 
     onControlPaneButtonClick(event, type) {
-        log(type);
         mainEventManager.publish('control-pane-button-select', type);
+        this.setState({
+            activatePage: type
+        });
+        log(type);
     }
 }
 

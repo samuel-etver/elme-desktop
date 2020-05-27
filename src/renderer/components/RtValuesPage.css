@@ -1,21 +1,27 @@
 
-.RtValuesPage {
-    width: 800px;
-    height: 700px;
+.rt-values-page {
+    position: absolute;
+    width: 100%;
+    height: var(--page-height);
+    background-color: #333;
 }
 
-.RtValuesPane {
-  border-width: 3px;
+.rt-values-pane {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  border-width: 1px;
   border-style: solid;
   border-color: black;
   height: 600px;
-  background: blue;
+  width: 800px;
+  background: #285;
   display: flex;
   flex-wrap: wrap;
   flex-direction: column;
   justify-content: space-between;
   padding: 20px;
   border-radius: 21px;
-  box-shadow: 2px 2px 15px #000000;
-  margin: 16px;
+  box-shadow: 5px 5px 15px black;
 }

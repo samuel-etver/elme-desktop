@@ -1,4 +1,8 @@
 
 .archive-page {
+    position: absolute;
     background-color: pink;
+    width: 100%;
+    height: var(--page-height);
+    border: 1px solid black;
 }
