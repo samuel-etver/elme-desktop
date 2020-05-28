@@ -1,6 +1,14 @@
 
 .measure-parameters-combobox {
     width: 100%;
-    height: 40px;
-    background-color: brown;
+    height: 48px;
+    background-color: #880;
+    box-shadow: 3px 3px 3px black;
+    border-radius: 5px;
+    border-width: 0;
+    font-size: 25px;
+    font-weight: bold;
+    color: white;
+    padding-left: 20px;
+    letter-spacing: 5px;
 }

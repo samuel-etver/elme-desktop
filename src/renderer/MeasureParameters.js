@@ -7,15 +7,21 @@ var MeasureParameters = new (function() {
 
     var parameters = {};
     var id = 0;
+    var sorted = undefined;
+    var size = 0;
 
     var create = function(name, caption, units) {
-         parameters[name] = {
+        sorted = undefined;
+        if ( !parameters[name] ) {
+            size++;
+        }
+        parameters[name] = {
             name: name,
             caption: caption,
             units: units,
-            id: id++            
-        }
-    }
+            id: id++
+        };
+    };
 
     create('inductorTemperature1',
            'Температура индуктора 1',
@@ -41,11 +47,25 @@ var MeasureParameters = new (function() {
 
     this.get = function(name) {
         return parameters[name];
-    }
+    };
+
+    this.size = () => size;
+
+    this.byIndex = index => {
+        if ( !sorted ) {
+            let tmpArr = [];
+            for (let itemName in parameters) {
+                tmpArr.push(parameters[itemName]);
+            }
+            tmpArr.sort((item1, item2) => item1.caption.localeCompare(item2.caption));
+            sorted = tmpArr;
+        }
+        return sorted[index];
+    };
 
     return function() {
         return instance;
-    }
+    };
 })();
 
 export default MeasureParameters;
