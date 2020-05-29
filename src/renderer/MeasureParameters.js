@@ -63,6 +63,9 @@ var MeasureParameters = new (function() {
         return sorted[index];
     };
 
+    this.byId = id => {
+    }
+
     return function() {
         return instance;
     };

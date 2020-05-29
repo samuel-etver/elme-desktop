@@ -1,4 +1,5 @@
 import React from 'react';
+import ApexChart from 'react-apexcharts';
 import './RtChartsPage.css';
 import './MeasureParametersComboBox';
 import MeasureParametersComboBox from './MeasureParametersComboBox';
@@ -10,7 +11,7 @@ class RtChartsPage extends React.Component {
             style += this.props.style;
         }
         return  <div class={style}>
-                    <MeasureParametersComboBox />
+                      <MeasureParametersComboBox prefix="rt-charts-page"/>
                 </div>
     }
 }

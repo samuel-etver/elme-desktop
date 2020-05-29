@@ -3,7 +3,7 @@
     position: absolute;
     box-sizing: border-box;
     padding: 16px;
-    background-color: yellow;
+    background-image: linear-gradient(to right, #bb9 0%, #484 30%);
     width: 100%;
     height: var(--page-height);
     z-index: 1;
