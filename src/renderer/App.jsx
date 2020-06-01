@@ -16,6 +16,7 @@ const GlobalStorage = require('../common/GlobalStorage');
 
 const globalStorage = GlobalStorage.getInstance();
 const mainEventManager = MainEventManager.getInstance();
+mainEventManager.subscribe('log', onLog);
 
 
 class App extends React.Component {
@@ -73,6 +74,11 @@ class App extends React.Component {
         });
         log(type);
     }
+}
+
+
+function onLog(arg1, arg2) {
+    log(arg2);
 }
 
 

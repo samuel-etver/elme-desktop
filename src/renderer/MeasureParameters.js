@@ -6,7 +6,7 @@ var MeasureParameters = new (function() {
     var waterFlowUnits = 'м\u00B3/c';
 
     var parameters = {};
-    var id = 0;
+    var id = 1;
     var sorted = undefined;
     var size = 0;
 
@@ -64,6 +64,7 @@ var MeasureParameters = new (function() {
     };
 
     this.byId = id => {
+        return 'ok';
     }
 
     return function() {

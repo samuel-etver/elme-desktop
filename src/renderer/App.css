@@ -1,5 +1,6 @@
 :root {
     --page-height: 700px;
+    --page-padding: 16px;
 }
 
 .App {
