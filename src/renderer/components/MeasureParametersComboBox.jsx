@@ -1,22 +1,11 @@
 import React from 'react';
 import './MeasureParametersComboBox.css';
 import MeasureParameters from './../MeasureParameters';
-import MainEventManager from '../../common/MainEventManager';
-
-let mainEventManager = MainEventManager.getInstance();
 
 
 class MeasureParametersComboBox extends React.Component {
     constructor(props) {
         super(props);
-        let selectedId = this.props.selectedId;
-        if ( !selectedId ) {
-            let measureParameters = new MeasureParameters();
-            selectedId = measureParameters.get('inductorTemperature1').id;
-        }
-        this.state = {
-            selectedId: selectedId
-        };
         this.isOpen = false;
         this.onToggle = this.onToggle.bind(this);
         this.onClickItem = this.onClickItem.bind(this);
@@ -24,9 +13,10 @@ class MeasureParametersComboBox extends React.Component {
 
 
     getId(id) {
-        return  this.props.prefix
-                  ? this.props.prefix + id
-                  : id;
+        if ( this.props.options && this.props.options.prefix ) {
+            return this.props.options.prefix + id;
+        }
+        return id;
     }
 
 
@@ -46,8 +36,14 @@ class MeasureParametersComboBox extends React.Component {
     onClickItem(id, caption) {
       document.getElementById(this.getId('valueText')).innerHTML = caption;
       this.onToggle();
-      if ( this.props.options && this.props.options.eventManager) {
-          //this.props.options.eventManager.publish
+      if ( this.props.options ) {
+          if ( this.props.options.eventManager ) {
+              let prefix = this.props.options.prefix;
+              if ( !prefix ) {
+                  prefix = '';
+              }
+              this.props.options.eventManager.publish(prefix + 'combobox-select', id);
+          }
       }
     }
 
@@ -56,20 +52,24 @@ class MeasureParametersComboBox extends React.Component {
         let measureParameters = new MeasureParameters();
         let captions = [];
         let selectedCaption = '';
-        let b = this;
-        let a = function(id, caption) {
+        let selectedId;
+        if ( this.props.options && this.props.options.selectedId) {
+            selectedId = this.props.options.selectedId;
+        }
+        let item = this;
+        let getOnClick = function(id, caption) {
             return function() {
-                b.onClickItem(id, caption);
+                item.onClickItem(id, caption);
             }
         }
         for (let i = 0; i < measureParameters.size(); i++) {
             let parameter = measureParameters.byIndex(i);
             let caption = (i + 1).toString() + '. ' + parameter.caption;
-            if ( parameter.id == this.state.selectedId) {
+            if ( parameter.id == selectedId) {
                 selectedCaption = caption;
             }
             captions.push(
-                <li class="select-option" onClick={a(parameter.id, caption)} value={parameter.id}>{caption}</li>
+                <li class="select-option" onClick={getOnClick(parameter.id, caption)} value={parameter.id}>{caption}</li>
             );
         }
 

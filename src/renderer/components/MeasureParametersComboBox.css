@@ -23,6 +23,8 @@
    text-shadow: 1px 1px 30px #00c8f9;
    color: transparent;
    -webkit-background-clip: text;
+   white-space: nowrap;
+   overflow-x: hidden;
 }
 
 .value-text:before {
