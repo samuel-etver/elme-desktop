@@ -19,6 +19,20 @@ class RtChartsPage extends React.Component {
         this.measureParameters = new MeasureParameters();
         this.state = {
             selectedMeasureParameterId: this.measureParameters.get('inductorTemperature1').id,
+            options: {
+              chart: {
+                id: "basic-chart"
+              },
+              xaxis: {
+                categories: [1, 2, 3, 4, 5, 6, 7, 8, 9]
+              }
+            },
+            series: [
+              {
+                name: "series-1",
+                data: [30, 40, 45, 50, 49, 60, 70, 91]
+              }
+            ]
         };
         this.onChartNumberButtonClick = this.onChartNumberButtonClick.bind(this);
     }
@@ -54,6 +68,13 @@ class RtChartsPage extends React.Component {
         return  <div class={style}>
                       <MeasureParametersComboBox options={chartCaptionOptions}/>
                       <HorzDivider height="80px" />
+                      <ApexChart
+                        options={this.state.options}
+                        series={this.state.series}
+                        type="line"
+                        height="300"
+                      />
+                      <HorzDivider height="20px" />
                       <NumberButtonsGroup options={chartNumberButtonsGroupOptions}/>
                 </div>
     }

@@ -25,6 +25,7 @@
    -webkit-background-clip: text;
    white-space: nowrap;
    overflow-x: hidden;
+   user-select: none;
 }
 
 .value-text:before {
@@ -66,6 +67,7 @@
    list-style-type: none;
    display: block;
    top: 66px;
+   user-select: none;
 }
 .select-container:focus {
    outline:none;
