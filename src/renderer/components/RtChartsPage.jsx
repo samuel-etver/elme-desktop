@@ -1,5 +1,4 @@
 import React from 'react';
-import ApexChart from 'react-apexcharts';
 import './RtChartsPage.css';
 import './MeasureParametersComboBox';
 import MeasureParametersComboBox from './MeasureParametersComboBox';
@@ -8,6 +7,7 @@ import HorzDivider from './HorzDivider';
 import MeasureParameters from '../MeasureParameters';
 import EventManager from '../../common/EventManager';
 import MainEventManager from '../../common/MainEventManager';
+import ChartBuilder from '../ChartBuilder'
 
 let mainEventManager = MainEventManager.getInstance();
 
@@ -17,22 +17,14 @@ class RtChartsPage extends React.Component {
         this.eventManager = new EventManager();
         this.prefix = 'rt-charts-page-';
         this.measureParameters = new MeasureParameters();
+        let measureParameter = this.measureParameters.get('inductorTemperature1');
+        let chartBuildOptions = (new ChartBuilder).buildOptions({
+            measureParameter: measureParameter
+        });
         this.state = {
-            selectedMeasureParameterId: this.measureParameters.get('inductorTemperature1').id,
-            options: {
-              chart: {
-                id: "basic-chart"
-              },
-              xaxis: {
-                categories: [1, 2, 3, 4, 5, 6, 7, 8, 9]
-              }
-            },
-            series: [
-              {
-                name: "series-1",
-                data: [30, 40, 45, 50, 49, 60, 70, 91]
-              }
-            ]
+            selectedMeasureParameterId: measureParameter.id,
+            options: chartBuildOptions.options,
+            series: chartBuildOptions.series
         };
         this.onChartNumberButtonClick = this.onChartNumberButtonClick.bind(this);
     }
@@ -64,16 +56,19 @@ class RtChartsPage extends React.Component {
             count: this.measureParameters.size(),
             eventManager: this.eventManager
         };
+/*        <ApexChart
+          options={this.state.options}
+          series={this.state.series}
+          type="line"
+          height="100%"
+          width="100%"
+        />*/
 
         return  <div class={style}>
                       <MeasureParametersComboBox options={chartCaptionOptions}/>
-                      <HorzDivider height="80px" />
-                      <ApexChart
-                        options={this.state.options}
-                        series={this.state.series}
-                        type="line"
-                        height="300"
-                      />
+                      <HorzDivider height="40px" />
+                      <div class="rt-charts-page-chart-pane">
+                      </div>
                       <HorzDivider height="20px" />
                       <NumberButtonsGroup options={chartNumberButtonsGroupOptions}/>
                 </div>
