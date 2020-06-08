@@ -21,81 +21,76 @@ class ChartBuilder {
                 break;
         }
 
-        let axisLabelFontSize = '20px';
+        let axisLabel = {
+            fontSize: 19,
+            fontWeight: 'bold',
+            color: 'pink',
+            textShadowColor: 'black',
+            textShadowOffsetX: 1,
+            textShadowOffsetY: 1,
+            textShadowBlur: 5,
+        };
+        let xAxisLabel = Object.assign({}, axisLabel);
+        xAxisLabel.formatter = function(value) {
+            let dt = new Date(value);
+            let hours = dt.getHours();
+            let minutes = dt.getMinutes();
+            let result = hours + ':';
+            if ( minutes < 10 ) {
+                result += '0';
+            }
+            return result += minutes;
+        };
+        let yAxisLabel = Object.assign({}, axisLabel);
+        yAxisLabel.showMinLabel = false;
+        let splitLine = {
+            show: true,
+            lineStyle: {
+                type: 'dotted'
+            }
+        }
+
+        let xMin;
+        let xMax;
+        //if ( inOptions.currTime ) {
+            let now = Date.now();
+            xMax = new Date(now);
+            xMin = new Date(now - 1000*60*30);
+        //}
 
 
         return {
-            options: {
-                chart: {
-                    id: "basic-chart",
-                    toolbar: {
-                        show: false,
-                    },
-                    zoom: {
-                        enabled: false
-                    },
-                    animation: {
-                        enabled: false
-                    },
-                    paddings: '80px',
-                },
-                xaxis: {
-                    labels: {
-                        style: {
-                            fontSize: axisLabelFontSize,
-                        },
-  //                      formatter: function() { return 'HH:mm'}
-},
-                    min: 0,
-                    max: 5
-                },
-                yaxis: {
-                    axisBorder: {
-                        show: true,
-                        offsetX: -3,
-                    },
-                    labels: {
-                        style: {
-                            fontSize: axisLabelFontSize,
-                            cssClass: 'chart-labels'
-                        }
-                    },
-                    min: yMin,
-                    max:  yMax
-                },
-                grid: {
-                    show: true,
-                    borderColor: 'transparent',
-                    strokeDashArray: 7,
-                    position: 'back',
-                    xaxis: {
-                        lines: {
-                            show: true,
-                        }
-                    },
-                    yaxis:  {
-                        lines: {
-                            show: true,
-                        }
-                    },
-                    row: {
-                  },
-                    padding: {
-                        top: 0,
-                        bottom: -20,
-                        left: 10,
-                        right: 20
-                    }
-                }
-
+            grid: {
+                show: true,
+                backgroundColor: 'black',
             },
-            series: [
+            xAxis: [
                 {
-                    name: "series-1",
-                    data: [[1, 30], [2, 31], [4, 33], [7, 45]]
+                    type: 'time',
+                    scale: true,
+                    max: xMax,
+                    min: xMin,
+                    axisLine: {
+                        show: false
+                    },
+                    axisLabel: xAxisLabel,
+                    splitLine: splitLine
                 }
-            ]
-        };
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    scale: true,
+                    max: yMax,
+                    min: yMin,
+                    axisLine: {
+                        show: false
+                    },
+                    axisLabel: yAxisLabel,
+                    splitLine: splitLine
+                }
+            ],
+        }
     }
 }
 

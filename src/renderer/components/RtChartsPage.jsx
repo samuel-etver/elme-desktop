@@ -7,7 +7,8 @@ import HorzDivider from './HorzDivider';
 import MeasureParameters from '../MeasureParameters';
 import EventManager from '../../common/EventManager';
 import MainEventManager from '../../common/MainEventManager';
-import ChartBuilder from '../ChartBuilder'
+import ChartBuilder from '../ChartBuilder';
+import Chart from './Chart';
 
 let mainEventManager = MainEventManager.getInstance();
 
@@ -23,8 +24,7 @@ class RtChartsPage extends React.Component {
         });
         this.state = {
             selectedMeasureParameterId: measureParameter.id,
-            options: chartBuildOptions.options,
-            series: chartBuildOptions.series
+            options: chartBuildOptions,
         };
         this.onChartNumberButtonClick = this.onChartNumberButtonClick.bind(this);
     }
@@ -56,18 +56,12 @@ class RtChartsPage extends React.Component {
             count: this.measureParameters.size(),
             eventManager: this.eventManager
         };
-/*        <ApexChart
-          options={this.state.options}
-          series={this.state.series}
-          type="line"
-          height="100%"
-          width="100%"
-        />*/
 
         return  <div class={style}>
                       <MeasureParametersComboBox options={chartCaptionOptions}/>
                       <HorzDivider height="40px" />
                       <div class="rt-charts-page-chart-pane">
+                          <Chart options={this.state.options}/>
                       </div>
                       <HorzDivider height="20px" />
                       <NumberButtonsGroup options={chartNumberButtonsGroupOptions}/>

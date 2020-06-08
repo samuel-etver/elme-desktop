@@ -68,6 +68,7 @@
    display: block;
    top: 66px;
    user-select: none;
+   z-index: 5;
 }
 .select-container:focus {
    outline:none;
