@@ -11,4 +11,6 @@ module.exports = {
     ],
     deviceReadInterval: 1000,
     deviceMock: true,
+    rtChartPeriod: 30*60, // seconds
+    rtChartRecordInterval: 30, // seconds
 };

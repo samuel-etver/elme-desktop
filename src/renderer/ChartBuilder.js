@@ -1,4 +1,6 @@
 import MeasureParameters from './MeasureParameters';
+import Constants from '../common/Constants';
+
 
 let measureParameters = new MeasureParameters();
 
@@ -17,7 +19,7 @@ class ChartBuilder {
                 break;
             case 'waterFlow':
                 var yMin = 0.0;
-                var yMax = 20.0;
+                var yMax = 80.0;
                 break;
         }
 
@@ -55,7 +57,7 @@ class ChartBuilder {
         //if ( inOptions.currTime ) {
             let now = Date.now();
             xMax = new Date(now);
-            xMin = new Date(now - 1000*60*30);
+            xMin = new Date(now - 1000*Constants.rtChartPeriod);
         //}
 
 

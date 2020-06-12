@@ -104,7 +104,6 @@ var DeviceComm = (function() {
             return buff.readFloatLE(0);
         };
 
-        let currDate = new Date();
         let inductorTemperature1 = readF32(0);
         let inductorTemperature2 = readF32(0);
         let thermostatTemperature1 = readF32(0);
@@ -113,8 +112,7 @@ var DeviceComm = (function() {
         let heatingTemperature = readF32(0);
         let waterFlow = readF32(0);
 
-        let deviceData = new DeviceData();
-        deviceData.date = currDate;
+        let deviceData = DeviceData.now();
         deviceData.inductorTemperature1 = inductorTemperature1;
         deviceData.inductorTemperature2 = inductorTemperature2;
         deviceData.thermostatTemperature1 = thermostatTemperature1;
