@@ -71,6 +71,7 @@ class RtChartsPage extends React.Component {
             this.rtDeviceData = rtDeviceData;
         }
         this.appendChartData(rtDeviceData);
+        this.removeChartData(rtDeviceData.date);
 
         this.eventManager.publish(this.prefix + 'update');
 
@@ -83,6 +84,16 @@ class RtChartsPage extends React.Component {
         if ( !lastItem || lastItem.id != newItem.id ) {
             this.chartData.push( newItem );
         }
+    }
+
+
+    removeChartData(toDate) {
+        let toTimestamp = toDate.getTime();
+        let fromTimestamp = toTimestamp - 1000*(Constants.rtChartPeriod + 3*60);
+        this.chartData = this.chartData.filter(item =>  {
+            let timestamp = item.date.getTime();
+            return timestamp > fromTimestamp && timestamp <= toTimestamp;
+        });
     }
 
 
