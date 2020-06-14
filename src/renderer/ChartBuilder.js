@@ -7,6 +7,8 @@ let measureParameters = new MeasureParameters();
 class ChartBuilder {
     buildOptions(inOptions) {
         let measureParameter = inOptions.measureParameter;
+        let yMin;
+        let yMax;
         switch ( measureParameter.name ) {
             case 'inductorTemperature1':
             case 'inductorTemperature2':
@@ -14,12 +16,12 @@ class ChartBuilder {
             case 'thermostatTemperature2':
             case 'sprayerTemperature':
             case 'heatingTemperature':
-                var yMin = 0.0;
-                var yMax = 100.0;
+                yMin = 0.0;
+                yMax = 100.0;
                 break;
             case 'waterFlow':
-                var yMin = 0.0;
-                var yMax = 80.0;
+                yMin = 0.0;
+                yMax = 80.0;
                 break;
         }
 
@@ -48,7 +50,8 @@ class ChartBuilder {
         let splitLine = {
             show: true,
             lineStyle: {
-                type: 'dotted'
+                type: 'dotted',
+                color: '#888'
             }
         }
 
@@ -65,6 +68,10 @@ class ChartBuilder {
             grid: {
                 show: true,
                 backgroundColor: 'black',
+                left: 80,
+                right: 40,
+                top: 20,
+                bottom: 40,
             },
             xAxis: [
                 {
@@ -93,6 +100,18 @@ class ChartBuilder {
                 }
             ],
         }
+    }
+
+
+    buildSerie(inOptions) {
+        return {
+            type: 'line',
+            lineStyle: {
+                width: 3,
+                color: '#ffa',
+            },
+            data: inOptions.data,
+        };
     }
 }
 

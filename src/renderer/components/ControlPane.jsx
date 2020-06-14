@@ -41,7 +41,7 @@ class ControlPane extends React.Component {
             selected: 'rt-values'
         };
         this.onButtonClick = this.onButtonClick.bind(this);
-        this.onButtonSelect = this.onButtonSelect.bind(this);
+        this.onPageSelected = this.onPageSelected.bind(this);
     }
 
 
@@ -68,13 +68,13 @@ class ControlPane extends React.Component {
 
     componentDidMount() {
         privateEventManager.subscribe('button-click', this.onButtonClick);
-        mainEventManager.subscribe('control-pane-button-select', this.onButtonSelect);
+        mainEventManager.subscribe('page-selected', this.onPageSelected);
     }
 
 
     componentWillUnmount() {
         privateEventManager.unsubscribe('button-click', this.onButtonClick);
-        mainEventManager.unsubscribe('control-pane-button-select', this.onButtonSelect);
+        mainEventManager.unsubscribe('page-selected', this.onPageSelected);
     }
 
 
@@ -83,7 +83,7 @@ class ControlPane extends React.Component {
     }
 
 
-    onButtonSelect(event, type) {
+    onPageSelected(event, type) {
         this.setState({
             selected: type
         });

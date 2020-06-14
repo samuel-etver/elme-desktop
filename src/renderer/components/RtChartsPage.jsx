@@ -29,12 +29,14 @@ class RtChartsPage extends React.Component {
         this.state = {
             selectedMeasureParameterId: measureParameter.id,
             options: chartBuildOptions,
+            visible: false
         };
         this.rtDeviceData = null;
         this.chartData = [];
         this.onChartNumberButtonClick = this.onChartNumberButtonClick.bind(this);
         this.onChartSelect = this.onChartSelect.bind(this);
         this.onRtDeviceDataReady = this.onRtDeviceDataReady.bind(this);
+        this.onPageSelected = this.onPageSelected.bind(this);
         this.onTimer = this.onTimer.bind(this);
         this.onUpdate = this.onUpdate.bind(this);
         this.timerId = null;
@@ -46,6 +48,7 @@ class RtChartsPage extends React.Component {
         this.eventManager.subscribe(this.prefix + 'combobox-select', this.onChartSelect);
         this.eventManager.subscribe(this.prefix + 'update', this.onUpdate);
         mainEventManager.subscribe('rt-device-data-ready', this.onRtDeviceDataReady);
+        mainEventManager.subscribe('page-selected', this.onPageSelected);
         this.timerId = setTimeout(this.onTimer, Constants.rtChartRecordInterval*1000);
     }
 
@@ -55,6 +58,7 @@ class RtChartsPage extends React.Component {
         this.eventManager.unsubscribe(this.prefix + 'combobox-select', this.onChartSelect);
         this.eventManager.unsubscribe(this.prefix + 'update', this.onUpdate);
         mainEventManager.unsubscribe('rt-device-data-ready', this.onRtDeviceDataReady);
+        mainEventManager.unsubscribe('page-selected', this.onPageSelected);
         clearTimeout(this.timerId);
     }
 
@@ -73,7 +77,9 @@ class RtChartsPage extends React.Component {
         this.appendChartData(rtDeviceData);
         this.removeChartData(rtDeviceData.date);
 
-        this.eventManager.publish(this.prefix + 'update');
+        if ( this.state.visible ) {
+          this.eventManager.publish(this.prefix + 'update');
+        }
 
         this.timerId = setTimeout(this.onTimer, Constants.rtChartRecordInterval*1000);
     }
@@ -104,27 +110,56 @@ class RtChartsPage extends React.Component {
         for (let item of this.chartData) {
             data.push( [item.date, item[measureParameter.name]] );
         }
-        series.push({
-            type: 'line',
+        let newSerie = (new ChartBuilder()).buildSerie({
             data: data
         });
+        series.push(newSerie);
         return series;
     }
 
 
-    onUpdate(event, id) {
-        if ( !id ) {
-            id = this.state.selectedMeasureParameterId;
+    onUpdate(event, options) {
+        let visible = (!options || options.visible === undefined)
+          ? this.state.visible
+          : options.visible;
+
+        if (visible || this.state.visible) {
+            let id = (!options || !options.id)
+              ? this.state.selectedMeasureParameterId
+              : options.id;
+
+            let measureParameter = this.measureParameters.byId(id);
+            let chartOptions = (new ChartBuilder).buildOptions({
+                measureParameter: this.measureParameters.get(measureParameter.name)
+            });
+
+            this.setState({
+                  selectedMeasureParameterId: id,
+                  options: chartOptions,
+                  visible: visible
+            });
         }
+    }
 
-        let measureParameter = this.measureParameters.byId(id);
-        let options = (new ChartBuilder).buildOptions({
-            measureParameter: this.measureParameters.get(measureParameter.name)
+
+    onChartNumberButtonClick(event, index) {
+        let parameter = this.measureParameters.byIndex(index);
+        this.eventManager.publish(this.prefix + 'update', {
+            id: parameter.id
         });
+    }
 
-        this.setState({
-            selectedMeasureParameterId: id,
-            options: options
+
+    onChartSelect(event, id) {
+        this.eventManager.publish(this.prefix + 'update', {
+            id: id
+        });
+    }
+
+
+    onPageSelected(event, type) {
+        this.eventManager.publish(this.prefix + 'update', {
+            visible: (type === 'rt-charts')
         });
     }
 
@@ -157,17 +192,6 @@ class RtChartsPage extends React.Component {
                       <HorzDivider height="20px" />
                       <NumberButtonsGroup options={chartNumberButtonsGroupOptions}/>
                 </div>
-    }
-
-
-    onChartNumberButtonClick(event, index) {
-        let parameter = this.measureParameters.byIndex(index);
-        this.eventManager.publish(this.prefix + 'update', parameter.id);
-    }
-
-
-    onChartSelect(event, id) {
-        this.eventManager.publish(this.prefix + 'update', id);
     }
 }
 

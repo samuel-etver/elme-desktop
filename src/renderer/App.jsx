@@ -68,11 +68,10 @@ class App extends React.Component {
 
 
     onControlPaneButtonClick(event, type) {
-        mainEventManager.publish('control-pane-button-select', type);
+        mainEventManager.publish('page-selected', type);
         this.setState({
             activatePage: type
         });
-        log(type);
     }
 }
 
@@ -95,7 +94,7 @@ function onLoad() {
 function onDeviceDataReady(deviceData) {
     globalStorage['deviceData'] = deviceData;
     mainEventManager.publish('rt-device-data-ready');
-//    log(deviceData.inductorTemperature1);
 }
+
 
 export default App;
