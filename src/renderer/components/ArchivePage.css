@@ -1,8 +1,23 @@
 
 .archive-page {
     position: absolute;
-    background-color: pink;
+    box-sizing: border-box;
+    padding: 16px;
+    background-image: linear-gradient(to right, #bb6600 0%, #995500 30%);
     width: 100%;
     height: var(--page-height);
-    border: 1px solid black;
+    z-index: 1;
+}
+
+.archive-page .display-value {
+    background-image: linear-gradient(to right, #ffbbbb 0%, #cc8888 30%);
+}
+
+.archive-page .value-text {
+    color: #550000;
+    text-shadow: 1px 1px 30px #fff8;
+}
+
+.archive-page .number-button {
+    background-image: linear-gradient(150deg, #ffff2299, #ee8800dd 30%, #442200ff);
 }
