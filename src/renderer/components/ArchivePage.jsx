@@ -37,9 +37,13 @@ class ArchivePage extends React.Component {
 
     render() {
         let style = 'archive-page ';
-        if ( this.props.style ) {
-            style += this.props.style;
+        if ( this.props.visible ) {
+            style += 'front-page';
         }
+        else {
+            style += 'back-page hidden';
+        }
+
         let chartCaptionOptions = {
             prefix: this.prefix,
             selectedId: this.state.selectedMeasureParameterId,

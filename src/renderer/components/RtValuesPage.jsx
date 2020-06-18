@@ -12,13 +12,7 @@ class RtValuesPane extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            inductorTemperature1: null,
-            inductorTemperature2: null,
-            thermostatTemperature1: null,
-            thermostatTemperature2: null,
-            sprayerTemperature: null,
-            heatingTemperature: null,
-            waterFlow: null
+            count: 0,
         };
         this.onDeviceDataReady = this.onDeviceDataReady.bind(this);
     }
@@ -33,28 +27,40 @@ class RtValuesPane extends React.Component {
         var sprayerTemperatureParam = measureParams.get('sprayerTemperature');
         var heatingTemperatureParam = measureParams.get('heatingTemperature');
         var waterFlowParam = measureParams.get('waterFlow');
+
+        let deviceData = globalStorage['deviceData'];
+        if ( deviceData ) {
+            var inductorTemperature1 = deviceData.inductorTemperature1;
+            var inductorTemperature2 = deviceData.inductorTemperature2;
+            var thermostatTemperature1 = deviceData.thermostatTemperature1;
+            var thermostatTemperature2 = deviceData.thermostatTemperature2;
+            var sprayerTemperature = deviceData.sprayerTemperature;
+            var heatingTemperature = deviceData.heatingTemperature;
+            var waterFlow =  deviceData.waterFlow;
+        }
+
         return (
             <div class="rt-values-pane">
                 <ValuePane caption = {inductorTemperature1Param.caption}
-                             value = {this.temperatureToStr(this.state.inductorTemperature1)}
+                             value = {this.temperatureToStr(inductorTemperature1)}
                              units = {inductorTemperature1Param.units} />
                 <ValuePane caption = {inductorTemperature2Param.caption}
-                             value = {this.temperatureToStr(this.state.inductorTemperature2)}
+                             value = {this.temperatureToStr(inductorTemperature2)}
                              units = {inductorTemperature2Param.units} />
                 <ValuePane caption = {thermostatTemperature1Param.caption}
-                             value = {this.temperatureToStr(this.state.thermostatTemperature1)}
+                             value = {this.temperatureToStr(thermostatTemperature1)}
                              units = {thermostatTemperature1Param.units} />
                 <ValuePane caption = {thermostatTemperature2Param.caption}
-                             value = {this.temperatureToStr(this.state.thermostatTemperature2)}
+                             value = {this.temperatureToStr(thermostatTemperature2)}
                              units = {thermostatTemperature2Param.units} />
                 <ValuePane caption = {sprayerTemperatureParam.caption}
-                             value = {this.temperatureToStr(this.state.sprayerTemperature)}
+                             value = {this.temperatureToStr(sprayerTemperature)}
                             units  = {sprayerTemperatureParam.units} />
                 <ValuePane caption = {heatingTemperatureParam.caption}
-                             value = {this.temperatureToStr(this.state.heatingTemperature)}
+                             value = {this.temperatureToStr(heatingTemperature)}
                              units = {heatingTemperatureParam.units} />
                 <ValuePane caption = {waterFlowParam.caption}
-                             value = {this.waterFlowToStr(this.state.waterFlow)}
+                             value = {this.waterFlowToStr(waterFlow)}
                              units = {waterFlowParam.units} />
             </div>
         );
@@ -84,15 +90,8 @@ class RtValuesPane extends React.Component {
 
 
     onDeviceDataReady() {
-        let deviceData = globalStorage['deviceData'];
         this.setState({
-            inductorTemperature1: deviceData.inductorTemperature1,
-            inductorTemperature2: deviceData.inductorTemperature2,
-            thermostatTemperature1: deviceData.thermostatTemperature1,
-            thermostatTemperature2: deviceData.thermostatTemperature2,
-            sprayerTemperature: deviceData.sprayerTemperature,
-            heatingTemperature: deviceData.heatingTemperature,
-            waterFlow: deviceData.waterFlow
+            count: this.state.count + 1
         });
     }
 }
@@ -100,9 +99,17 @@ class RtValuesPane extends React.Component {
 class RtValuesPage extends React.Component {
     render() {
         let style = 'rt-values-page ';
-        if ( this.props.style ) {
-            style += this.props.style;
+        if ( this.props.visible ) {
+            style += 'front-page';
         }
+        else {
+            style += 'back-page hidden';
+        }
+
+        if ( !this.props.visible ) {
+            return  <div class={style} />
+        }
+
         return  <div class={style}>
                     <RtValuesPane />
                 </div>

@@ -30,26 +30,18 @@ class App extends React.Component {
 
 
     render() {
-        let getPageStyle = type => {
-            let page = this.state.activatePage;
-            if ( page === type ) {
-                return 'front-page';
-            }
-            return 'back-page hidden';
+        let isPageVisible = type => {
+            return this.state.activatePage === type;
         }
-
-        let valuesPageStyle = getPageStyle('rt-values');
-        let chartsPageStyle = getPageStyle('rt-charts');
-        let archivePageStyle = getPageStyle('archive');
 
         return (
             <div className="App">
                 <NotificationPane />
                 <ControlPane />
                 <div>
-                    <RtValuesPage style={valuesPageStyle}/>
-                    <RtChartsPage style={chartsPageStyle}/>
-                    <ArchivePage  style={archivePageStyle}/>
+                    <RtValuesPage visible={isPageVisible('rt-values')}/>
+                    <RtChartsPage visible={isPageVisible('rt-charts')}/>
+                    <ArchivePage  visible={isPageVisible('archive')}/>
                 </div>
             </div>
         );

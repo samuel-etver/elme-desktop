@@ -6,7 +6,7 @@ let measureParameters = new MeasureParameters();
 
 class ChartBuilder {
     buildOptions(inOptions) {
-        let measureParameter = inOptions.measureParameter;
+        let measureParameter = measureParameters.byId(inOptions.measureParameterId);
         let yMin;
         let yMax;
         switch ( measureParameter.name ) {

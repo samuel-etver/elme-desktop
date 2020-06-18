@@ -19,24 +19,20 @@ let globalStorage = GlobalStorage.getInstance();
 class RtChartsPage extends React.Component {
     constructor(props) {
         super(props);
-        this.eventManager = new EventManager();
         this.prefix = 'rt-charts-page-';
         this.measureParameters = new MeasureParameters();
+        this.eventManager = new EventManager();
+        this.chartBuilder = new ChartBuilder();
         let measureParameter = this.measureParameters.get('inductorTemperature1');
-        let chartBuildOptions = (new ChartBuilder).buildOptions({
-            measureParameter: measureParameter
-        });
         this.state = {
+            count: 0,
             selectedMeasureParameterId: measureParameter.id,
-            options: chartBuildOptions,
-            visible: false
         };
         this.rtDeviceData = null;
         this.chartData = [];
         this.onChartNumberButtonClick = this.onChartNumberButtonClick.bind(this);
         this.onChartSelect = this.onChartSelect.bind(this);
         this.onRtDeviceDataReady = this.onRtDeviceDataReady.bind(this);
-        this.onPageSelected = this.onPageSelected.bind(this);
         this.onTimer = this.onTimer.bind(this);
         this.onUpdate = this.onUpdate.bind(this);
         this.timerId = null;
@@ -48,7 +44,6 @@ class RtChartsPage extends React.Component {
         this.eventManager.subscribe(this.prefix + 'combobox-select', this.onChartSelect);
         this.eventManager.subscribe(this.prefix + 'update', this.onUpdate);
         mainEventManager.subscribe('rt-device-data-ready', this.onRtDeviceDataReady);
-        mainEventManager.subscribe('page-selected', this.onPageSelected);
         this.timerId = setTimeout(this.onTimer, Constants.rtChartRecordInterval*1000);
     }
 
@@ -58,7 +53,6 @@ class RtChartsPage extends React.Component {
         this.eventManager.unsubscribe(this.prefix + 'combobox-select', this.onChartSelect);
         this.eventManager.unsubscribe(this.prefix + 'update', this.onUpdate);
         mainEventManager.unsubscribe('rt-device-data-ready', this.onRtDeviceDataReady);
-        mainEventManager.unsubscribe('page-selected', this.onPageSelected);
         clearTimeout(this.timerId);
     }
 
@@ -69,27 +63,23 @@ class RtChartsPage extends React.Component {
 
 
     onTimer() {
-        let rtDeviceData = this.rtDeviceData;
-        if ( !rtDeviceData ) {
-            rtDeviceData = DeviceData.now();
-            this.rtDeviceData = rtDeviceData;
+        let newItem = this.rtDeviceData;
+        let lastItem = this.chartData[this.chartData.length - 1];
+        if ( !newItem || !lastItem || lastItem.id == newItem.id) {
+            newItem = DeviceData.now();
+            this.rtDeviceData = newItem;
         }
-        this.appendChartData(rtDeviceData);
-        this.removeChartData(rtDeviceData.date);
+        this.appendChartData(newItem);
+        this.removeChartData(newItem.date);
 
-        if ( this.state.visible ) {
-          this.eventManager.publish(this.prefix + 'update');
-        }
+        this.eventManager.publish(this.prefix + 'update');
 
         this.timerId = setTimeout(this.onTimer, Constants.rtChartRecordInterval*1000);
     }
 
 
     appendChartData(newItem) {
-        let lastItem = this.chartData[this.chartData.length - 1];
-        if ( !lastItem || lastItem.id != newItem.id ) {
-            this.chartData.push( newItem );
-        }
+        this.chartData.push( newItem );
     }
 
 
@@ -110,7 +100,7 @@ class RtChartsPage extends React.Component {
         for (let item of this.chartData) {
             data.push( [item.date, item[measureParameter.name]] );
         }
-        let newSerie = (new ChartBuilder()).buildSerie({
+        let newSerie = this.chartBuilder.buildSerie({
             data: data
         });
         series.push(newSerie);
@@ -119,24 +109,14 @@ class RtChartsPage extends React.Component {
 
 
     onUpdate(event, options) {
-        let visible = (!options || options.visible === undefined)
-          ? this.state.visible
-          : options.visible;
-
-        if (visible || this.state.visible) {
+        if (this.props.visible) {
             let id = (!options || !options.id)
               ? this.state.selectedMeasureParameterId
               : options.id;
 
-            let measureParameter = this.measureParameters.byId(id);
-            let chartOptions = (new ChartBuilder).buildOptions({
-                measureParameter: this.measureParameters.get(measureParameter.name)
-            });
-
             this.setState({
-                  selectedMeasureParameterId: id,
-                  options: chartOptions,
-                  visible: visible
+                count: this.state.count + 1,
+                selectedMeasureParameterId: id,
             });
         }
     }
@@ -157,18 +137,19 @@ class RtChartsPage extends React.Component {
     }
 
 
-    onPageSelected(event, type) {
-        this.eventManager.publish(this.prefix + 'update', {
-            visible: (type === 'rt-charts')
-        });
-    }
-
-
     render() {
         let style = 'rt-charts-page ';
-        if ( this.props.style ) {
-            style += this.props.style;
+        if ( this.props.visible ) {
+            style += 'front-page';
         }
+        else {
+            style += 'back-page hidden';
+        }
+
+        if ( !this.props.visible ) {
+            return <div class={style} />
+        }
+
         let chartCaptionOptions = {
             prefix: this.prefix,
             selectedId: this.state.selectedMeasureParameterId,
@@ -179,9 +160,10 @@ class RtChartsPage extends React.Component {
             count: this.measureParameters.size(),
             eventManager: this.eventManager
         };
-        let chartOptions = this.state.options;
-        let series = this.buildSeries(this.state.selectedMeasureParameterId);
-        chartOptions.series = series;
+        let chartOptions = this.chartBuilder.buildOptions({
+            measureParameterId: this.state.selectedMeasureParameterId
+        });
+        chartOptions.series = this.buildSeries(this.state.selectedMeasureParameterId);
 
         return  <div class={style}>
                       <MeasureParametersComboBox options={chartCaptionOptions}/>
