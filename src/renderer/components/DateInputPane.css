@@ -1,0 +1,16 @@
+
+.date-input-pane {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+}
+
+.date-input-pane-label {
+    font-size: 21px;
+    font-weight: normal;
+    margin-right: 8px;
+    color: transparent;
+    text-shadow: 1px 1px 0px #ffffff;
+    background-clip: text;
+    background-color: #555;
+}

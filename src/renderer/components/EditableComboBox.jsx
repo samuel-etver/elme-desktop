@@ -4,7 +4,9 @@ import React from 'react';
 
 class EditableComboBox extends React.Component {
     render() {
-        return  <div>
+        return  <div >
+                    <input class="editable-combobox"/>
+                    <div />
                 </div>
     }
 }

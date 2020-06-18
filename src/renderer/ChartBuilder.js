@@ -28,7 +28,7 @@ class ChartBuilder {
         let axisLabel = {
             fontSize: 19,
             fontWeight: 'bold',
-            color: 'pink',
+            color: inOptions.realTime ? 'pink' : '#cc3',
             textShadowColor: 'black',
             textShadowOffsetX: 1,
             textShadowOffsetY: 1,
@@ -57,7 +57,7 @@ class ChartBuilder {
 
         let xMin;
         let xMax;
-        //if ( inOptions.currTime ) {
+        //if ( inOptions.realTime ) {
             let now = Date.now();
             xMax = new Date(now);
             xMin = new Date(now - 1000*Constants.rtChartPeriod);

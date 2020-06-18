@@ -161,7 +161,8 @@ class RtChartsPage extends React.Component {
             eventManager: this.eventManager
         };
         let chartOptions = this.chartBuilder.buildOptions({
-            measureParameterId: this.state.selectedMeasureParameterId
+            measureParameterId: this.state.selectedMeasureParameterId,
+            realTime: true
         });
         chartOptions.series = this.buildSeries(this.state.selectedMeasureParameterId);
 

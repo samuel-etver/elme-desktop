@@ -1,4 +1,10 @@
 
 .editable-combobox {
     background-color: white;
+    border-radius: 15px 0px 0 15px;
+    font-size: 19px;
+    border-style: none;
+    outline-style: none;
+    padding-right: 8px;
+    text-align: right;
 }

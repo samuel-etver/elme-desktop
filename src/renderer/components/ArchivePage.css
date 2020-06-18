@@ -21,3 +21,12 @@
 .archive-page .number-button {
     background-image: linear-gradient(150deg, #ffff2299, #ee8800dd 30%, #442200ff);
 }
+
+.archive-page-chart-pane {
+  background-color: pink;
+  background-image: linear-gradient(to right, #952, #531);
+  border-radius: 5px;
+  box-shadow: 2px 2px 5px black;
+  z-index: -1;
+  height: 500px;
+}
