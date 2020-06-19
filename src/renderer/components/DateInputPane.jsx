@@ -15,13 +15,13 @@ class DateInputPane extends React.Component {
     render() {
         return  <div class="date-input-pane">
                     <Label text="Год:" />
-                    <EditableComboBox />
+                    <EditableComboBox style={"date-input-pane-year-combobox"} />
                     <Label text="Месяц:" />
-                    <EditableComboBox />
+                    <EditableComboBox style={"date-input-pane-month-combobox"} />
                     <Label text="День:" />
-                    <EditableComboBox />
+                    <EditableComboBox style={"date-input-pane-day-combobox"} />
                     <Label text="Час:" />
-                    <EditableComboBox />
+                    <EditableComboBox  style={"date-input-pane-hour-combobox"}/>
                 </div>;
     }
 }

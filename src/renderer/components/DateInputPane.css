@@ -1,4 +1,6 @@
-
+:root {
+    --date-input-pane-space: 40px;
+}
 .date-input-pane {
     display: flex;
     flex-direction: row;
@@ -13,4 +15,23 @@
     text-shadow: 1px 1px 0px #ffffff;
     background-clip: text;
     background-color: #555;
+}
+
+.date-input-pane-year-combobox {
+    width: 100px;
+    margin-right: var(--date-input-pane-space);
+}
+
+.date-input-pane-month-combobox {
+    width: 180px;
+    margin-right: var(--date-input-pane-space);
+}
+
+.date-input-pane-day-combobox {
+    width: 80px;
+    margin-right: var(--date-input-pane-space);
+}
+
+.date-input-pane-hour-combobox {
+    width: 80px;
 }
