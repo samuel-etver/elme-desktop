@@ -101,7 +101,7 @@ class ArchivePage extends React.Component {
 
         return  <div class={style}>
                     <DateInputPane />
-                    <HorzDivider height="20px" />
+                    <HorzDivider height="16px" />
                     <MeasureParametersComboBox options={chartCaptionOptions} />
                     <HorzDivider height="40px" />
                     <div class="archive-page-chart-pane">

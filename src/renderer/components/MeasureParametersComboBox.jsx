@@ -1,35 +1,14 @@
 import React from 'react';
 import './MeasureParametersComboBox.css';
 import MeasureParameters from './../MeasureParameters';
+import ComboBoxMixin from './ComboBoxMixin';
 
 
 class MeasureParametersComboBox extends React.Component {
     constructor(props) {
         super(props);
-        this.isOpen = false;
         this.onToggle = this.onToggle.bind(this);
         this.onClickItem = this.onClickItem.bind(this);
-    }
-
-
-    getId(id) {
-        if ( this.props.options && this.props.options.prefix ) {
-            return this.props.options.prefix + id;
-        }
-        return id;
-    }
-
-
-    onToggle() {
-        let el = document.getElementById(this.getId('selectContainer'));
-        this.isOpen = !this.isOpen;
-        if (this.isOpen) {
-           el.style.visibility = 'visible';
-           el.focus();
-        } else {
-           el.blur();
-           el.style.visibility = 'hidden';
-        }
     }
 
 
@@ -46,6 +25,7 @@ class MeasureParametersComboBox extends React.Component {
           }
       }
     }
+
 
     render() {
         let getId = (id) => this.getId(id);
@@ -69,20 +49,24 @@ class MeasureParametersComboBox extends React.Component {
                 selectedCaption = caption;
             }
             captions.push(
-                <li class="select-option" onClick={getOnClick(parameter.id, caption)} value={parameter.id}>{caption}</li>
+                <li class="measure-parameters-combobox-select-option" onClick={getOnClick(parameter.id, caption)} value={parameter.id}>{caption}</li>
             );
         }
 
-        return  <div>
-                    <div class="display-value" id={getId("displayValue")} onClick={this.onToggle}>
-                       <span class="value-text" id={getId("valueText")}>{selectedCaption}</span>
-                       <span class="arrow arrow-down" id={getId("arrowControl")}></span>
+        return  <div class="measure-parameters-combobox">
+                    <div class="measure-parameters-combobox-display-value" id={getId("displayValue")} onClick={this.onToggle}>
+                       <span class="measure-parameters-combobox-value-text" id={getId("valueText")}>{selectedCaption}</span>
+                       <span class="measure-parameters-combobox-arrow measure-parameters-combobox-arrow-down" id={getId("arrowControl")}></span>
                     </div>
-                    <ul tabindex="0" class="select-container" id={getId("selectContainer")} onBlur={this.onToggle}>
+                    <ul tabindex="0" class="measure-parameters-combobox-select-container" id={getId("selectContainer")} onBlur={this.onToggle}>
                         {captions}
                     </ul><br />
                 </div>
     }
+}
+
+for (let key of Object.getOwnPropertyNames(ComboBoxMixin.prototype)) {
+    MeasureParametersComboBox.prototype[key] = ComboBoxMixin.prototype[key];
 }
 
 export default MeasureParametersComboBox;

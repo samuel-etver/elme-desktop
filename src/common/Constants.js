@@ -13,4 +13,18 @@ module.exports = {
     deviceMock: true,
     rtChartPeriod: 30*60, // seconds
     rtChartRecordInterval: 30, // seconds
+    months: [
+        'январь',
+        'февраль',
+        'март',
+        'апрель',
+        'май',
+        'июнь',
+        'июль',
+        'август',
+        'сентябрь',
+        'октябрь',
+        'ноябрь',
+        'декабрь'
+    ],
 };

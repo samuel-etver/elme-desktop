@@ -1,6 +1,8 @@
 
 .archive-page {
     position: absolute;
+    display: flex;
+    flex-direction: column;
     box-sizing: border-box;
     padding: 16px;
     background-image: linear-gradient(to right, #bb6600 0%, #995500 30%);
@@ -9,11 +11,11 @@
     z-index: 1;
 }
 
-.archive-page .display-value {
+.archive-page .measure-parameters-combobox-display-value {
     background-image: linear-gradient(to right, #ffbbbb 0%, #cc8888 30%);
 }
 
-.archive-page .value-text {
+.archive-page .measure-parameters-combobox-value-text {
     color: #550000;
     text-shadow: 1px 1px 30px #fff8;
 }
@@ -23,10 +25,10 @@
 }
 
 .archive-page-chart-pane {
-  background-color: pink;
-  background-image: linear-gradient(to right, #952, #531);
-  border-radius: 5px;
-  box-shadow: 2px 2px 5px black;
-  z-index: -1;
-  height: 500px;
+    background-color: pink;
+    background-image: linear-gradient(to right, #952, #531);
+    border-radius: 5px;
+    box-shadow: 2px 2px 5px black;
+    z-index: -1;
+    height: 400px;
 }
