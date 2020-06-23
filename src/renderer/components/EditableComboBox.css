@@ -58,7 +58,7 @@
 
 
 .editable-combobox-select-container {
-    overflow-y: scroll;
+    overflow-y: auto;
     max-height: 320px;
     min-height: 40px;
     width: 200px;
@@ -88,11 +88,19 @@
     font-size: 21px;
     font-weight: normal;
     align-items: center;
-    color: black;
+    color: gray;
     background-color: white;
+}
+
+.editable-combobox-select-option-checked {
+    color: black;
 }
 
 .editable-combobox-select-option:hover {
     background-color: blue;
     color: white;
+}
+
+.editable-combobox-select-option-checked:hover {
+    color: pink;
 }

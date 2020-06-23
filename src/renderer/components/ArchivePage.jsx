@@ -85,6 +85,13 @@ class ArchivePage extends React.Component {
             return <div class={style} />;
         }
 
+        let dateInputPaneOptions = {
+            prefix: this.prefix,
+            year: '',
+            month: '',
+            day: '',
+            hour: ''
+        };
         let chartCaptionOptions = {
             prefix: this.prefix,
             selectedId: this.state.selectedMeasureParameterId,
@@ -100,7 +107,7 @@ class ArchivePage extends React.Component {
         });
 
         return  <div class={style}>
-                    <DateInputPane />
+                    <DateInputPane options={dateInputPaneOptions}/>
                     <HorzDivider height="16px" />
                     <MeasureParametersComboBox options={chartCaptionOptions} />
                     <HorzDivider height="40px" />

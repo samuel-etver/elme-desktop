@@ -27,7 +27,8 @@ class DateInputPane extends React.Component {
 
         this.monthList = [];
         for (let i = 0; i < Constants.months.length; i++) {
-            add(this.monthList, Constants.months[i], i);
+            let str = Constants.months[i];
+            add(this.monthList, str.charAt(0).toUpperCase() + str.slice(1), i);
         }
 
         this.dayList = [];
@@ -36,10 +37,23 @@ class DateInputPane extends React.Component {
         for (let i = 0; i < 24; i++) {
             add(this.hourList, i.toString(), i);
         }
+
+        this.onClockButtonClick = this.onClockButtonClick.bind(this);
     }
+
+
+
+    onClockButtonClick() {
+        if( this.props.options && this.props.options.eventManager ) {
+        }
+    }
+
 
     render() {
         return  <div class="date-input-pane">
+                    <button class="date-input-pane-current-time-button"
+                             onClick={this.onClockButtonClick}
+                    />
                     <Label text="Год:" />
                     <EditableComboBox
                       style={"date-input-pane-year-combobox"}
