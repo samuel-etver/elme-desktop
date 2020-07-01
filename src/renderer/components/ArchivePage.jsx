@@ -4,6 +4,8 @@ import Constants from '../../common/Constants';
 import MeasureParameters from '../MeasureParameters';
 import EventManager from '../../common/EventManager';
 import MainEventManager from '../../common/MainEventManager';
+import GlobalStorage from '../../common/GlobalStorage';
+import Archive from '../Archive';
 import MeasureParametersComboBox from './MeasureParametersComboBox';
 import NumberButtonsGroup from './NumberButtonsGroup';
 import HorzDivider from './HorzDivider';
@@ -12,6 +14,9 @@ import Chart from './Chart';
 import DateInputPane from './DateInputPane';
 
 let mainEventManager = MainEventManager.getInstance();
+let globalStorage = GlobalStorage.getInstance();
+let archive = Archive.getInstance();
+
 
 class ArchivePage extends React.Component {
     constructor(props) {
@@ -23,10 +28,17 @@ class ArchivePage extends React.Component {
         let measureParameter = this.measureParameters.get('inductorTemperature1');
         this.state = {
             selectedMeasureParameterId: measureParameter.id,
+            dateInputPaneData: {
+                year: '',
+                month: '',
+                day: '',
+                hour: ''
+            },
         };
         this.onChartNumberButtonClick = this.onChartNumberButtonClick.bind(this);
         this.onChartSelect = this.onChartSelect.bind(this);
         this.onUpdate = this.onUpdate.bind(this);
+        this.onDateInput = this.onDateInput.bind(this);
     }
 
 
@@ -34,6 +46,7 @@ class ArchivePage extends React.Component {
         this.eventManager.subscribe(this.prefix + 'number-button-click', this.onChartNumberButtonClick);
         this.eventManager.subscribe(this.prefix + 'combobox-select', this.onChartSelect);
         this.eventManager.subscribe(this.prefix + 'update', this.onUpdate);
+        mainEventManager.subscribe(this.prefix + 'update', this.onUpdate);
     }
 
 
@@ -72,6 +85,33 @@ class ArchivePage extends React.Component {
     }
 
 
+    onDateInput(event, data) {
+        let dateInputPaneData;
+
+        if ( event === 'change' || event === 'submit' ) {
+            for (let item in data) {
+                switch( item ) {
+                    case 'hour':
+                    case 'day':
+                    case 'month':
+                    case  'year':
+                        if ( !dateInputPaneData ) {
+                            dateInputPaneData = {};
+                        }
+                        dateInputPaneData[item] = data[item];
+                }
+            }
+        }
+
+
+        if ( dateInputPaneData ) {
+            this.setState({
+                dateInputPaneData: dateInputPaneData
+            });
+        }
+    }
+
+
     render() {
         let style = 'archive-page ';
         if ( this.props.visible ) {
@@ -85,12 +125,14 @@ class ArchivePage extends React.Component {
             return <div class={style} />;
         }
 
+
         let dateInputPaneOptions = {
             prefix: this.prefix,
-            year: '',
-            month: '',
-            day: '',
-            hour: ''
+            year: this.state.dateInputPaneData.year,
+            month: this.state.dateInputPaneData.month,
+            day: this.state.dateInputPaneData.day,
+            hour: this.state.dateInputPaneData.hour,
+            callback: this.onDateInput
         };
         let chartCaptionOptions = {
             prefix: this.prefix,
@@ -119,5 +161,6 @@ class ArchivePage extends React.Component {
                 </div>;
     }
 }
+
 
 export default ArchivePage;

@@ -10,11 +10,13 @@ const GlobalStorage = require('../common/GlobalStorage');
 const MainEventManager = require('../common/MainEventManager');
 const Config = require('./Config');
 const DeviceComm = require('./DeviceComm');
+const Archive = require('./Archive');
 
 var mainEventManager;
 var globalStorage;
 var deviceComm;
 var mainWindow;
+var archive;
 
 init();
 loadConfig();
@@ -68,6 +70,8 @@ function init() {
                                              Constants.configFileName);
 
     deviceComm = DeviceComm.getInstance();
+
+    archive = Archive.getInstance();
 }
 
 
