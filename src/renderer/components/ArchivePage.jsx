@@ -22,6 +22,7 @@ class ArchivePage extends React.Component {
     constructor(props) {
         super(props);
         this.prefix = 'archive-page-';
+        this.wasSelected = false;
         this.measureParameters = new MeasureParameters();
         this.eventManager = new EventManager();
         this.chartBuilder = new ChartBuilder();
@@ -35,6 +36,7 @@ class ArchivePage extends React.Component {
                 hour: ''
             },
         };
+        this.onPageSelected = this.onPageSelected.bind(this);
         this.onChartNumberButtonClick = this.onChartNumberButtonClick.bind(this);
         this.onChartSelect = this.onChartSelect.bind(this);
         this.onUpdate = this.onUpdate.bind(this);
@@ -46,7 +48,7 @@ class ArchivePage extends React.Component {
         this.eventManager.subscribe(this.prefix + 'number-button-click', this.onChartNumberButtonClick);
         this.eventManager.subscribe(this.prefix + 'combobox-select', this.onChartSelect);
         this.eventManager.subscribe(this.prefix + 'update', this.onUpdate);
-        mainEventManager.subscribe(this.prefix + 'update', this.onUpdate);
+        mainEventManager.subscribe('page-selected', this.onPageSelected);
     }
 
 
@@ -54,6 +56,25 @@ class ArchivePage extends React.Component {
         this.eventManager.unsubscribe(this.prefix + 'number-button-click', this.onChartNumberButtonClick);
         this.eventManager.unsubscribe(this.prefix + 'combobox-select', this.onChartSelect);
         this.eventManager.unsubsсribe(this.prefix + 'update', this.onUpdate);
+        mainEventManager.subscribe('page-selected', this.onPageSelected);
+    }
+
+
+    onPageSelected() {
+        if ( !this.wasSelected ) {
+            this.wasSelected = true;
+
+            let date = new Date();
+            let dateInputPaneData = {
+                hour: date.getHours().toString(),
+                day: date.getDate().toString(),
+                month: Constants.months.capitalize(date.getMonth()),
+                year:  date.getFullYear().toString()
+            };
+            this.setState({
+                dateInputPaneData: dateInputPaneData
+            });;
+        }
     }
 
 
@@ -105,8 +126,10 @@ class ArchivePage extends React.Component {
 
 
         if ( dateInputPaneData ) {
-            this.setState({
-                dateInputPaneData: dateInputPaneData
+            this.setState(state => {
+                let newState = Object.assign({}, state);
+                newState.dateInputPaneData = Object.assign(newState.dateInputPaneData, dateInputPaneData);
+                return newState;
             });
         }
     }
