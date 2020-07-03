@@ -37,13 +37,17 @@ class ChartBuilder {
         let xAxisLabel = Object.assign({}, axisLabel);
         xAxisLabel.formatter = function(value) {
             let dt = new Date(value);
-            let hours = dt.getHours();
             let minutes = dt.getMinutes();
-            let result = hours + ':';
-            if ( minutes < 10 ) {
-                result += '0';
+            let result = dt.getHours() + ':' +
+              (minutes < 10 ? '0' + minutes : minutes);
+            if ( !inOptions.realTime ) {
+                let month = dt.getMonth() + 1;
+                result += '\n' +
+                  dt.getDay() + '.' +
+                  (month < 10 ? '0' + month : month) + '.' +
+                  dt.getFullYear().toString().slice(2);
             }
-            return result += minutes;
+            return result;
         };
         let yAxisLabel = Object.assign({}, axisLabel);
         yAxisLabel.showMinLabel = false;
@@ -71,7 +75,7 @@ class ChartBuilder {
                 left: 80,
                 right: 40,
                 top: 20,
-                bottom: 40,
+                bottom: inOptions.realTime ? 40 : 70,
             },
             xAxis: [
                 {

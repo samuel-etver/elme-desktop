@@ -25,6 +25,7 @@
 }
 
 .archive-page-chart-pane {
+    position: relative;
     background-color: pink;
     background-image: linear-gradient(to right, #952, #531);
     border-radius: 5px;

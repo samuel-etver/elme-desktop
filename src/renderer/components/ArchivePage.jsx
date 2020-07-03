@@ -12,6 +12,7 @@ import HorzDivider from './HorzDivider';
 import ChartBuilder from '../ChartBuilder';
 import Chart from './Chart';
 import DateInputPane from './DateInputPane';
+import ChartScaleButtonsGroup from './ChartScaleButtonsGroup';
 
 let mainEventManager = MainEventManager.getInstance();
 let globalStorage = GlobalStorage.getInstance();
@@ -177,7 +178,9 @@ class ArchivePage extends React.Component {
                     <MeasureParametersComboBox options={chartCaptionOptions} />
                     <HorzDivider height="40px" />
                     <div class="archive-page-chart-pane">
-                        <Chart options={chartOptions}/>
+                        <Chart options={chartOptions} >
+                        </Chart>
+                        <ChartScaleButtonsGroup />
                     </div>
                     <HorzDivider height="20px" />
                     <NumberButtonsGroup options={chartNumberButtonsGroupOptions} />

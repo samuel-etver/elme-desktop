@@ -1,0 +1,46 @@
+:root {
+    --chart-scale-button-height: 20px;
+}
+
+.chart-scale-button {
+    position: absolute;
+    left: -9999em;
+    top: -9999em;
+}
+
+.chart-scale-button + label {
+    font-size: 12px;
+    color: black;
+    width: 30px;
+    float: left;
+    padding: .1em 1em;
+    border: 1px solid #28608f;
+    margin-right: -1px;
+    background-color: #92fbfa;
+}
+
+.chart-scale-button + label:first-of-type {
+    border-bottom-left-radius: 5px;
+}
+
+.chart-scale-button:checked + label {
+    background-color: #3277b3;
+    color: white;
+}
+
+.chart-scale-button-left {
+    border-bottom-left-radius: 5px;
+}
+
+.chart-scale-buttons-group {
+    position: absolute;
+    display: flex;
+    flex-direction: row;
+    border-radius: 0 0 5px 5px;
+    width: 100%;
+    height: var(--chart-scale-button-height);
+    z-order: 1050;
+    background-color: green;
+    top: calc(100% - var(--chart-scale-button-height));
+
+}
