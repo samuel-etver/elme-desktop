@@ -17,6 +17,7 @@
     border: 1px solid #28608f;
     margin-right: -1px;
     background-color: #92fbfa;
+    user-select: none;
 }
 
 .chart-scale-button + label:first-of-type {
@@ -40,7 +41,7 @@
     width: 100%;
     height: var(--chart-scale-button-height);
     z-order: 1050;
-    background-color: green;
+    background-color: transparent;
     top: calc(100% - var(--chart-scale-button-height));
-
+    overflow-x: hidden;
 }

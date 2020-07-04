@@ -36,12 +36,14 @@ class ArchivePage extends React.Component {
                 day: '',
                 hour: ''
             },
+            xScale: 0
         };
         this.onPageSelected = this.onPageSelected.bind(this);
         this.onChartNumberButtonClick = this.onChartNumberButtonClick.bind(this);
         this.onChartSelect = this.onChartSelect.bind(this);
         this.onUpdate = this.onUpdate.bind(this);
         this.onDateInput = this.onDateInput.bind(this);
+        this.onXScaleChange = this.onXScaleChange.bind(this);
     }
 
 
@@ -136,6 +138,15 @@ class ArchivePage extends React.Component {
     }
 
 
+    onXScaleChange(buttonIndex) {
+        this.setState(state => {
+            let newState = Object.assign({}, state);
+            newState.xScale = buttonIndex;
+            return newState;
+        });
+    }
+
+
     render() {
         let style = 'archive-page ';
         if ( this.props.visible ) {
@@ -180,7 +191,9 @@ class ArchivePage extends React.Component {
                     <div class="archive-page-chart-pane">
                         <Chart options={chartOptions} >
                         </Chart>
-                        <ChartScaleButtonsGroup />
+                        <ChartScaleButtonsGroup
+                          buttonIndex={this.state.xScale}
+                          callback={this.onXScaleChange}/>
                     </div>
                     <HorzDivider height="20px" />
                     <NumberButtonsGroup options={chartNumberButtonsGroupOptions} />
