@@ -74,6 +74,7 @@ class DateInputPane extends React.Component {
 
         if ( value === undefined ) {
             value = this.props.options[source];
+            data[source] = value;
         }
 
 
@@ -105,7 +106,7 @@ class DateInputPane extends React.Component {
             }
 
             case 'day': {
-                if ( valueInt < 0 && valueInt > -1000 ) {
+                if ( valueInt <= 0 && valueInt > -1000 ) {
                   let currDate = new Date( Date.now() + valueInt*24*60*60*1000 );
                   data['year'] = currDate.getFullYear().toString();
                   data['month'] = Constants.months.capitalize( currDate.getMonth() );
@@ -166,7 +167,7 @@ class DateInputPane extends React.Component {
             return false;
         }
 
-        let date = new Date(year, month + 1, 0);
+        let date = new Date(year, Constants.months.find(month) + 1, 0);
         if ( !(day <= date.getDate()) ) {
             return false;
         }

@@ -13,10 +13,12 @@ import ChartBuilder from '../ChartBuilder';
 import Chart from './Chart';
 import DateInputPane from './DateInputPane';
 import ChartScaleButtonsGroup from './ChartScaleButtonsGroup';
+import XScaleParameters from './XScaleParameters';
 
 let mainEventManager = MainEventManager.getInstance();
 let globalStorage = GlobalStorage.getInstance();
 let archive = Archive.getInstance();
+let xScaleParameters = new XScaleParameters();
 
 
 class ArchivePage extends React.Component {
@@ -36,7 +38,8 @@ class ArchivePage extends React.Component {
                 day: '',
                 hour: ''
             },
-            xScale: 0
+            xScale: 0,
+            xMax: undefined
         };
         this.onPageSelected = this.onPageSelected.bind(this);
         this.onChartNumberButtonClick = this.onChartNumberButtonClick.bind(this);
@@ -59,7 +62,7 @@ class ArchivePage extends React.Component {
         this.eventManager.unsubscribe(this.prefix + 'number-button-click', this.onChartNumberButtonClick);
         this.eventManager.unsubscribe(this.prefix + 'combobox-select', this.onChartSelect);
         this.eventManager.unsubsсribe(this.prefix + 'update', this.onUpdate);
-        mainEventManager.subscribe('page-selected', this.onPageSelected);
+        mainEventManager.unsubscribe('page-selected', this.onPageSelected);
     }
 
 
@@ -75,7 +78,8 @@ class ArchivePage extends React.Component {
                 year:  date.getFullYear().toString()
             };
             this.setState({
-                dateInputPaneData: dateInputPaneData
+                dateInputPaneData: dateInputPaneData,
+                xMax: date
             });;
         }
     }
@@ -132,6 +136,14 @@ class ArchivePage extends React.Component {
             this.setState(state => {
                 let newState = Object.assign({}, state);
                 newState.dateInputPaneData = Object.assign(newState.dateInputPaneData, dateInputPaneData);
+                if ( data.valid ) {
+                    newState.xMax = new Date(
+                        parseInt(newState.dateInputPaneData.year),
+                        Constants.months.find(newState.dateInputPaneData.month),
+                        parseInt(newState.dateInputPaneData.day),
+                        parseInt(newState.dateInputPaneData.hour)
+                    );
+                }
                 return newState;
             });
         }
@@ -180,7 +192,9 @@ class ArchivePage extends React.Component {
             eventManager: this.eventManager
         };
         let chartOptions = this.chartBuilder.buildOptions({
-            measureParameterId: this.state.selectedMeasureParameterId
+            measureParameterId: this.state.selectedMeasureParameterId,
+            xScaleParameter: xScaleParameters.get(this.state.xScale),
+            xMax: this.state.xMax
         });
 
         return  <div class={style}>

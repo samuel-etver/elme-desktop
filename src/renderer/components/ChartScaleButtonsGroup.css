@@ -20,7 +20,7 @@
     user-select: none;
 }
 
-.chart-scale-button  label:first-of-type {
+.chart-scale-buttons-group div:first-child label {
     border-bottom-left-radius: 5px;
 }
 

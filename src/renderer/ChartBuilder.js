@@ -35,6 +35,8 @@ class ChartBuilder {
             textShadowBlur: 5,
         };
         let xAxisLabel = Object.assign({}, axisLabel);
+        xAxisLabel.showMinLabel = false;
+        xAxisLabel.showMaxLabel = false;
         xAxisLabel.formatter = function(value) {
             let dt = new Date(value);
             let minutes = dt.getMinutes();
@@ -43,7 +45,7 @@ class ChartBuilder {
             if ( !inOptions.realTime ) {
                 let month = dt.getMonth() + 1;
                 result += '\n' +
-                  dt.getDay() + '.' +
+                  dt.getDate() + '.' +
                   (month < 10 ? '0' + month : month) + '.' +
                   dt.getFullYear().toString().slice(2);
             }
@@ -61,19 +63,25 @@ class ChartBuilder {
 
         let xMin;
         let xMax;
-        //if ( inOptions.realTime ) {
-            let now = Date.now();
-            xMax = new Date(now);
-            xMin = new Date(now - 1000*Constants.rtChartPeriod);
-        //}
-
+        if ( inOptions.realTime || !inOptions.xMax ) {
+            xMax = new Date();
+        }
+        else {
+            xMax = inOptions.xMax;
+        }
+        if ( !inOptions.xScaleParameter ) {
+            xMin = new Date(xMax.getTime() - 1000*Constants.rtChartPeriod);
+        }
+        else {
+            xMin = new Date(xMax.getTime() - 1000*60*inOptions.xScaleParameter.value);
+        }
 
         return {
             grid: {
                 show: true,
                 backgroundColor: 'black',
                 left: 80,
-                right: 40,
+                right: 48,
                 top: 20,
                 bottom: inOptions.realTime ? 40 : 70,
             },
@@ -83,6 +91,7 @@ class ChartBuilder {
                     scale: true,
                     max: xMax,
                     min: xMin,
+                    splitNumber: 10,
                     axisLine: {
                         show: false
                     },

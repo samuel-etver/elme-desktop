@@ -1,5 +1,6 @@
 import React from 'react';
 import './ChartScaleButtonsGroup.css';
+import XScaleParameters from './XScaleParameters';
 
 
 class ChartScaleButton extends React.Component {
@@ -11,23 +12,25 @@ class ChartScaleButton extends React.Component {
 
     onChange() {
         if ( this.props.callback ) {
-            this.props.callback(this.props.value);
+            this.props.callback(this.props.parameter.index);
         }
     }
 
 
     render() {
+        let parameter = this.props.parameter;
+        let id = this.props.group + '-button' + parameter.index;
         return  <div>
                     <input type="radio"
                       name={this.props.group}
-                      id={this.props.id}
-                      value={this.props.value}
+                      id={id}
+                      value={parameter.index}
                       class="chart-scale-button"
                       checked={this.props.checked}
                       onChange={this.onChange}
                     />
-                    <label for={this.props.id}>
-                        {this.props.caption}
+                    <label for={id}>
+                        {parameter.caption}
                     </label>
                 </div>
     }
@@ -40,8 +43,8 @@ class ChartScaleButtonsGroup extends React.Component {
 
     constructor(props) {
         super(props);
+        this.xScaleParameters = new XScaleParameters();
         this.groupName = 'chartScaleButtonsGroupName' + (ChartScaleButtonsGroup.groupAutoInc++);
-        this.buttonCaptions = ["10мин", "30мин", "1ч", "3ч", "6ч", "12ч", "24ч"];
         this.onChange = this.onChange.bind(this);
     }
 
@@ -55,12 +58,10 @@ class ChartScaleButtonsGroup extends React.Component {
 
     render() {
         let buttons = [];
-        for (let i = 0; i < this.buttonCaptions.length; i++) {
+        for (let i = 0; i < this.xScaleParameters.size(); i++) {
             buttons.push(<ChartScaleButton
                             group={this.groupName}
-                            id={"button" + i}
-                            value={i}
-                            caption={this.buttonCaptions[i]}
+                            parameter={this.xScaleParameters.get(i)}
                             checked={i==this.props.buttonIndex}
                             callback={this.onChange}
                          />);
