@@ -16,16 +16,16 @@
     padding: .1em 1em;
     border: 1px solid #28608f;
     margin-right: -1px;
-    background-color: #92fbfa;
+    background-image: linear-gradient(150deg, #52fbfa, #a2fbfa 30%, #52cbcb);
     user-select: none;
 }
 
-.chart-scale-button + label:first-of-type {
+.chart-scale-button  label:first-of-type {
     border-bottom-left-radius: 5px;
 }
 
 .chart-scale-button:checked + label {
-    background-color: #3277b3;
+    background-image: linear-gradient(-210deg, #023b3a, #126b6a 30%, #427b7a);
     color: white;
 }
 
