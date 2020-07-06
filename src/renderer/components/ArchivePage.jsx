@@ -14,6 +14,7 @@ import Chart from './Chart';
 import DateInputPane from './DateInputPane';
 import ChartScaleButtonsGroup from './ChartScaleButtonsGroup';
 import XScaleParameters from './XScaleParameters';
+import ChartHorzScrollBar from './ChartHorzScrollBar';
 
 let mainEventManager = MainEventManager.getInstance();
 let globalStorage = GlobalStorage.getInstance();
@@ -209,6 +210,8 @@ class ArchivePage extends React.Component {
                           buttonIndex={this.state.xScale}
                           callback={this.onXScaleChange}/>
                     </div>
+                    <HorzDivider height="8px" />
+                    <ChartHorzScrollBar />
                     <HorzDivider height="20px" />
                     <NumberButtonsGroup options={chartNumberButtonsGroupOptions} />
                 </div>;

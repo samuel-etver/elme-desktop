@@ -1,0 +1,42 @@
+.chart-horz-scroller {
+    position: relative;
+    background-color: pink;
+    width: 100%;
+    border-radius: 5px;
+    box-shadow: inset 2px 2px 5px black;
+    border: 1px solid black;
+}
+
+.chart-horz-scroller::after {
+    content: "";
+    position: absolute;
+    left: 20px;
+    top: calc(50% - 2px);
+    height: 6px;
+    width: calc(100% - 40px);
+    background-image: linear-gradient(#777, #222, #fff);
+    border-radius: 5px;
+    border: 1px solid black;
+}
+
+.chart-horz-scroll-button {
+    background-color: green;
+    border-radius: 7px;
+    width: 64px;
+    box-shadow: 2px 2px 5px black;
+    outline-style: none;
+}
+
+.chart-horz-scroll-bar {
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    background-color: blue;
+    width: inherit;
+    height: 32px;
+}
+
+.chart-horz-scroll-divider {
+    margin-left: 8px;
+}

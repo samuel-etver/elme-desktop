@@ -53,7 +53,8 @@ class DateInputPane extends React.Component {
                 hour: date.getHours(),
                 day: date.getDate(),
                 month: Constants.months.capitalize(date.getMonth()),
-                year: date.getFullYear()
+                year: date.getFullYear(),
+                valid: true
             });
         }
     }
