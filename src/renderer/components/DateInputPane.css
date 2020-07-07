@@ -5,6 +5,8 @@
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
+    -webkit-user-drag: none;
+    user-select: none;
 }
 
 .date-input-pane-label {
@@ -15,6 +17,8 @@
     text-shadow: 1px 1px 0px #ffffff;
     background-clip: text;
     background-color: #555;
+    -webkit-user-drag: none;
+    user-select: none;
 }
 
 .date-input-pane-year-combobox {

@@ -3,7 +3,7 @@ import React from 'react';
 
 class HorzDivider extends React.Component {
     render() {
-        return  <div style={{height:this.props.height}}>
+        return  <div class="horz-divider" style={{height:this.props.height}}>
                 </div>
     }
 }

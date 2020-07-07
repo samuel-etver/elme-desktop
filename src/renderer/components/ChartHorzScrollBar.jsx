@@ -57,9 +57,13 @@ class ChartHorzScroller extends React.Component {
     }
 
 
-    onMouseDown() {
+    onMouseDown(event) {
         this.isMouseDown = true;
-        mainEventManager.publish("log", "mouse-down");
+        this.thumbX = event.clientX;
+        this.i = 0;
+        document.addEventListener('mousemove', this.onMouseMove);
+        document.addEventListener('mouseup', this.onMouseUp);
+        mainEventManager.publish("log", "mouse-down " + this.thumbX);
     }
 
 
@@ -71,7 +75,8 @@ class ChartHorzScroller extends React.Component {
 
     onMouseMove() {
         if ( this.isMouseDown ) {
-            mainEventManager.publish("log", "mouse-move");
+            this.i++;
+            mainEventManager.publish("log", "mouse-move " + this.i.toString());
         }
     }
 
