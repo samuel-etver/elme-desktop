@@ -40,7 +40,6 @@ class RtChartsPage extends React.Component {
 
 
     componentDidMount() {
-        this.eventManager.subscribe(this.prefix + 'number-button-click', this.onChartNumberButtonClick);
         this.eventManager.subscribe(this.prefix + 'update', this.onUpdate);
         mainEventManager.subscribe('rt-device-data-ready', this.onRtDeviceDataReady);
         this.timerId = setTimeout(this.onTimer, Constants.rtChartRecordInterval*1000);
@@ -48,7 +47,6 @@ class RtChartsPage extends React.Component {
 
 
     componentWillUnmount() {
-        this.eventManager.unsubscribe(this.prefix + 'number-button-click', this.onChartNumberButtonClick);
         this.eventManager.unsubscribe(this.prefix + 'update', this.onUpdate);
         mainEventManager.unsubscribe('rt-device-data-ready', this.onRtDeviceDataReady);
         clearTimeout(this.timerId);
@@ -120,7 +118,7 @@ class RtChartsPage extends React.Component {
     }
 
 
-    onChartNumberButtonClick(event, index) {
+    onChartNumberButtonClick(index) {
         let parameter = this.measureParameters.byIndex(index);
         this.eventManager.publish(this.prefix + 'update', {
             id: parameter.id
@@ -148,11 +146,6 @@ class RtChartsPage extends React.Component {
             return <div class={style} />
         }
 
-        let chartNumberButtonsGroupOptions = {
-            prefix: this.prefix,
-            count: this.measureParameters.size(),
-            eventManager: this.eventManager
-        };
         let chartOptions = this.chartBuilder.buildOptions({
             measureParameterId: this.state.selectedMeasureParameterId,
             realTime: true
@@ -168,7 +161,9 @@ class RtChartsPage extends React.Component {
                           <Chart options={chartOptions}/>
                       </div>
                       <HorzDivider height="20px" />
-                      <NumberButtonsGroup options={chartNumberButtonsGroupOptions}/>
+                      <NumberButtonsGroup
+                        count={this.measureParameters.size()}
+                        callback={this.onChartNumberButtonClick}/>
                 </div>
     }
 }

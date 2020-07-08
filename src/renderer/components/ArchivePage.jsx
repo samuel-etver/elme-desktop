@@ -97,7 +97,7 @@ class ArchivePage extends React.Component {
     }
 
 
-    onChartNumberButtonClick(event, index) {
+    onChartNumberButtonClick(index) {
         let parameter = this.measureParameters.byIndex(index);
         this.eventManager.publish(this.prefix + 'update', {
             id: parameter.id
@@ -180,11 +180,6 @@ class ArchivePage extends React.Component {
             hour: this.state.dateInputPaneData.hour,
             callback: this.onDateInput
         };
-        let chartNumberButtonsGroupOptions = {
-            prefix: this.prefix,
-            count: this.measureParameters.size(),
-            eventManager: this.eventManager
-        };
         let chartOptions = this.chartBuilder.buildOptions({
             measureParameterId: this.state.selectedMeasureParameterId,
             xScaleParameter: xScaleParameters.get(this.state.xScale),
@@ -208,7 +203,9 @@ class ArchivePage extends React.Component {
                     <HorzDivider height="8px" />
                     <ChartHorzScrollBar />
                     <HorzDivider height="20px" />
-                    <NumberButtonsGroup options={chartNumberButtonsGroupOptions} />
+                    <NumberButtonsGroup
+                      count={this.measureParameters.size()}
+                      callback={this.onChartNumberButtonClick} />
                 </div>;
     }
 }

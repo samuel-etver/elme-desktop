@@ -93,7 +93,7 @@ class ChartBuilder {
                     scale: true,
                     max: xMax,
                     min: xMin,
-                    splitNumber: 10,
+                    splitNumber: 8,
                     axisLine: {
                         show: false
                     },

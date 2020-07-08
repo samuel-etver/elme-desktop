@@ -11,39 +11,19 @@ class NumberButton extends React.Component {
 
 
 class NumberButtonsGroup extends React.Component {
-    constructor(props) {
-        super(props);
-        this.onClick = this.onClick.bind(this);
-    }
-
-
     onClick(index) {
-        if ( this.props.options && this.props.options.eventManager ) {
-            let prefix = '';
-            if ( this.props.options.prefix ) {
-                prefix = this.props.options.prefix;
-            }
-            this.props.options.eventManager.publish(prefix + 'number-button-click', index);
+        if ( this.props.callback ) {
+            this.props.callback(index);
         }
     }
 
 
     render() {
         let buttons = [];
-        let control = this;
-        let getOnClick = function(index) {
-            return function() {
-                control.onClick(index);
-            }
-        }
-
-        let count = 0;
-        if ( this.props.options && this.props.options.count ) {
-            count = this.props.options.count;
-        }
+        let count = this.props.count ?? 0;
 
         for (let i = 0; i < count; i++) {
-            buttons.push( <NumberButton caption={i + 1} onClick={getOnClick(i)}/> );
+            buttons.push( <NumberButton caption={i + 1} onClick={() => this.onClick(i)}/> );
         }
 
         return  <div class="number-buttons-group">
