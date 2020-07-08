@@ -41,7 +41,6 @@ class RtChartsPage extends React.Component {
 
     componentDidMount() {
         this.eventManager.subscribe(this.prefix + 'number-button-click', this.onChartNumberButtonClick);
-        this.eventManager.subscribe(this.prefix + 'combobox-select', this.onChartSelect);
         this.eventManager.subscribe(this.prefix + 'update', this.onUpdate);
         mainEventManager.subscribe('rt-device-data-ready', this.onRtDeviceDataReady);
         this.timerId = setTimeout(this.onTimer, Constants.rtChartRecordInterval*1000);
@@ -50,7 +49,6 @@ class RtChartsPage extends React.Component {
 
     componentWillUnmount() {
         this.eventManager.unsubscribe(this.prefix + 'number-button-click', this.onChartNumberButtonClick);
-        this.eventManager.unsubscribe(this.prefix + 'combobox-select', this.onChartSelect);
         this.eventManager.unsubscribe(this.prefix + 'update', this.onUpdate);
         mainEventManager.unsubscribe('rt-device-data-ready', this.onRtDeviceDataReady);
         clearTimeout(this.timerId);
@@ -150,11 +148,6 @@ class RtChartsPage extends React.Component {
             return <div class={style} />
         }
 
-        let chartCaptionOptions = {
-            prefix: this.prefix,
-            selectedId: this.state.selectedMeasureParameterId,
-            eventManager: this.eventManager
-        };
         let chartNumberButtonsGroupOptions = {
             prefix: this.prefix,
             count: this.measureParameters.size(),
@@ -167,7 +160,9 @@ class RtChartsPage extends React.Component {
         chartOptions.series = this.buildSeries(this.state.selectedMeasureParameterId);
 
         return  <div class={style}>
-                      <MeasureParametersComboBox options={chartCaptionOptions}/>
+                      <MeasureParametersComboBox
+                        selectedId={this.state.selectedMeasureParameterId}
+                        callback={this.onChartSelect}/>
                       <HorzDivider height="40px" />
                       <div class="rt-charts-page-chart-pane">
                           <Chart options={chartOptions}/>

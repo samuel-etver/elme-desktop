@@ -2,9 +2,6 @@ import './DateInputPane.css';
 import React from 'react';
 import EditableComboBox from './EditableComboBox';
 import Constants from '../../common/Constants';
-import MainEventManager from '../../common/MainEventManager';
-
-let mainEventManager = MainEventManager.getInstance();
 
 class Label extends React.Component {
     render() {
@@ -30,7 +27,6 @@ class DateInputPane extends React.Component {
 
         this.monthList = [];
         for (let i = 0; i < Constants.months.length; i++) {
-            let str = Constants.months[i];
             add(this.monthList, Constants.months.capitalize(i), i);
         }
 
@@ -124,7 +120,10 @@ class DateInputPane extends React.Component {
                     data['day'] = currDate.getDate().toString();
                     newValue = currDate.getHours();
                 }
+                break;
             }
+
+            default: ;
         }
 
 
@@ -178,7 +177,6 @@ class DateInputPane extends React.Component {
 
 
     render() {
-        let a = e => {this.onChange('year', e.target.value)};
         return  <div class="date-input-pane">
                     <button
                       class="date-input-pane-current-time-button"

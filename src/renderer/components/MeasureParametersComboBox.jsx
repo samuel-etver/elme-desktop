@@ -7,40 +7,17 @@ import ComboBoxMixin from './ComboBoxMixin';
 class MeasureParametersComboBox extends React.Component {
     constructor(props) {
         super(props);
-        this.onToggle = this.onToggle.bind(this);
-        this.onClickItem = this.onClickItem.bind(this);
-    }
-
-
-    onClickItem(id, caption) {
-      document.getElementById(this.getId('valueText')).innerHTML = caption;
-      this.onToggle();
-      if ( this.props.options ) {
-          if ( this.props.options.eventManager ) {
-              let prefix = this.props.options.prefix;
-              if ( !prefix ) {
-                  prefix = '';
-              }
-              this.props.options.eventManager.publish(prefix + 'combobox-select', id);
-          }
-      }
+        this.initComboBoxMixin();
     }
 
 
     render() {
-        let getId = (id) => this.getId(id);
         let measureParameters = new MeasureParameters();
         let captions = [];
         let selectedCaption = '';
         let selectedId;
-        if ( this.props.options && this.props.options.selectedId) {
-            selectedId = this.props.options.selectedId;
-        }
-        let item = this;
-        let getOnClick = function(id, caption) {
-            return function() {
-                item.onClickItem(id, caption);
-            }
+        if ( this.props.selectedId ) {
+            selectedId = this.props.selectedId;
         }
         for (let i = 0; i < measureParameters.size(); i++) {
             let parameter = measureParameters.byIndex(i);
@@ -49,16 +26,16 @@ class MeasureParametersComboBox extends React.Component {
                 selectedCaption = caption;
             }
             captions.push(
-                <li class="measure-parameters-combobox-select-option" onClick={getOnClick(parameter.id, caption)} value={parameter.id}>{caption}</li>
+                <li class="measure-parameters-combobox-select-option" onClick={() => this.onClickItem(parameter.id)} value={parameter.id}>{caption}</li>
             );
         }
 
         return  <div class="measure-parameters-combobox">
-                    <div class="measure-parameters-combobox-display-value" id={getId("displayValue")} onClick={this.onToggle}>
-                       <span class="measure-parameters-combobox-value-text" id={getId("valueText")}>{selectedCaption}</span>
-                       <span class="measure-parameters-combobox-arrow measure-parameters-combobox-arrow-down" id={getId("arrowControl")}></span>
+                    <div class="measure-parameters-combobox-display-value" onClick={this.onToggle}>
+                       <span class="measure-parameters-combobox-value-text">{selectedCaption}</span>
+                       <span class="measure-parameters-combobox-arrow measure-parameters-combobox-arrow-down"></span>
                     </div>
-                    <ul tabindex="0" class="measure-parameters-combobox-select-container" id={getId("selectContainer")} onBlur={this.onToggle}>
+                    <ul ref={this.selectContainerRef} class="measure-parameters-combobox-select-container" onBlur={this.onToggle}>
                         {captions}
                     </ul><br />
                 </div>

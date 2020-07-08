@@ -53,7 +53,6 @@ class ArchivePage extends React.Component {
 
     componentDidMount() {
         this.eventManager.subscribe(this.prefix + 'number-button-click', this.onChartNumberButtonClick);
-        this.eventManager.subscribe(this.prefix + 'combobox-select', this.onChartSelect);
         this.eventManager.subscribe(this.prefix + 'update', this.onUpdate);
         mainEventManager.subscribe('page-selected', this.onPageSelected);
     }
@@ -61,7 +60,6 @@ class ArchivePage extends React.Component {
 
     componentWillUnmount() {
         this.eventManager.unsubscribe(this.prefix + 'number-button-click', this.onChartNumberButtonClick);
-        this.eventManager.unsubscribe(this.prefix + 'combobox-select', this.onChartSelect);
         this.eventManager.unsubsсribe(this.prefix + 'update', this.onUpdate);
         mainEventManager.unsubscribe('page-selected', this.onPageSelected);
     }
@@ -182,11 +180,6 @@ class ArchivePage extends React.Component {
             hour: this.state.dateInputPaneData.hour,
             callback: this.onDateInput
         };
-        let chartCaptionOptions = {
-            prefix: this.prefix,
-            selectedId: this.state.selectedMeasureParameterId,
-            eventManager: this.eventManager
-        };
         let chartNumberButtonsGroupOptions = {
             prefix: this.prefix,
             count: this.measureParameters.size(),
@@ -201,7 +194,9 @@ class ArchivePage extends React.Component {
         return  <div class={style}>
                     <DateInputPane options={dateInputPaneOptions}/>
                     <HorzDivider height="16px" />
-                    <MeasureParametersComboBox options={chartCaptionOptions} />
+                    <MeasureParametersComboBox
+                      selectedId={this.state.selectedMeasureParameterId}
+                      callback={this.onChartSelect} />
                     <HorzDivider height="40px" />
                     <div class="archive-page-chart-pane">
                         <Chart options={chartOptions} >

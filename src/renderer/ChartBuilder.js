@@ -23,6 +23,8 @@ class ChartBuilder {
                 yMin = 0.0;
                 yMax = 80.0;
                 break;
+            default:
+                return;
         }
 
         let axisLabel = {
