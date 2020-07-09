@@ -50,43 +50,66 @@ class ChartHorzScrollButton extends React.Component {
 class ChartHorzScroller extends React.Component {
     constructor(props) {
         super(props);
-        this.isMouseDown = false;
-        this.onMouseDown = this.onMouseDown.bind(this);
-        this.onMouseUp = this.onMouseUp.bind(this);
-        this.onMouseMove = this.onMouseMove.bind(this);
-    }
-
-
-    onMouseDown(event) {
-        this.isMouseDown = true;
-        this.thumbX = event.clientX;
-        this.i = 0;
-        document.addEventListener('mousemove', this.onMouseMove);
-        document.addEventListener('mouseup', this.onMouseUp);
-        mainEventManager.publish("log", "mouse-down " + this.thumbX);
-    }
-
-
-    onMouseUp() {
-        this.isMouseDown = false;
-        mainEventManager.publish("log", "mouse-up");
-    }
-
-
-    onMouseMove() {
-        if ( this.isMouseDown ) {
-            this.i++;
-            mainEventManager.publish("log", "mouse-move " + this.i.toString());
+        this.thumbRef = React.createRef();
+        this.scrollerRef = React.createRef();
+        this.onThumbMouseDown = this.onThumbMouseDown.bind(this);
+        this.onThumbMouseUp = this.onThumbMouseUp.bind(this);
+        this.onThumbMouseMove = this.onThumbMouseMove.bind(this);
+        this.state = {
+            x: 0
         }
+    }
+
+
+    componentDidMount() {
+        this.thumbW = this.thumbRef.current.offsetWidth;
+    }
+
+
+    componentWillUnmount() {
+        document.removeEventListener('mousemove', this.onThumbMouseMove);
+        document.removeEventListener('mouseup', this.onThumbMouseUp);
+    }
+
+
+    onThumbMouseDown(event) {
+        this.thumbX = event.nativeEvent.offsetX;
+        document.addEventListener('mousemove', this.onThumbMouseMove);
+        document.addEventListener('mouseup', this.onThumbMouseUp);
+    }
+
+
+    onThumbMouseUp(event) {
+        document.removeEventListener('mousemove', this.onThumbMouseMove);
+        document.removeEventListener('mouseup', this.onThumbMouseUp);
+    }
+
+
+    onThumbMouseMove(event) {
+        let rect = this.scrollerRef.current.getBoundingClientRect();
+        let minX = 0;
+        let maxX =  rect.right - rect.left - this.thumbW;        
+        let newX = event.clientX - this.thumbX - rect.left;
+        if ( maxX < newX ) {
+            newX = maxX;
+        }
+        if ( newX < minX ) {
+            newX = minX;
+        }
+        this.setState({
+            x: newX
+        });
     }
 
 
     render() {
         return  <div class="chart-horz-scroller-wrapper">
-                    <div class="chart-horz-scroller">
+                    <div class="chart-horz-scroller" ref={this.scrollerRef}>
                     </div>
                     <div class="chart-horz-scroller-thumb"
-                      onMouseDown={this.onMouseDown}>
+                      ref={this.thumbRef}
+                      style={{left: this.state.x + 'px'}}
+                      onMouseDown={this.onThumbMouseDown}>
                     </div>
                 </div>
     }
@@ -103,7 +126,7 @@ class ChartHorzScrollDivider extends React.Component {
 class ChartHorzScrollBar extends React.Component {
     render() {
         return  <div class="chart-horz-scroll-bar">
-                    <ChartHorzScroller />
+                    <ChartHorzScroller/>
                     <ChartHorzScrollDivider />
                     <ChartHorzScrollButton image="scroll-double-left"/>
                     <ChartHorzScrollDivider />
