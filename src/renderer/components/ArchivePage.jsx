@@ -2,7 +2,6 @@ import React from 'react';
 import './ArchivePage.css';
 import Constants from '../../common/Constants';
 import MeasureParameters from '../MeasureParameters';
-import EventManager from '../../common/EventManager';
 import MainEventManager from '../../common/MainEventManager';
 import GlobalStorage from '../../common/GlobalStorage';
 import Archive from '../Archive';
@@ -28,7 +27,6 @@ class ArchivePage extends React.Component {
         this.prefix = 'archive-page-';
         this.wasSelected = false;
         this.measureParameters = new MeasureParameters();
-        this.eventManager = new EventManager();
         this.chartBuilder = new ChartBuilder();
         let measureParameter = this.measureParameters.get('inductorTemperature1');
         this.state = {
@@ -45,22 +43,17 @@ class ArchivePage extends React.Component {
         this.onPageSelected = this.onPageSelected.bind(this);
         this.onChartNumberButtonClick = this.onChartNumberButtonClick.bind(this);
         this.onChartSelect = this.onChartSelect.bind(this);
-        this.onUpdate = this.onUpdate.bind(this);
         this.onDateInput = this.onDateInput.bind(this);
         this.onXScaleChange = this.onXScaleChange.bind(this);
     }
 
 
     componentDidMount() {
-        this.eventManager.subscribe(this.prefix + 'number-button-click', this.onChartNumberButtonClick);
-        this.eventManager.subscribe(this.prefix + 'update', this.onUpdate);
         mainEventManager.subscribe('page-selected', this.onPageSelected);
     }
 
 
     componentWillUnmount() {
-        this.eventManager.unsubscribe(this.prefix + 'number-button-click', this.onChartNumberButtonClick);
-        this.eventManager.unsubsсribe(this.prefix + 'update', this.onUpdate);
         mainEventManager.unsubscribe('page-selected', this.onPageSelected);
     }
 
@@ -76,39 +69,36 @@ class ArchivePage extends React.Component {
                 month: Constants.months.capitalize(date.getMonth()),
                 year:  date.getFullYear().toString()
             };
-            this.setState({
-                dateInputPaneData: dateInputPaneData,
-                xMax: date
-            });;
+            this.setState((oldState) => {
+                let newState = Object.assign({}, oldState);
+                newState.dateInputPaneData = dateInputPaneData;
+                newState.xMax = date;
+                return newState;
+            });
         }
     }
 
 
-    onUpdate(event, options) {
-        if (this.props.visible) {
-            let id = (!options || !options.id)
-              ? this.state.selectedMeasureParameterId
-              : options.id;
-
-            this.setState({
-                selectedMeasureParameterId: id,
+    update(id) {
+        if ( this.props.visible ) {
+            this.setState((oldState) => {
+                let newState = Object.assign({}, oldState);
+                if ( id !== undefined ) {
+                    newState.selectedMeasureParameterId = id;
+                }
+                return newState;
             });
         }
     }
 
 
     onChartNumberButtonClick(index) {
-        let parameter = this.measureParameters.byIndex(index);
-        this.eventManager.publish(this.prefix + 'update', {
-            id: parameter.id
-        });
+        this.update(this.measureParameters.byIndex(index).id);
     }
 
 
     onChartSelect(event, id) {
-        this.eventManager.publish(this.prefix + 'update', {
-            id: id
-        });
+        this.update(id);
     }
 
 
