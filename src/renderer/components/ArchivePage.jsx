@@ -24,7 +24,6 @@ let xScaleParameters = new XScaleParameters();
 class ArchivePage extends React.Component {
     constructor(props) {
         super(props);
-        this.prefix = 'archive-page-';
         this.wasSelected = false;
         this.measureParameters = new MeasureParameters();
         this.chartBuilder = new ChartBuilder();
@@ -38,6 +37,7 @@ class ArchivePage extends React.Component {
                 hour: ''
             },
             xScale: 0,
+            xScrollBarPosition: 50,
             xMax: undefined
         };
         this.onPageSelected = this.onPageSelected.bind(this);
@@ -45,6 +45,7 @@ class ArchivePage extends React.Component {
         this.onChartSelect = this.onChartSelect.bind(this);
         this.onDateInput = this.onDateInput.bind(this);
         this.onXScaleChange = this.onXScaleChange.bind(this);
+        this.onXScrollBarEvent = this.onXScrollBarEvent.bind(this);
     }
 
 
@@ -148,6 +149,32 @@ class ArchivePage extends React.Component {
     }
 
 
+    onXScrollBarEvent(event, value) {
+        let newValue = 0;
+
+        switch(event) {
+            case 'value':
+                newValue = value;
+                break;
+            case 'double-left':
+            case 'left':
+            case 'double-right:':
+            case 'right':
+                break;
+
+            default: ;
+        }
+
+        if ( newValue !== undefined ) {
+            this.setState((oldState) => {
+                let newState = Object.assign({}, oldState);
+                newState.xScrollBarPosition = newValue;
+                return newState;
+            });
+        }
+    }
+
+
     render() {
         let style = 'archive-page ';
         if ( this.props.visible ) {
@@ -163,7 +190,6 @@ class ArchivePage extends React.Component {
 
 
         let dateInputPaneOptions = {
-            prefix: this.prefix,
             year: this.state.dateInputPaneData.year,
             month: this.state.dateInputPaneData.month,
             day: this.state.dateInputPaneData.day,
@@ -191,7 +217,10 @@ class ArchivePage extends React.Component {
                           callback={this.onXScaleChange}/>
                     </div>
                     <HorzDivider height="8px" />
-                    <ChartHorzScrollBar />
+                    <ChartHorzScrollBar
+                        value={this.state.xScrollBarPosition}
+                        callback={this.onXScrollBarEvent}
+                    />
                     <HorzDivider height="20px" />
                     <NumberButtonsGroup
                       count={this.measureParameters.size()}

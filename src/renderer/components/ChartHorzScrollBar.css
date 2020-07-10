@@ -1,3 +1,7 @@
+:root {
+    --chart-horz-scroller-thumb-width: 80px;
+}
+
 .chart-horz-scroller-wrapper {
     position: relative;
     width: 100%;
@@ -25,25 +29,31 @@
     left: 20px;
     top: calc(50% - 8px);
     height: 17px;
-    width: calc(100% - 40px);
+    width: calc(100% - var(--chart-horz-scroller-thumb-width)/2);
     background-image: linear-gradient(#558, #227, #99f);
     border-radius: 12px;
     -webkit-user-drag: none;
     user-select: none;
 }
 
+.chart-horz-scroller-inner {
+    position: relative;
+    margin: 0 calc(var(--chart-horz-scroller-thumb-width)/2);
+    width: calc(100% - var(--chart-horz-scroller-thumb-width));
+    height: 100%;
+}
+
 .chart-horz-scroller-thumb {
     box-sizing: border-box;
-    position: absolute;
-    width: 80px;
-    top: -2px;
-    left: 20px;
-    height: calc(100% + 4px);
+    position: relative;
+    width: var(--chart-horz-scroller-thumb-width);
+    top: -1px;
+    height: calc(100% + 2px);
     background-image:
-      linear-gradient(160deg, #08bc, #6efc 10%, #035c),
+      linear-gradient(160deg, #fffc, #567a 10%, #115c),
       linear-gradient(-45deg, #004, #004 35%, #fff 40%, #004 45%, #fff 50%, #004 55%, #fff 60%, #004 65%, #004);
-    border-radius: 30%;
-    border: 1px solid #bf0;
+    border-radius: 10px 40px 40px 40px;
+    border: 1px solid #fb3;
     box-shadow: 1px 1px 15px black;
     -webkit-user-drag: none;
     user-select: none;
