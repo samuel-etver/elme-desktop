@@ -27,6 +27,7 @@ class ArchivePage extends React.Component {
         this.wasSelected = false;
         this.measureParameters = new MeasureParameters();
         this.chartBuilder = new ChartBuilder();
+        this.xScrollBarOptions = this.chartBuilder.buildXScrollBarOptions();
         let measureParameter = this.measureParameters.get('inductorTemperature1');
         this.state = {
             selectedMeasureParameterId: measureParameter.id,
@@ -150,25 +151,41 @@ class ArchivePage extends React.Component {
 
 
     onXScrollBarEvent(event, value) {
-        let newValue = 0;
+        let newValue;
+        let options = this.xScrollBarOptions;
+        let step;
 
         switch(event) {
             case 'value':
                 newValue = value;
                 break;
             case 'double-left':
+                step = -options.doubleStep;
             case 'left':
-            case 'double-right:':
+                step = step ?? -options.step;
             case 'right':
-                break;
+                step = step ?? options.step;
+            case 'double-right':
+                step = step ?? options.doubleStep;
+                newValue = this.state.xScrollBarPosition + step;
+                if ( newValue < options.valueMin ) {
+                    newValue += 50 - options.valueMin;
+                }
+                else if ( newValue > options.valueMax ) {
+                    newValue -= options.valueMax - 50;
+                }
 
             default: ;
         }
+
+        let newValueSaved = newValue;
+
 
         if ( newValue !== undefined ) {
             this.setState((oldState) => {
                 let newState = Object.assign({}, oldState);
                 newState.xScrollBarPosition = newValue;
+                newState.xMax = new Date(oldState.xMax.getTime() + (newValueSaved - oldState.xScrollBarPosition)*0.01*options.interval);
                 return newState;
             });
         }

@@ -7,29 +7,50 @@ class ChartHorzScrollButton extends React.Component {
         this.timerId = undefined;
         this.onMouseDown = this.onMouseDown.bind(this);
         this.onMouseUp = this.onMouseUp.bind(this);
+        this.onClick = this.onClick.bind(this);
     }
 
 
     onMouseDown() {
+        this.clicked = false;
         this.timerId = setTimeout(() => this.repeatClick(), 500);
     }
 
 
     onMouseUp() {
-        clearTimeout(this.timerId);
+        this.stopTimer();
+    }
+
+
+    onClick() {
+        if ( !this.clicked ) {
+            this.stopTimer();
+            this.notify();
+        }
     }
 
 
     repeatClick() {
-        if ( this.props.callback ) {
-            this.props.callback();
-        }
+        this.clicked = true;
+        this.notify();
         this.timerId = setTimeout(() => this.repeatClick(), 50);
     }
 
 
-    componentWillUnmount() {
+    notify() {
+        if ( this.props.callback ) {
+            this.props.callback();
+        }
+    }
+
+
+    stopTimer() {
         clearTimeout(this.timerId);
+    }
+
+
+    componentWillUnmount() {
+        this.stopTimer();
     }
 
 
@@ -37,7 +58,8 @@ class ChartHorzScrollButton extends React.Component {
         return  <button
                   class="chart-horz-scroll-button"
                   onMouseUp={this.onMouseUp}
-                  onMouseDown={this.onMouseDown}>
+                  onMouseDown={this.onMouseDown}
+                  onClick={this.onClick}>
                   <img src={"assets/" + this.props.image +  ".png"} />
                 </button>
     }

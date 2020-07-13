@@ -79,6 +79,9 @@ class ChartBuilder {
         }
 
         return {
+            area: {
+                isAnimationActive: false
+            },
             grid: {
                 show: true,
                 backgroundColor: 'black',
@@ -98,7 +101,8 @@ class ChartBuilder {
                         show: false
                     },
                     axisLabel: xAxisLabel,
-                    splitLine: splitLine
+                    splitLine: splitLine,
+                    animation: false
                 }
             ],
             yAxis: [
@@ -126,6 +130,18 @@ class ChartBuilder {
                 color: '#ffa',
             },
             data: inOptions.data,
+            animation: false
+        };
+    }
+
+
+    buildXScrollBarOptions(inOptions) {
+        return {
+            step: 1,
+            doubleStep: 5,
+            valueMin: 5,
+            valueMax: 95,
+            interval: 10*60*1000
         };
     }
 }
