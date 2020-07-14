@@ -62,6 +62,7 @@ app.on('activate', () => {
 
 function init() {
     mainEventManager = MainEventManager.getInstance();
+    mainEventManager.subscribe('log', (event, arg) => console.log(arg));
     globalStorage = GlobalStorage.getInstance();
     globalStorage.homeDir = path.join(process.env.APPDATA,
                                       Constants.appName);
@@ -72,6 +73,7 @@ function init() {
     deviceComm = DeviceComm.getInstance();
 
     archive = Archive.getInstance();
+    archive.onAppLoad();
 }
 
 
@@ -83,7 +85,6 @@ function loadConfig() {
     }
     globalStorage.config.devicePort = '502';
     globalStorage.config.deviceIp = '10.8.10.101';
-
 }
 
 
