@@ -1,8 +1,10 @@
 import MeasureParameters from './MeasureParameters';
 import Constants from '../common/Constants';
+import XScaleParameters from './components/XScaleParameters';
 
 
 let measureParameters = new MeasureParameters();
+let xScaleParameters = new XScaleParameters();
 
 class ChartBuilder {
     buildOptions(inOptions) {
@@ -79,9 +81,6 @@ class ChartBuilder {
         }
 
         return {
-            area: {
-                isAnimationActive: false
-            },
             grid: {
                 show: true,
                 backgroundColor: 'black',
@@ -139,9 +138,9 @@ class ChartBuilder {
         return {
             step: 1,
             doubleStep: 5,
-            valueMin: 5,
-            valueMax: 95,
-            interval: 10*60*1000
+            valueMin: 1,
+            valueMax: 99,
+            interval: 2*(xScaleParameters.get(inOptions.xScale).value*60*1000)
         };
     }
 }

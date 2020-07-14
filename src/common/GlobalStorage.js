@@ -12,10 +12,5 @@ class GlobalStorage {
 }
 
 module.exports = {
-    getInstance: function() {
-        if ( !instance ) {
-            return new GlobalStorage();
-        }
-        return instance;
-    }
+    getInstance: () => instance ?? new GlobalStorage()
 }

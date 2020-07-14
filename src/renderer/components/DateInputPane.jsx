@@ -99,6 +99,12 @@ class DateInputPane extends React.Component {
                     let currDate = new Date();
                     newValue = Constants.months.capitalize((currDate.getMonth() + 12 + valueInt) % 12);
                 }
+                else {
+                    valueInt = Constants.months.findByPartialMatch(value);
+                    if (valueInt >= 0) {
+                        newValue = Constants.months.capitalize(valueInt);
+                    }
+                }
                 break;
             }
 
@@ -170,6 +176,11 @@ class DateInputPane extends React.Component {
         let date = new Date(year, Constants.months.find(month) + 1, 0);
         if ( !(day <= date.getDate()) ) {
             return false;
+        }
+
+        date = new Date(year, Constants.months.find(month), day);
+        if ( date.getTime() < Constants.archiveDateMin.getTime() ) {
+          return false;
         }
 
         return true;

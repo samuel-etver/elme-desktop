@@ -27,7 +27,6 @@ class ArchivePage extends React.Component {
         this.wasSelected = false;
         this.measureParameters = new MeasureParameters();
         this.chartBuilder = new ChartBuilder();
-        this.xScrollBarOptions = this.chartBuilder.buildXScrollBarOptions();
         let measureParameter = this.measureParameters.get('inductorTemperature1');
         this.state = {
             selectedMeasureParameterId: measureParameter.id,
@@ -37,7 +36,7 @@ class ArchivePage extends React.Component {
                 day: '',
                 hour: ''
             },
-            xScale: 0,
+            xScale: 1,
             xScrollBarPosition: 50,
             xMax: undefined
         };
@@ -152,12 +151,30 @@ class ArchivePage extends React.Component {
 
     onXScrollBarEvent(event, value) {
         let newValue;
-        let options = this.xScrollBarOptions;
+        let options = this.chartBuilder.buildXScrollBarOptions({
+              xScale: this.state.xScale
+        });
         let step;
+        let newValueSaved;
+
+        var validatePosition = function() {
+            if ( newValue < options.valueMin ) {
+                newValue += 50 - options.valueMin;
+            }
+            else if ( newValue > options.valueMax ) {
+                newValue -= options.valueMax - 50;
+            }
+        };
 
         switch(event) {
-            case 'value':
+            case 'scroll':
                 newValue = value;
+                newValueSaved = newValue;
+                break;
+            case 'stop':
+                newValue = value;
+                newValueSaved = newValue;
+                validatePosition();
                 break;
             case 'double-left':
                 step = -options.doubleStep;
@@ -168,24 +185,25 @@ class ArchivePage extends React.Component {
             case 'double-right':
                 step = step ?? options.doubleStep;
                 newValue = this.state.xScrollBarPosition + step;
-                if ( newValue < options.valueMin ) {
-                    newValue += 50 - options.valueMin;
-                }
-                else if ( newValue > options.valueMax ) {
-                    newValue -= options.valueMax - 50;
-                }
+                newValueSaved = newValue;
+                validatePosition();
 
             default: ;
         }
-
-        let newValueSaved = newValue;
-
 
         if ( newValue !== undefined ) {
             this.setState((oldState) => {
                 let newState = Object.assign({}, oldState);
                 newState.xScrollBarPosition = newValue;
-                newState.xMax = new Date(oldState.xMax.getTime() + (newValueSaved - oldState.xScrollBarPosition)*0.01*options.interval);
+                let xMax = new Date(oldState.xMax.getTime() + (newValueSaved - oldState.xScrollBarPosition)*0.01*options.interval);
+                if ( xMax.getTime() < Constants.archiveDateMin.getTime() ) {
+                    xMax = Constants.archiveDateMin;
+                }
+                newState.xMax = xMax;
+                newState.dateInputPaneData.hour = xMax.getHours();
+                newState.dateInputPaneData.day = xMax.getDate();
+                newState.dateInputPaneData.month = Constants.months.capitalize(xMax.getMonth());
+                newState.dateInputPaneData.year = xMax.getFullYear();
                 return newState;
             });
         }

@@ -98,6 +98,9 @@ class ChartHorzScroller extends React.Component {
     onThumbMouseUp(event) {
         document.removeEventListener('mousemove', this.onThumbMouseMove);
         document.removeEventListener('mouseup', this.onThumbMouseUp);
+        if ( this.props.callback ) {
+            this.props.callback('stop', this.props.value);
+        }
     }
 
 
@@ -119,7 +122,7 @@ class ChartHorzScroller extends React.Component {
         }
 
         if ( this.props.callback ) {
-            this.props.callback(value??50);
+            this.props.callback('scroll', value??50);
         }
     }
 
@@ -157,9 +160,10 @@ class ChartHorzScrollBar extends React.Component {
     }
 
 
-    onChange(value) {
+    onChange(event, value) {
         if ( this.props.callback ) {
-            this.props.callback('value', value);
+
+            this.props.callback(event, value);
         }
     }
 
@@ -168,7 +172,7 @@ class ChartHorzScrollBar extends React.Component {
         return  <div class="chart-horz-scroll-bar">
                     <ChartHorzScroller
                       value={this.props.value}
-                      callback={value => this.onChange(value)}/>
+                      callback={(event, value) => this.onChange(event, value)}/>
                     <ChartHorzScrollDivider />
                     <ChartHorzScrollButton
                       image="scroll-double-left"

@@ -42,6 +42,18 @@ months.findByPartialMatch = function(str) {
     if ( !str ) {
         return -1;
     }
+    str = str.trim().toLowerCase();
+    let strLen = str.length;
+    if ( strLen == 0 ) {
+        return -1;
+    }
+
+    for (let i = 0; i < months.length; i++) {
+        if ( months[i].slice(0, strLen) === str ) {
+            return i;
+        }
+    }
+
     return -1;
 }
 
@@ -60,4 +72,5 @@ module.exports = {
     rtChartPeriod: 30*60, // seconds
     rtChartRecordInterval: 30, // seconds
     months: months,
+    archiveDateMin: new Date(2000, 0, 1),
 };

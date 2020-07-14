@@ -14,10 +14,5 @@ class MainEventManager extends EventManager {
 
 
 module.exports = {
-    getInstance: function() {
-        if ( !instance ) {
-            instance = new MainEventManager();
-        }
-        return instance;
-    }
+    getInstance: () => instance ?? new MainEventManager(),
 }
