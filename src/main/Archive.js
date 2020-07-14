@@ -1,5 +1,5 @@
-LocalArchive = require('LocalArchive');
-RemoteArchive = require('RemoteArchive');
+LocalArchive = require('./LocalArchive');
+RemoteArchive = require('./RemoteArchive');
 
 let instance;
 
