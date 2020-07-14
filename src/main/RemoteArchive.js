@@ -18,7 +18,7 @@ class RemoteArchive {
 
 
     isOpened() {
-
+        return false;
     }
 
 

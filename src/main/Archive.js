@@ -38,7 +38,26 @@ class Archive {
 
 
     onTimer() {
+        this.run();
         this.timerId = setTimeout(this.onTimer, 100);
+    }
+
+
+    run() {
+        let localArchive = this.localArchive;
+        let remoteArchive = this.remoteArchive;
+
+        if ( !localArchive.isOpened() ) {
+            localArchive.open();
+        }
+        if ( !remoteArchive.isOpened() ) {
+            remoteArchive.open();
+        }
+    }
+
+
+    open() {
+
     }
 }
 
