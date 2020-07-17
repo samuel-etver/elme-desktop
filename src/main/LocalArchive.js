@@ -13,6 +13,9 @@ const propertiesTableName = 'Properties';
 const measuresTableName = 'Measures';
 const pipesTableName = 'Pipes';
 const availableDatesTableName = 'AvailableDates';
+const measuresTableIndexName = 'MeasuresIndex';
+const pipesTableIndexName = 'PipesIndex';
+const availableDatesTableIndexName = 'AvailableDatesIndex';
 
 class LocalArchive {
     constructor() {
@@ -145,6 +148,29 @@ class LocalArchive {
                     break;
 
                 case 'measures-table-end':
+                    goNext('measures-table-index-begin');
+                    break;
+
+                case 'measures-table-index-begin':
+                    this.db.all('PRAGMA index_list(' + measuresTableName + ')', [], (err, rows) => {
+                        if ( err ) {
+                            goError(err);
+                        }
+                        else {
+                            let found = rows.find(record => record.name === measuresTableIndexName);
+                            goNext(found ? 'measures-table-index-end' : 'measures-table-index-create');
+                        }
+                    });
+                    break;
+
+                case 'measures-table-index-create':
+                    this.db.run('CREATE INDEX ' + measuresTableIndexName + ' ON '
+                      + measuresTableName  + ' (Dt)', [], (err) => {
+                        err ? goError(err) : goNext('measures-table-index-end');
+                    });
+                    break;
+
+                case 'measures-table-index-end':
                     goNext('pipes-table-begin');
                     break;
 
@@ -169,6 +195,29 @@ class LocalArchive {
                     break;
 
                 case 'pipes-table-end':
+                    goNext('pipes-table-index-begin');
+                    break;
+
+                case 'pipes-table-index-begin':
+                    this.db.all('PRAGMA index_list(' + pipesTableName + ')', [], (err, rows) => {
+                        if ( err ) {
+                            goError(err);
+                        }
+                        else {
+                            let found = rows.find(record => record.name === pipesTableIndexName);
+                            goNext(found ? 'pipes-table-index-end' : 'pipes-table-index-create');
+                        }
+                    });
+                    break;
+
+                case 'pipes-table-index-create':
+                    this.db.run('CREATE INDEX ' + pipesTableIndexName + ' ON '
+                      + pipesTableName  + ' (DtStart)', [], (err) => {
+                        err ? goError(err) : goNext('pipes-table-index-end');
+                    });
+                    break;
+
+                case 'pipes-table-index-end':
                     goNext('available-dates-table-begin');
                     break;
 
@@ -205,12 +254,14 @@ class LocalArchive {
                     //this.write([{}, {}]);
                     break;
 
-                default:
+                case 'error':
                     this.opening = false;
                     this.close();
                     if ( callback ) {
                         callback('failure', ...restArgs);
                     }
+
+                default: ;
             }
         }.bind(this);
 
