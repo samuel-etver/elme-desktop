@@ -4,6 +4,7 @@ const GlobalStorage = require('../common/GlobalStorage');
 const MainEventManager = require('../common/MainEventManager')
 const EventManager = require('../common/EventManager');
 const path = require('path');
+const DeviceDAte = require('../common/DeviceData');
 
 let globalStorage = GlobalStorage.getInstance();
 let mainEventManager = MainEventManager.getInstance();
@@ -242,6 +243,29 @@ class LocalArchive {
                     break;
 
                 case 'available-dates-table-end':
+                    goNext('available-dates-table-index-begin');
+                    break;
+
+                case 'available-dates-table-index-begin':
+                    this.db.all('PRAGMA index_list(' + availableDatesTableName + ')', [], (err, rows) => {
+                        if ( err ) {
+                            goError(err);
+                        }
+                        else {
+                            let found = rows.find(record => record.name === availableDatesTableIndexName);
+                            goNext(found ? 'available-dates-table-index-end' : 'available-dates-table-index-create');
+                        }
+                    });
+                    break;
+
+                case 'available-dates-table-index-create':
+                    this.db.run('CREATE INDEX ' + availableDatesTableIndexName + ' ON '
+                      + availableDatesTableName  + ' (Dt)', [], (err) => {
+                        err ? goError(err) : goNext('available-date-table-index-end');
+                    });
+                    break;
+
+                case 'available-date-table-index-end':
                     goNext('success');
                     break;
 
@@ -294,8 +318,34 @@ class LocalArchive {
         if ( !this.measuresTableSelectPattern ) {
             this.measuresTableSelectPattern = 'SELECT * FROM '
               + measuresTableName
-              + ' WHERE ';
+              + ' WHERE  Dt >= ? AND Dt <= ?'
         }
+
+        this.db.all(this.measuresTableSelectPattern,
+          [fromDate, toDate], (err, rows) => {
+            if ( err ) {
+                callback('error', err);
+                return;
+            }
+
+
+            let results = [];
+
+            for (let record of rows) {
+                let deviceData = new DeviceData();
+                deviceData.date = record['Dt'];
+                deviceData.inductorTemperature1 = record['InductorTemperature1'];
+                deviceData.inductorTemperature2 = record['InductorTemperature2'];
+                deviceData.thermostatTemperature1 = record['ThermostatTemperature1'];
+                deviceData.thermostatTemperature2 = record['ThermostatTemperature2'];
+                deviceData.sprayerTemperature = record['SprayerTemperature'];
+                deviceData.heatingTemperature = record['HeatingTemperature'];
+                deviceData.waterFlow = record['WaterFlow'];
+                results.push(deviceData);
+            }
+
+            callback('success', results);
+        });
     }
 
 
@@ -332,7 +382,7 @@ class LocalArchive {
           data.map(() => this.measureTableInsertRecordPlaceholders).join(',');
         let records = data.map(item =>
             [
-                item.date,
+                item.date.getTime(),
                 item.inductorTemperature1,
                 item.inductorTemperature2,
                 item.thermostatTemperature1,
@@ -348,10 +398,12 @@ class LocalArchive {
                 callback(err ? 'failure' : 'success', err);
             }
         });
+
+        let newAvailable
     }
 
 
-    delete(fromDate, toDate, callback) {
+    delete(toDate, callback) {
         if ( !this.isOpened() ) {
             callback('failure');
             return;
