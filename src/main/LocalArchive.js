@@ -265,7 +265,7 @@ class LocalArchive {
                     });
                     break;
 
-                case 'available-date-table-index-end':
+                case 'available-dates-table-index-end':
                     goNext('success');
                     break;
 
@@ -275,7 +275,13 @@ class LocalArchive {
                     if ( callback ) {
                         callback('success');
                     }
-                    //this.write([{}, {}]);
+
+                    /*this.deleteAll((result) => {
+                        mainEventManager.publish('log', result);
+                    });
+                    this.delete(new Date(), (result) => {
+                        mainEventManager.publish('log', result);
+                    });*/
                     break;
 
                 case 'error':
@@ -398,8 +404,6 @@ class LocalArchive {
                 callback(err ? 'failure' : 'success', err);
             }
         });
-
-        let newAvailable
     }
 
 
@@ -409,11 +413,58 @@ class LocalArchive {
             return;
         }
 
-        if ( this.measuresTableDeletePattern ) {
-            this.measuresTableDeletePattern = 'DELETE FROM '
-              + measuresTableName
-              + ' WHERE ';
+        if ( !this.tableDeletePatterns ) {
+            this.tableDeletePatterns = [
+              'DELETE FROM ' + measuresTableName  + ' WHERE Dt < ?',
+              'DELETE FROM ' + pipesTableName + ' WHERE DtStart < ?',
+              'DELETE FROM ' + availableDatesTableName + ' WHERE Dt < ?'
+            ];
         }
+
+
+        let deleteData = (index) => {
+            index = index ?? 0;
+            this.db.run(this.tableDeletePatterns[index], [toDate.getTime()], (err) => {
+                if ( err ) {
+                    callback('failure', err);
+                }
+                else {
+                    this.tableDeletePatterns.length - 1 > index
+                      ? deleteData(index + 1)
+                      : callback('success');
+                }
+            });
+        }
+
+        deleteData();
+    }
+
+
+    deleteAll(callback) {
+        if ( !this.isOpened() ) {
+            callback('failure');
+            return;
+        }
+
+        let tableNames = [measuresTableName,
+                          pipesTableName,
+                          availableDatesTableName
+                         ];
+        let clearTables = (index) => {
+            index = index ?? 0;
+            this.db.run("DELETE FROM " + tableNames[index], [], (err) => {
+                if ( err ) {
+                    callback('failure', err);
+                }
+                else {
+                    tableNames.length - 1 > index
+                      ? clearTables(index + 1)
+                      : callback('success');
+                }
+            });
+        }
+
+        clearTables();
     }
 }
 
