@@ -1,3 +1,4 @@
+MemoryArchive = require('./MemoryArchive');
 LocalArchive = require('./LocalArchive');
 RemoteArchive = require('./RemoteArchive');
 const MainEventManager = require('../common/MainEventManager');
@@ -13,12 +14,14 @@ class Archive {
         if ( !! instance ) {
             return instance;
         }
+        this.memoryArchive = new MemoryArchive();
         this.localArchive = new LocalArchive();
         this.remoteArchive = new RemoteArchive();
         this.onAppLoad = this.onAppLoad.bind(this);
         this.onAppClose = this.onAppClose.bind(this);
         this.onTimer = this.onTimer.bind(this);
         this.timerId = undefined;
+        this.onReadData = this.onReadData.bind(this);
         mainEventManager.subscribe('app-load', this.onAppLoad);
         instance = this;
     }
@@ -27,6 +30,7 @@ class Archive {
     onAppLoad() {
         mainEventManager.unsubscribe('app-load', this.onAppLoad);
         mainEventManager.subscribe('app-close', this.onAppClose);
+        mainEventManager.subscribe('archive-read-data', this.onReadData);
         this.timerId = setTimeout(this.onTimer, 1000);
     }
 
@@ -34,6 +38,7 @@ class Archive {
     onAppClose() {
         clearTimeout(this.timerId);
         mainEventManager.unsubscribe('app-close', this.onAppClose);
+        mainEventManager.unsubscribe('archive-read-data', this.onReadData);
     }
 
 
@@ -44,6 +49,7 @@ class Archive {
 
 
     run() {
+        let memoryArchive = this.memoryArchive;
         let localArchive = this.localArchive;
         let remoteArchive = this.remoteArchive;
 
@@ -56,11 +62,17 @@ class Archive {
     }
 
 
-    open() {
-
+    onReadData(event, arg) {
+        this.localArchive.read(arg.fromDate, arg.toDate, (result, data) => {
+            switch(result) {
+                case 'success':
+                    break;
+                case 'failure':
+                    break;
+                default: ;
+            }
+        });
     }
-
-
 }
 
 

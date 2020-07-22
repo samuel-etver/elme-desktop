@@ -25,7 +25,7 @@ class App extends React.Component {
         this.state = {
             activatePage: 'rt-values',
         }
-        super.onControlPaneButtonClick = this.onControlPaneButtonClick.bind(this);
+        this.onControlPaneButtonClick = this.onControlPaneButtonClick.bind(this);
     }
 
 
@@ -49,8 +49,8 @@ class App extends React.Component {
 
 
     componentDidMount() {
-        window.onload = onLoad;
         mainEventManager.subscribe('control-pane-button-click', this.onControlPaneButtonClick);
+        ipc.on('device-data-ready', (event, arg) => this.onDeviceDataReady(arg));
     }
 
 
@@ -65,6 +65,12 @@ class App extends React.Component {
             activatePage: type
         });
     }
+
+
+    onDeviceDataReady(deviceData) {
+        globalStorage['deviceData'] = deviceData;
+        mainEventManager.publish('rt-device-data-ready');
+    }
 }
 
 
@@ -76,17 +82,5 @@ function onLog(arg1, arg2) {
 function log(arg) {
     ipc.send('log', arg);
 }
-
-
-function onLoad() {
-    ipc.on('device-data-ready', (event, arg) => onDeviceDataReady(arg));
-}
-
-
-function onDeviceDataReady(deviceData) {
-    globalStorage['deviceData'] = deviceData;
-    mainEventManager.publish('rt-device-data-ready');
-}
-
 
 export default App;

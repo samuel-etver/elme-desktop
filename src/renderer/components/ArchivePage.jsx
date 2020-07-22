@@ -204,6 +204,7 @@ class ArchivePage extends React.Component {
                 newState.dateInputPaneData.day = xMax.getDate();
                 newState.dateInputPaneData.month = Constants.months.capitalize(xMax.getMonth());
                 newState.dateInputPaneData.year = xMax.getFullYear();
+                archive.read(new Date(xMax.getTime() - 1000*60*10), xMax);
                 return newState;
             });
         }
