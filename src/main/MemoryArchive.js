@@ -1,12 +1,15 @@
-const EventManager = require('../common/EventManager');
+const MainEventManager = require('../common/MainEventManager');
+
+let mainEventManager = MainEventManager.getInstance();
 
 class MemoryArchive {
     constructor() {
+        this.name = 'memory';
         this.measures = [];
         this.pipes = [];
         this.availableDates = [];
         this.opened = false;
-        this.eventManager = new EventManager();
+        this.dateFrom = undefined;
     }
 
 
@@ -16,6 +19,8 @@ class MemoryArchive {
 
 
     open(callback) {
+        this.opened = true;
+        this.success(callback);
     }
 
 
@@ -25,15 +30,59 @@ class MemoryArchive {
     }
 
 
-    read(fromDate, toDate, callback) {
+    read(dateFrom, dateTo, callback) {
+        let result = {
+            measures: [],
+        };
+        let dateFromInt = dateFrom.getTime();
+        let dateToInt   = dateTo.getTime();
+        this.measures.forEach(item => {
+            let dtInt = item.date.getTime();
+            if ( dtInt >= dateFromInt && dtInt <= dateToInt ) {
+                result.measures.push(item);
+            }
+        });
+
+        this.success(callback, result);
     }
 
 
-    write(data, callback) {
+    appendMeasures(newMeasures, callback) {
+        if ( !newMeasures || !newMeasures.length) {
+            this.success();
+            return;
+        }
+
+        for ( let i = 1; i < newMeasures.length; i++ ) {
+            if ( newMeasures[i].date.getTime() <= newMeasures[i-1].date.getTime() ) {
+                callback('failure', {});
+                return;
+            }
+        }
+
+
+
+        if ( this.measures.length ) {
+            if ( newMeasures[newMeasures.length - 1].date.getTime() <=
+                 this.measures[this.measures.length - 1].date.getTime() ) {
+                callback('failure', {});
+                return;
+            }
+        }
+
+        this.measures.push(...newMeasures);
+        this.dateFrom = this.measures[this.measures.length - 1].date;
+        this.success(callback);
     }
 
 
-    delete(toDate, callback) {
+    delete(dateTo, callback) {
+        let dateToInt = dateTo.getTime();
+        this.measures = this.measures.filter(item => item.date.getTime() > dateToInt);
+        this.dateFrom = this.measures.length
+          ? this.measures[this.measures.length - 1].date
+          : undefined;
+        this.success(callback);
     }
 
 

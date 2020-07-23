@@ -2,13 +2,11 @@ Constants = require('../common/Constants');
 
 class RemoteArchive {
     constructor() {
-
+        this.name = 'remote';
     }
 
 
     open() {
-        this.close();
-
     }
 
 

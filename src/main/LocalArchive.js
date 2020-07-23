@@ -4,7 +4,7 @@ const GlobalStorage = require('../common/GlobalStorage');
 const MainEventManager = require('../common/MainEventManager')
 const EventManager = require('../common/EventManager');
 const path = require('path');
-const DeviceDAte = require('../common/DeviceData');
+const DeviceData = require('../common/DeviceData');
 
 let globalStorage = GlobalStorage.getInstance();
 let mainEventManager = MainEventManager.getInstance();
@@ -20,6 +20,7 @@ const availableDatesTableIndexName = 'AvailableDatesIndex';
 
 class LocalArchive {
     constructor() {
+        this.name = 'local';
         this.eventManager = new EventManager();
         this.opened = false;
         this.dbPath = undefined;
