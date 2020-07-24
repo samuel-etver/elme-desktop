@@ -316,7 +316,7 @@ class LocalArchive {
     }
 
 
-    read(fromDate, toDate, callback) {
+    read(dateFrom, dateTo, callback) {
         if ( !this.isOpened() ) {
             callback('failure', 'not opened');
             return;
@@ -329,7 +329,7 @@ class LocalArchive {
         }
 
         this.db.all(this.measuresTableSelectPattern,
-          [fromDate, toDate], (err, rows) => {
+          [dateFrom, dateTo], (err, rows) => {
             if ( err ) {
                 callback('error', err);
                 return;
@@ -408,7 +408,7 @@ class LocalArchive {
     }
 
 
-    delete(toDate, callback) {
+    delete(dateTo, callback) {
         if ( !this.isOpened() ) {
             callback('failure');
             return;
@@ -425,7 +425,7 @@ class LocalArchive {
 
         let deleteData = (index) => {
             index = index ?? 0;
-            this.db.run(this.tableDeletePatterns[index], [toDate.getTime()], (err) => {
+            this.db.run(this.tableDeletePatterns[index], [dateTo.getTime()], (err) => {
                 if ( err ) {
                     callback('failure', err);
                 }

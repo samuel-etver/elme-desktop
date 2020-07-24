@@ -44,7 +44,6 @@ function createWindow() {
     mainEventManager.subscribe('device-data-ready', onDeviceDataReady);
 
     ipc.on('log', onLog);
-    ipc.on('read-archive-data', onReadArchiveData);
 }
 
 app.on('ready', createWindow);
@@ -110,9 +109,4 @@ function onDeviceDataReady() {
 function onLog(event, arg) {
     console.log(arg);
     event.returnValue = null;
-}
-
-
-function onReadArchiveData(event, arg) {
-    mainEventManager.publish('archive-read-data', arg);
 }

@@ -55,17 +55,15 @@ class MemoryArchive {
 
         for ( let i = 1; i < newMeasures.length; i++ ) {
             if ( newMeasures[i].date.getTime() <= newMeasures[i-1].date.getTime() ) {
-                callback('failure', {});
+                this.failure(callback, {});
                 return;
             }
         }
 
-
-
         if ( this.measures.length ) {
             if ( newMeasures[newMeasures.length - 1].date.getTime() <=
                  this.measures[this.measures.length - 1].date.getTime() ) {
-                callback('failure', {});
+                this.failure(callback, {});
                 return;
             }
         }
@@ -94,10 +92,13 @@ class MemoryArchive {
     }
 
 
-    success(callback) {
-        if ( callback ) {
-            callback('success');
-        }
+    success(callback, ...restArgs) {
+        callback && callback('success', ...restArgs);
+    }
+
+
+    failure(callback, error) {
+        callback && callback('failure', error);
     }
 }
 

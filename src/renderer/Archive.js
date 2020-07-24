@@ -35,11 +35,11 @@ class Archive {
     }
 
 
-    read(fromDate, toDate) {
+    read(dateFrom, dateTo) {
         ++this.packetId;
         ipc.send('read-archive-data', {
-            fromDate: fromDate,
-            toDate: toDate,
+            dateFrom: dateFrom,
+            dateTo: dateTo,
             id: this.packetId
         });
     }
