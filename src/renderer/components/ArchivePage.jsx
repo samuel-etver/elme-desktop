@@ -157,8 +157,9 @@ class ArchivePage extends React.Component {
 
     onXScrollBarEvent(event, value) {
         let newValue;
+        let xScale = this.state.xScale;
         let options = this.chartBuilder.buildXScrollBarOptions({
-              xScale: this.state.xScale
+              xScale: xScale
         });
         let step;
         let newValueSaved;
