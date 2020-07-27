@@ -50,6 +50,15 @@ class ArchivePage extends React.Component {
         this.onXScaleChange = this.onXScaleChange.bind(this);
         this.onXScrollBarEvent = this.onXScrollBarEvent.bind(this);
         this.onArchiveDataReady = this.onArchiveDataReady.bind(this);
+        this.archiveMessageManager = {
+            timerId: undefined,
+            publish: function(...args) {
+                clearTimeout(this.timerId);
+                this.timerId = setTimeout(() => {
+                    mainEventManager.publish('archive-data-read', ...args);
+                }, 200);
+            }
+        };
     }
 
 
@@ -211,8 +220,8 @@ class ArchivePage extends React.Component {
                 newState.dateInputPaneData.day = xMax.getDate();
                 newState.dateInputPaneData.month = Constants.months.capitalize(xMax.getMonth());
                 newState.dateInputPaneData.year = xMax.getFullYear();
-                mainEventManager.publish('archive-data-read', {
-                    dateFrom: new Date(xMax.getTime() - 1000*60*10),
+                this.archiveMessageManager.publish( {
+                    dateFrom: new Date(xMax.getTime() - xScaleParameters.get(xScale).value*60*1000),
                     dateTo: xMax
                 });
                 return newState;
