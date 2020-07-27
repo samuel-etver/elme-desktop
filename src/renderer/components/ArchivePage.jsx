@@ -17,6 +17,7 @@ import ChartHorzScrollBar from './ChartHorzScrollBar';
 
 let mainEventManager = MainEventManager.getInstance();
 let globalStorage = GlobalStorage.getInstance();
+globalStorage.archive = {};
 let archive = Archive.getInstance();
 let xScaleParameters = new XScaleParameters();
 
@@ -38,24 +39,29 @@ class ArchivePage extends React.Component {
             },
             xScale: 1,
             xScrollBarPosition: 50,
-            xMax: undefined
+            xMax: undefined,
+            dataPacketCount: 0
         };
+        this.archiveData = undefined;
         this.onPageSelected = this.onPageSelected.bind(this);
         this.onChartNumberButtonClick = this.onChartNumberButtonClick.bind(this);
         this.onChartSelect = this.onChartSelect.bind(this);
         this.onDateInput = this.onDateInput.bind(this);
         this.onXScaleChange = this.onXScaleChange.bind(this);
         this.onXScrollBarEvent = this.onXScrollBarEvent.bind(this);
+        this.onArchiveDataReady = this.onArchiveDataReady.bind(this);
     }
 
 
     componentDidMount() {
         mainEventManager.subscribe('page-selected', this.onPageSelected);
+        mainEventManager.subscribe('archive-data-ready', this.onArchiveDataReady);
     }
 
 
     componentWillUnmount() {
         mainEventManager.unsubscribe('page-selected', this.onPageSelected);
+        mainEventManager.unsubscribe('archive-data-ready', this.onArchiveDataReady);
     }
 
 
@@ -204,10 +210,41 @@ class ArchivePage extends React.Component {
                 newState.dateInputPaneData.day = xMax.getDate();
                 newState.dateInputPaneData.month = Constants.months.capitalize(xMax.getMonth());
                 newState.dateInputPaneData.year = xMax.getFullYear();
-                archive.read(new Date(xMax.getTime() - 1000*60*10), xMax);
+                mainEventManager.publish('archive-data-read', {
+                    dateFrom: new Date(xMax.getTime() - 1000*60*10),
+                    dateTo: xMax
+                });
                 return newState;
             });
         }
+    }
+
+
+    buildSeries(id) {
+        let series = [];
+        let data = [];
+        let measureParameter = this.measureParameters.byId(id);
+        if ( this.archiveData ) {
+            let measures = this.archiveData.measures;
+            for (let item of measures) {
+                data.push( [item.date, item[measureParameter.name]] );
+            }
+        }
+        let newSerie = this.chartBuilder.buildSerie({
+            data: data
+        });
+        series.push(newSerie);
+        return series;
+    }
+
+
+    onArchiveDataReady(event, arg) {
+        this.archiveData = arg;
+        this.setState((oldState) => {
+            let newState = Object.assign({}, oldState);
+            newState.dataPacketCount++;
+            return newState;
+        });
     }
 
 
@@ -224,7 +261,6 @@ class ArchivePage extends React.Component {
             return <div class={style} />;
         }
 
-
         let dateInputPaneOptions = {
             year: this.state.dateInputPaneData.year,
             month: this.state.dateInputPaneData.month,
@@ -237,6 +273,7 @@ class ArchivePage extends React.Component {
             xScaleParameter: xScaleParameters.get(this.state.xScale),
             xMax: this.state.xMax
         });
+        chartOptions.series = this.buildSeries(this.state.selectedMeasureParameterId);
 
         return  <div class={style}>
                     <DateInputPane options={dateInputPaneOptions}/>

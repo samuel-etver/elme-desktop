@@ -15,7 +15,8 @@ class Archive {
             this.packetId = 0;
             this.onAppLoad = this.onAppLoad.bind(this);
             this.onAppClose = this.onAppClose.bind(this);
-            this.onDataReady = this.onDataReady.bind(this);
+            this.onArchiveDataRead = this.onArchiveDataRead.bind(this);
+            this.onArchiveDataReady = this.onArchiveDataReady.bind(this);
             mainEventManager.subscribe('app-load', this.onAppLoad);
         }
         return instance;
@@ -25,26 +26,30 @@ class Archive {
     onAppLoad() {
         mainEventManager.unsubscribe('app-load', this.onAppLoad);
         mainEventManager.subscribe('app-close', this.onAppClose);
-        mainEventManager.subscribe('archive-data-ready', this.onDataReady);
+        mainEventManager.subscribe('archive-data-read', this.onArchiveDataRead);
+        ipc.on('archive-data-ready', this.onArchiveDataReady);
     }
 
 
     onAppClose() {
         mainEventManager.unsubscribe('app-close', this.onAppClose);
-        mainEventManager.unsubscribe('app-archive-data-ready', this.onDataReady);
+        mainEventManager.unsubscribe('archive-data-read', this.onArchiveDataRead);
     }
 
 
-    read(dateFrom, dateTo) {
+    onArchiveDataRead(event, options) {
         ++this.packetId;
-        ipc.send('read-archive-data', {
-            dateFrom: dateFrom,
-            dateTo: dateTo,
+        ipc.send('archive-data-read', {
+            dateFrom: options.dateFrom,
+            dateTo: options.dateTo,
             id: this.packetId
         });
     }
 
-    onDataReady() {
+
+    onArchiveDataReady(event, arg) {
+        //mainEventManager.publish('log', '');
+        mainEventManager.publish('archive-data-ready', arg);
     }
 }
 

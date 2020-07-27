@@ -44,7 +44,7 @@ class Archive {
         mainEventManager.unsubscribe('app-load', this.onAppLoad);
         mainEventManager.subscribe('app-close', this.onAppClose);
         this.timerId = setTimeout(this.onTimer, 1000);
-        ipc.on('read-archive-data', this.onReadArchiveData);
+        ipc.on('archive-data-read', this.onReadArchiveData);
     }
 
 
@@ -79,12 +79,21 @@ class Archive {
 
 
     appendDummyData(archive) {
+        let genValue =
+          (baseValue) => baseValue + Math.random()*10 - 5;
         let now = Date.now();
         let n = 60*60;
         let measures = [];
         for (let i = 0; i < n; i++) {
             let deviceData = new DeviceData();
             deviceData.date = new Date(now - (n-i)*1000);
+            deviceData.inductorTemperature1 = genValue(10);
+            deviceData.inductorTemperature2 = genValue(20);
+            deviceData.thermostatTemperature1 = genValue(30);
+            deviceData.thermostatTemperature2 = genValue(40);
+            deviceData.sprayerTemperature = genValue(50);
+            deviceData.heatingTemperature = genValue(60);
+            deviceData.waterFlow = genValue(70);
             measures.push(deviceData);
         }
         archive.appendMeasures(measures);
@@ -125,12 +134,31 @@ class Archive {
             archives[index].read(options.dateFrom, options.dateTo, (result, data) => {
                 allData[index] = result === 'success' ? data : null;
                 if ( allData.length == ++allDataCount) {
-                    joinData();
+                    globalStorage.mainWindow.send('archive-data-ready', joinData());
                 }
             });
         };
 
         function joinData() {
+            let measures;
+            for (let data of allData) {
+                if ( !data ) {
+                    continue;
+                }
+                if ( !data.measures || !data.measures.length ) {
+                    if ( !measures || !measures.length ) {
+                        measures = data.measures.slice();
+                    }
+                    else {
+                        let lastDateInt = measures[0].date.getTime();
+                        measures = measures.concat(
+                          data.measures.filter(item => item.date.getTime() < lastDateInt));
+                    }
+                }
+            }
+            return {
+                measures: allData[0].measures//measures,
+            };
         }
 
         searchArchives.forEach((archive, index) => read(index));

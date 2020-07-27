@@ -33,6 +33,7 @@ function createWindow() {
         }
       }
     );
+    globalStorage.mainWindow = mainWindow;
 
     mainWindow.loadURL(isDev
       ? 'http://localhost:3000'
@@ -40,6 +41,7 @@ function createWindow() {
     );
     mainWindow.on('closed', () => (mainWindow = null));
 
+    mainWindow.send('app-load');
     mainEventManager.publish('app-load');
     mainEventManager.subscribe('device-data-ready', onDeviceDataReady);
 
@@ -48,6 +50,7 @@ function createWindow() {
 
 app.on('ready', createWindow);
 app.on('window-all-closed', () => {
+    mainWindow.send('app-close');
     mainEventManager.publish('app-close');
     if ( process.platform !== 'darwin') {
         app.quit();

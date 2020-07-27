@@ -49,12 +49,14 @@ class App extends React.Component {
 
 
     componentDidMount() {
+        mainEventManager.publish('app-load');
         mainEventManager.subscribe('control-pane-button-click', this.onControlPaneButtonClick);
         ipc.on('device-data-ready', (event, arg) => this.onDeviceDataReady(arg));
     }
 
 
     componentWillUnmount() {
+        mainEventManager.publish('app-close');
         mainEventManager.unsubscribe('control-pane-button-click', this.onControlPaneButtonClick);
     }
 
@@ -82,5 +84,6 @@ function onLog(arg1, arg2) {
 function log(arg) {
     ipc.send('log', arg);
 }
+
 
 export default App;
