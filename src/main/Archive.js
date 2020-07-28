@@ -35,6 +35,7 @@ class Archive {
         this.timerId = undefined;
         this.onReadArchiveData = this.onReadArchiveData.bind(this);
         this.appendDataOnLoad = true;
+        this.lastDeviceData = undefined;
         mainEventManager.subscribe('app-load', this.onAppLoad);
         instance = this;
     }
@@ -56,7 +57,7 @@ class Archive {
 
     onTimer() {
         this.run();
-        this.timerId = setTimeout(this.onTimer, 100);
+        this.timerId = setTimeout(this.onTimer, 1000);
     }
 
 
@@ -74,6 +75,14 @@ class Archive {
                 this.appendDataOnLoad = false;
                 this.appendDummyData(mostRecentArchive);
             }
+            let newDeviceData = globalStorage['deviceData'];
+            if ( !newDeviceData ) {
+                newDeviceData = DeviceData.now();
+            }
+            if ( !this.lastDeviceData || newDeviceData.id != this.lastDeviceData.id) {
+                this.lastDeviceData = newDeviceData;
+                mostRecentArchive.appendMeasures([newDeviceData]);
+            }
         }
     }
 
@@ -87,13 +96,13 @@ class Archive {
         for (let i = 0; i < n; i++) {
             let deviceData = new DeviceData();
             deviceData.date = new Date(now - (n-i)*1000);
-            deviceData.inductorTemperature1 = genValue(10);
-            deviceData.inductorTemperature2 = genValue(20);
-            deviceData.thermostatTemperature1 = genValue(30);
+            deviceData.inductorTemperature1 = genValue(70);
+            deviceData.inductorTemperature2 = genValue(60);
+            deviceData.thermostatTemperature1 = genValue(50);
             deviceData.thermostatTemperature2 = genValue(40);
-            deviceData.sprayerTemperature = genValue(50);
-            deviceData.heatingTemperature = genValue(60);
-            deviceData.waterFlow = genValue(70);
+            deviceData.sprayerTemperature = genValue(30);
+            deviceData.heatingTemperature = genValue(20);
+            deviceData.waterFlow = genValue(10);
             measures.push(deviceData);
         }
         archive.appendMeasures(measures);

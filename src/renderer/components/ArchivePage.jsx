@@ -78,6 +78,7 @@ class ArchivePage extends React.Component {
         if ( !this.wasSelected ) {
             this.wasSelected = true;
 
+            let xScale = this.state.xScale;
             let date = new Date();
             let dateInputPaneData = {
                 hour: date.getHours().toString(),
@@ -89,6 +90,10 @@ class ArchivePage extends React.Component {
                 let newState = Object.assign({}, oldState);
                 newState.dateInputPaneData = dateInputPaneData;
                 newState.xMax = date;
+                this.archiveMessageManager.publish( {
+                    dateFrom: new Date(newState.xMax.getTime() - xScaleParameters.get(xScale).value*60*1000),
+                    dateTo: newState.xMax
+                });
                 return newState;
             });
         }
@@ -148,6 +153,10 @@ class ArchivePage extends React.Component {
                         parseInt(newState.dateInputPaneData.day),
                         parseInt(newState.dateInputPaneData.hour)
                     );
+                    this.archiveMessageManager.publish( {
+                        dateFrom: new Date(newState.xMax.getTime() - xScaleParameters.get(this.state.xScale).value*60*1000),
+                        dateTo: newState.xMax
+                    });
                 }
                 return newState;
             });
