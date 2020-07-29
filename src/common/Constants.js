@@ -70,7 +70,7 @@ module.exports = {
     deviceReadInterval: 1000,
     deviceMock: true,
     rtChartPeriod: 30*60, // seconds
-    rtChartRecordInterval: 30, // seconds
+    rtChartRecordInterval: 1, // seconds
     months: months,
     archiveDateMin: new Date(2000, 0, 1),
     appId: "794D66AB-D85B-4CD5-9FFF-F8763D9FDC39",

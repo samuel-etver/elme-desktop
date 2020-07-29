@@ -25,7 +25,11 @@ class RtChartsPage extends React.Component {
             selectedMeasureParameterId:  this.measureParameters.get('inductorTemperature1').id,
         };
         this.rtDeviceData = null;
-        this.chartData = [];
+        this.chartData = {};
+        for (let i = 0; i < this.measureParameters.size(); i++) {
+            let parameter = this.measureParameters.byIndex(i);
+            this.chartData[parameter.name] = [];
+        }
         this.onChartNumberButtonClick = this.onChartNumberButtonClick.bind(this);
         this.onChartSelect = this.onChartSelect.bind(this);
         this.onRtDeviceDataReady = this.onRtDeviceDataReady.bind(this);
@@ -36,7 +40,7 @@ class RtChartsPage extends React.Component {
 
     componentDidMount() {
         mainEventManager.subscribe('rt-device-data-ready', this.onRtDeviceDataReady);
-        this.timerId = setTimeout(this.onTimer, Constants.rtChartRecordInterval*1000);
+        this.timerId = setTimeout(this.onTimer, 1000);
     }
 
 
@@ -47,48 +51,49 @@ class RtChartsPage extends React.Component {
 
 
     onRtDeviceDataReady() {
-        this.rtDeviceData = globalStorage['deviceData'];
+        this.appendChartData(globalStorage['deviceData']);
     }
 
 
     onTimer() {
-        let newItem = this.rtDeviceData;
-        let lastItem = this.chartData[this.chartData.length - 1];
-        if ( !newItem || !lastItem || lastItem.id == newItem.id) {
-            newItem = DeviceData.now();
-            this.rtDeviceData = newItem;
-        }
-        this.appendChartData(newItem);
-        this.removeChartData(newItem.date);
+        this.removeChartData(new Date());
 
-        this.update();
+        this.setState((oldState) => {
+            let newState = Object.assign({}, oldState);
+            newState.count++;
+            return newState;
+        });
 
-        this.timerId = setTimeout(this.onTimer, Constants.rtChartRecordInterval*1000);
+        this.timerId = setTimeout(this.onTimer, 1000);
     }
 
 
     appendChartData(newItem) {
-        this.chartData.push( newItem );
+        let date = newItem.date;
+        let n = this.measureParameters.size();
+        for (let i = 0; i < n; i++) {
+            let parameterName = this.measureParameters.byIndex(i).name;
+            this.chartData[parameterName].push(
+              [date, newItem[parameterName]]
+            );
+        }
     }
 
 
     removeChartData(toDate) {
-        let toTimestamp = toDate.getTime();
-        let fromTimestamp = toTimestamp - 1000*(Constants.rtChartPeriod + 3*60);
-        this.chartData = this.chartData.filter(item =>  {
-            let timestamp = item.date.getTime();
-            return timestamp > fromTimestamp && timestamp <= toTimestamp;
-        });
+        let fromDateInt = toDate.getTime() - 1000*(Constants.rtChartPeriod + 3*60);
+        for (let parameterName in this.chartData) {
+            this.chartData[parameterName] = this.chartData[parameterName].filter(
+              item => item[0].getTime() > fromDateInt
+            );
+        }
     }
 
 
     buildSeries(id) {
         let series = [];
-        let data = [];
         let measureParameter = this.measureParameters.byId(id);
-        for (let item of this.chartData) {
-            data.push( [item.date, item[measureParameter.name]] );
-        }
+        let data = this.chartData[measureParameter.name];
         let newSerie = this.chartBuilder.buildSerie({
             data: data
         });
@@ -97,50 +102,37 @@ class RtChartsPage extends React.Component {
     }
 
 
-    update(id) {
-        if ( this.props.visible ) {
-            this.setState((oldState) => {
-                let newState = Object.assign({}, oldState);
-                if ( id !== undefined ) {
-                    newState.selectedMeasureParameterId = id;
-                }
-                newState.count++;
-                return newState;
-            });
-        }
-    }
-
-
     onChartNumberButtonClick(index) {
-        this.update(this.measureParameters.byIndex(index).id);
+        this.setState((oldState) => {
+            let newState = Object.assign({}, oldState);
+            newState.selectedMeasureParameterId = this.measureParameters.byIndex(index).id;
+            return newState;
+        });
     }
 
 
     onChartSelect(event, id) {
-        this.update(id);
+        this.setState((oldState) => {
+            let newState = Object.assign({}, oldState);
+            newState.selectedMeasureParameterId = id;
+            return newState;
+        });
     }
 
 
     render() {
-        let style = 'rt-charts-page ';
-        if ( this.props.visible ) {
-            style += 'front-page';
-        }
-        else {
-            style += 'back-page hidden';
-        }
-
         if ( !this.props.visible ) {
-            return <div class={style} />
+            return <div class='rt-charts-page back-page hidden' />
         }
 
+        let parameterId = this.state.selectedMeasureParameterId;
         let chartOptions = this.chartBuilder.buildOptions({
-            measureParameterId: this.state.selectedMeasureParameterId,
+            measureParameterId: parameterId,
             realTime: true
         });
-        chartOptions.series = this.buildSeries(this.state.selectedMeasureParameterId);
+        chartOptions.series = this.buildSeries(parameterId);
 
-        return  <div class={style}>
+        return  <div class='rt-charts-page front-page'>
                       <MeasureParametersComboBox
                         selectedId={this.state.selectedMeasureParameterId}
                         callback={this.onChartSelect}/>

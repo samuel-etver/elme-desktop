@@ -2,10 +2,8 @@ import React from 'react';
 import './RtValuesPage.css';
 import ValuePane from './ValuePane.jsx';
 import MeasureParameters from '../MeasureParameters.js';
-import MainEventManager from '../../common/MainEventManager';
 import GlobalStorage from '../../common/GlobalStorage';
 
-const mainEventManager = MainEventManager.getInstance();
 const globalStorage = GlobalStorage.getInstance();
 
 class RtValuesPane extends React.Component {
@@ -14,7 +12,8 @@ class RtValuesPane extends React.Component {
         this.state = {
             count: 0,
         };
-        this.onDeviceDataReady = this.onDeviceDataReady.bind(this);
+        this.timerId = undefined;
+        this.onTimer = this.onTimer.bind(this);
     }
 
 
@@ -68,12 +67,12 @@ class RtValuesPane extends React.Component {
 
 
     componentDidMount() {
-        mainEventManager.subscribe('rt-device-data-ready', this.onDeviceDataReady);
+        this.timerId = setTimeout(this.onTimer, 1000);
     }
 
 
     componentWillUnmount() {
-        mainEventManager.unsubscribe('rt-device-data-ready', this.onDeviceDataReady);
+        clearTimeout(this.timerId);
     }
 
 
@@ -89,28 +88,22 @@ class RtValuesPane extends React.Component {
     }
 
 
-    onDeviceDataReady() {
-        this.setState({
-            count: this.state.count + 1
-        });
+    onTimer() {
+      this.setState((oldState) => {
+          let newState = Object.assign({}, oldState);
+          newState.count++;
+          return newState;
+      });
+      this.timerId = setTimeout(this.onTimer, 1000);
     }
 }
 
 class RtValuesPage extends React.Component {
     render() {
-        let style = 'rt-values-page ';
-        if ( this.props.visible ) {
-            style += 'front-page';
-        }
-        else {
-            style += 'back-page hidden';
-        }
-
         if ( !this.props.visible ) {
-            return  <div class={style} />
+            return  <div class='rt-values-page back-page hidden' />
         }
-
-        return  <div class={style}>
+        return  <div class='rt-values-page front-page'>
                     <RtValuesPane />
                 </div>
     }

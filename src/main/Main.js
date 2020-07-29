@@ -45,6 +45,7 @@ function createWindow() {
     mainWindow.send('app-load');
     mainEventManager.publish('app-load');
     mainEventManager.subscribe('device-data-ready', onDeviceDataReady);
+    mainEventManager.subscribe('device-data-failure', onDeviceDataFailure);
 
     ipc.on('log', onLog);
 }
@@ -106,7 +107,17 @@ function saveConfig() {
 
 
 function onDeviceDataReady() {
-    mainWindow.send('device-data-ready', globalStorage.deviceData);
+    sendDeviceData();
+}
+
+
+function onDeviceDataFailure() {
+    sendDeviceData();
+}
+
+
+function sendDeviceData() {
+  mainWindow.send('device-data-ready', globalStorage.deviceData);
 }
 
 

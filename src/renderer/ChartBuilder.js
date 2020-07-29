@@ -18,12 +18,12 @@ class ChartBuilder {
             case 'thermostatTemperature2':
             case 'sprayerTemperature':
             case 'heatingTemperature':
-                yMin = 0.0;
-                yMax = 100.0;
+                yMin = 300.0;
+                yMax = 1200.0;
                 break;
             case 'waterFlow':
                 yMin = 0.0;
-                yMax = 80.0;
+                yMax = 250.0;
                 break;
             default:
                 return;
@@ -57,13 +57,16 @@ class ChartBuilder {
         };
         let yAxisLabel = Object.assign({}, axisLabel);
         yAxisLabel.showMinLabel = false;
+        yAxisLabel.formatter = function(value) {
+            return value.toString();
+        }
         let splitLine = {
             show: true,
             lineStyle: {
                 type: 'dotted',
                 color: '#888'
             }
-        }
+        };
 
         let xMin;
         let xMax;

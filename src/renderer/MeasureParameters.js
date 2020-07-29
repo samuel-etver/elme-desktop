@@ -64,7 +64,7 @@ var MeasureParameters = new (function() {
     };
 
     this.byId = id => {
-        for ( let itemName in parameters ) {
+        for (let itemName in parameters) {
             if ( parameters[itemName].id == id ) {
                 return parameters[itemName];
             }

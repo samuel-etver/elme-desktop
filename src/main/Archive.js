@@ -96,13 +96,13 @@ class Archive {
         for (let i = 0; i < n; i++) {
             let deviceData = new DeviceData();
             deviceData.date = new Date(now - (n-i)*1000);
-            deviceData.inductorTemperature1 = genValue(70);
-            deviceData.inductorTemperature2 = genValue(60);
-            deviceData.thermostatTemperature1 = genValue(50);
-            deviceData.thermostatTemperature2 = genValue(40);
-            deviceData.sprayerTemperature = genValue(30);
-            deviceData.heatingTemperature = genValue(20);
-            deviceData.waterFlow = genValue(10);
+            deviceData.inductorTemperature1 = genValue(1000);
+            deviceData.inductorTemperature2 = genValue(900);
+            deviceData.thermostatTemperature1 = genValue(800);
+            deviceData.thermostatTemperature2 = genValue(700);
+            deviceData.sprayerTemperature = genValue(600);
+            deviceData.heatingTemperature = genValue(500);
+            deviceData.waterFlow = genValue(150);
             measures.push(deviceData);
         }
         archive.appendMeasures(measures);

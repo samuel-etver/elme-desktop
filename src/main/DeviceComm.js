@@ -8,7 +8,7 @@ const MainEventManager = require('../common/MainEventManager');
 const DeviceData = require('../common/DeviceData');
 
 const globalStorage = GlobalStorage.getInstance();
-const eventManager = MainEventManager.getInstance();
+const mainEventManager = MainEventManager.getInstance();
 
 var DeviceComm = (function() {
     let instance;
@@ -19,8 +19,8 @@ var DeviceComm = (function() {
 
 
     function init() {
-        eventManager.subscribe('app-load', start);
-        eventManager.subscribe('app-close', stop);
+        mainEventManager.subscribe('app-load', start);
+        mainEventManager.subscribe('app-close', stop);
 
         socket = new net.Socket();
         client = new modbus.client.TCP(socket, 1);
@@ -145,8 +145,8 @@ var DeviceMock = (function() {
     let connected = false;
 
     function init() {
-        eventManager.subscribe('app-load', start);
-        eventManager.subscribe('app-close', stop);
+        mainEventManager.subscribe('app-load', start);
+        mainEventManager.subscribe('app-close', stop);
 
         return {
             isConnected: () => connected,
@@ -196,12 +196,12 @@ var DeviceMock = (function() {
         var generateValue = x => x + (10.0*Math.random() - 5);
 
         let currDate = new Date();
-        let inductorTemperature1 = generateValue(10);
-        let inductorTemperature2 = generateValue(20);
-        let thermostatTemperature1 = generateValue(30);
-        let thermostatTemperature2 = generateValue(40);
-        let sprayerTemperature = generateValue(50);
-        let heatingTemperature = generateValue(60);
+        let inductorTemperature1 = generateValue(400);
+        let inductorTemperature2 = generateValue(500);
+        let thermostatTemperature1 = generateValue(600);
+        let thermostatTemperature2 = generateValue(700);
+        let sprayerTemperature = generateValue(800);
+        let heatingTemperature = generateValue(900);
         let waterFlow = generateValue(70);
 
         let deviceData = new DeviceData();
@@ -232,13 +232,48 @@ var DeviceMock = (function() {
 })();
 
 
+(function() {
+    let timerId;
+
+    mainEventManager.subscribe('app-load', start);
+    mainEventManager.subscribe('app-close', stop);
+    mainEventManager.subscribe('device-data-ready', restart);
+
+
+    function start() {
+        timerId = setTimeout(watchdog, 10000);
+    }
+
+
+    function stop() {
+        clearTimeout(timerId);
+    }
+
+
+    function restart() {
+        if ( timerId !== undefined ) {
+            clearTimeout(timerId);
+        }
+        timerId = setTimeout(watchdog, 5000);
+    }
+
+
+    function watchdog() {
+        globalStorage.deviceData = DeviceData.now();
+        mainEventManager.publish('device-data-failure');
+        restart();
+    }
+})();
+
+
 var Device =  Constants.deviceMock
   ? DeviceMock
   : DeviceComm;
 Device.getInstance();
 
+
 function publish(event, ...args) {
-    eventManager.publish(event, ...args);
+    mainEventManager.publish(event, ...args);
 }
 
 
