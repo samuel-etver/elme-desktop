@@ -47,6 +47,8 @@ class DateInputPane extends React.Component {
             let date = new Date();
             this.props.options.callback('submit', {
                 hour: date.getHours(),
+                minute: date.getMinutes(),
+                second: date.getSeconds(),
                 day: date.getDate(),
                 month: Constants.months.capitalize(date.getMonth()),
                 year: date.getFullYear(),

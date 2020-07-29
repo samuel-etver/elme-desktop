@@ -58,11 +58,13 @@ class RtChartsPage extends React.Component {
     onTimer() {
         this.removeChartData(new Date());
 
-        this.setState((oldState) => {
-            let newState = Object.assign({}, oldState);
-            newState.count++;
-            return newState;
-        });
+        if ( this.props.visible ) {
+            this.setState((oldState) => {
+                let newState = Object.assign({}, oldState);
+                newState.count++;
+                return newState;
+            });
+        }
 
         this.timerId = setTimeout(this.onTimer, 1000);
     }

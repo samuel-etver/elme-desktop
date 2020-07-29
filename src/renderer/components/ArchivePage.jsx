@@ -130,6 +130,8 @@ class ArchivePage extends React.Component {
             for (let item in data) {
                 switch( item ) {
                     case 'hour':
+                    case 'minute':
+                    case 'second':
                     case 'day':
                     case 'month':
                     case  'year':
@@ -147,11 +149,15 @@ class ArchivePage extends React.Component {
                 let newState = Object.assign({}, state);
                 newState.dateInputPaneData = Object.assign(newState.dateInputPaneData, dateInputPaneData);
                 if ( data.valid ) {
+                    let minute = dateInputPaneData.minute ?? 0;
+                    let second = dateInputPaneData.second ?? 0;
                     newState.xMax = new Date(
                         parseInt(newState.dateInputPaneData.year),
                         Constants.months.find(newState.dateInputPaneData.month),
                         parseInt(newState.dateInputPaneData.day),
-                        parseInt(newState.dateInputPaneData.hour)
+                        parseInt(newState.dateInputPaneData.hour),
+                        parseInt(minute),
+                        parseInt(second)
                     );
                     this.archiveMessageManager.publish( {
                         dateFrom: new Date(newState.xMax.getTime() - xScaleParameters.get(this.state.xScale).value*60*1000),
