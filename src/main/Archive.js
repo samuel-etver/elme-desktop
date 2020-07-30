@@ -149,24 +149,8 @@ class Archive {
         };
 
         function joinData() {
-            let measures;
-            for (let data of allData) {
-                if ( !data ) {
-                    continue;
-                }
-                if ( !data.measures || !data.measures.length ) {
-                    if ( !measures || !measures.length ) {
-                        measures = data.measures.slice();
-                    }
-                    else {
-                        let lastDateInt = measures[0].date.getTime();
-                        measures = measures.concat(
-                          data.measures.filter(item => item.date.getTime() < lastDateInt));
-                    }
-                }
-            }
             return {
-                measures: allData[0].measures//measures,
+                measures: allData[0],
             };
         }
 

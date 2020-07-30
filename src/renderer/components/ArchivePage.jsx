@@ -100,26 +100,21 @@ class ArchivePage extends React.Component {
     }
 
 
-    update(id) {
-        if ( this.props.visible ) {
-            this.setState((oldState) => {
-                let newState = Object.assign({}, oldState);
-                if ( id !== undefined ) {
-                    newState.selectedMeasureParameterId = id;
-                }
-                return newState;
-            });
-        }
-    }
-
-
     onChartNumberButtonClick(index) {
-        this.update(this.measureParameters.byIndex(index).id);
+        this.setState((oldState) => {
+            let newState = Object.assign({}, oldState);
+            newState.selectedMeasureParameterId = this.measureParameters.byIndex(index).id;
+            return newState;
+        });
     }
 
 
     onChartSelect(event, id) {
-        this.update(id);
+        this.setState((oldState) => {
+            let newState = Object.assign({}, oldState);
+            newState.selectedMeasureParameterId = id;
+            return newState;
+        });
     }
 
 
@@ -145,8 +140,8 @@ class ArchivePage extends React.Component {
 
 
         if ( dateInputPaneData ) {
-            this.setState(state => {
-                let newState = Object.assign({}, state);
+            this.setState((oldState) => {
+                let newState = Object.assign({}, oldState);
                 newState.dateInputPaneData = Object.assign(newState.dateInputPaneData, dateInputPaneData);
                 if ( data.valid ) {
                     let minute = dateInputPaneData.minute ?? 0;
@@ -171,9 +166,13 @@ class ArchivePage extends React.Component {
 
 
     onXScaleChange(buttonIndex) {
-        this.setState(state => {
-            let newState = Object.assign({}, state);
+        this.setState((oldState) => {
+            let newState = Object.assign({}, oldState);
             newState.xScale = buttonIndex;
+            this.archiveMessageManager.publish( {
+                dateFrom: new Date(oldState.xMax.getTime() - xScaleParameters.get(newState.xScale).value*60*1000),
+                dateTo: oldState.xMax
+            });
             return newState;
         });
     }
@@ -251,9 +250,9 @@ class ArchivePage extends React.Component {
         let measureParameter = this.measureParameters.byId(id);
         if ( this.archiveData ) {
             let measures = this.archiveData.measures;
-            for (let item of measures) {
-                data.push( [item.date, item[measureParameter.name]] );
-            }
+            let xs  = measures['date'];
+            let ys  = measures[measureParameter.name];
+            data = xs.map((x, index) => [x, ys[index]]);
         }
         let newSerie = this.chartBuilder.buildSerie({
             data: data

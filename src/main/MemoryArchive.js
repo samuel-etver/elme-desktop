@@ -1,3 +1,4 @@
+const Measures = require('../common/Measures');
 const MainEventManager = require('../common/MainEventManager');
 
 let mainEventManager = MainEventManager.getInstance();
@@ -5,11 +6,10 @@ let mainEventManager = MainEventManager.getInstance();
 class MemoryArchive {
     constructor() {
         this.name = 'memory';
-        this.measures = [];
+        this.measures = new Measures();
         this.pipes = [];
         this.availableDates = [];
         this.opened = false;
-        this.dateFrom = undefined;
     }
 
 
@@ -31,64 +31,34 @@ class MemoryArchive {
 
 
     read(dateFrom, dateTo, callback) {
-        let result = {
-            measures: [],
-        };
-        let dateFromInt = dateFrom.getTime();
-        let dateToInt   = dateTo.getTime();
-        this.measures.forEach(item => {
-            let dtInt = item.date.getTime();
-            if ( dtInt >= dateFromInt && dtInt <= dateToInt ) {
-                result.measures.push(item);
-            }
-        });
-
+        let result = this.measures.read(dateFrom, dateTo);
         this.success(callback, result);
     }
 
 
     appendMeasures(newMeasures, callback) {
-        if ( !newMeasures || !newMeasures.length) {
-            this.success();
-            return;
-        }
-
-        for ( let i = 1; i < newMeasures.length; i++ ) {
-            if ( newMeasures[i].date.getTime() <= newMeasures[i-1].date.getTime() ) {
-                this.failure(callback, {});
-                return;
-            }
-        }
-
-        if ( this.measures.length ) {
-            if ( newMeasures[newMeasures.length - 1].date.getTime() <=
-                 this.measures[this.measures.length - 1].date.getTime() ) {
-                this.failure(callback, {});
-                return;
-            }
-        }
-
-        this.measures.push(...newMeasures);
-        this.dateFrom = this.measures[this.measures.length - 1].date;
-        this.success(callback);
+        this.measures.append(newMeasures)
+          ? this.success(callback)
+          : this.failure(callback, {});
     }
 
 
     delete(dateTo, callback) {
-        let dateToInt = dateTo.getTime();
-        this.measures = this.measures.filter(item => item.date.getTime() > dateToInt);
-        this.dateFrom = this.measures.length
-          ? this.measures[this.measures.length - 1].date
-          : undefined;
+        this.measures.delete(dateTo);
         this.success(callback);
     }
 
 
     deleteAll(callback) {
-        this.measures = [];
+        this.measures = new Measures();
         this.pipes = [];
         this.availableDates = [];
         this.success(callback);
+    }
+
+
+    get dateFrom() {
+        return this.measures.dateFrom;
     }
 
 
