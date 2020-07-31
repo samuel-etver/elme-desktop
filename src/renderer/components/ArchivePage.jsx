@@ -56,9 +56,11 @@ class ArchivePage extends React.Component {
                 clearTimeout(this.timerId);
                 this.timerId = setTimeout(() => {
                     mainEventManager.publish('archive-data-read', ...args);
-                }, 200);
+                }, 500);
             }
         };
+        this.series = null;
+        this.seriesParameterId = -1;
     }
 
 
@@ -252,7 +254,7 @@ class ArchivePage extends React.Component {
             let measures = this.archiveData.measures;
             let xs  = measures['date'];
             let ys  = measures[measureParameter.name];
-            data = xs.map((x, index) => [x, ys[index]]);
+            data = this.packData(Array.from(xs, (x, i) => [x, ys[i]]));
         }
         let newSerie = this.chartBuilder.buildSerie({
             data: data
@@ -262,8 +264,91 @@ class ArchivePage extends React.Component {
     }
 
 
+    packData(data) {
+        if ( !data || data.length < 1000) {
+            return data;
+        }
+
+        let result = [];
+
+        let dt0 = new Date(data[0][0].getTime());
+        dt0.setMilliseconds(0);
+        dt0.setSeconds(0);
+        dt0.setMinutes(2*(dt0.getMinutes() >> 1));
+        let dt0Int = dt0.getTime();
+
+        let dt1 = data[data.length - 1][0];
+        let dt1Int = dt1.getTime();
+
+        let interval = 10*1000;
+        let index = 0;
+        let singles = 0;
+
+        while (dt0Int <= dt1Int) {
+            let dtNextInt = dt0Int + interval;
+
+            let minY;
+            let maxY;
+            let minIndex;
+            let maxIndex
+            let dotCount = 0;
+
+            for(; index < data.length; index++) {
+                let [x, y] = data[index];
+                if ( x.getTime() >= dtNextInt ) {
+                    break;
+                }
+                dotCount++;
+                if ( y !== undefined ) {
+                    if ( minY === undefined) {
+                        minY = y;
+                        maxY = y;
+                    }
+                    else {
+                        if ( minY > y ) {
+                            minY = y;
+                            minIndex = index;
+                        }
+                        if ( maxY < y ) {
+                            maxY = y;
+                            maxIndex = index;
+                        }
+                    }
+                }
+            }
+
+            if ( dotCount ) {
+                if ( minIndex === undefined ) {
+                    result.push(data[index - 1]);
+                }
+                else {
+                    if ( dotCount === 1 || minIndex === maxIndex) {
+                        result.push( data[minIndex] );
+                        singles++;
+                    }
+                    else {
+                        if ( minIndex < maxIndex ) {
+                            result.push( data[minIndex], data[maxIndex] );
+                        }
+                        else {
+                            result.push( data[maxIndex], data[minIndex] );
+                        }
+                    }
+                }
+            }
+
+            dt0Int = dtNextInt;
+        }
+
+        //mainEventManager.publish('log', '1=' + data.length + ',2=' + result.length + ',3=' + singles);
+
+        return result;
+    }
+
+
     onArchiveDataReady(event, arg) {
         this.archiveData = arg;
+        this.seriesParameterId = -1;
         this.setState((oldState) => {
             let newState = Object.assign({}, oldState);
             newState.dataPacketCount++;
@@ -297,7 +382,14 @@ class ArchivePage extends React.Component {
             xScaleParameter: xScaleParameters.get(this.state.xScale),
             xMax: this.state.xMax
         });
-        chartOptions.series = this.buildSeries(this.state.selectedMeasureParameterId);
+        if ( this.seriesParameterId === this.state.selectedMeasureParameterId) {
+            chartOptions.series = this.series;
+        }
+        else {
+            this.seriesParameterId = this.state.selectedMeasureParameterId
+            this.series = this.buildSeries(this.seriesParameterId);
+            chartOptions.series = this.series;
+        }
 
         return  <div class={style}>
                     <DateInputPane options={dateInputPaneOptions}/>

@@ -19,9 +19,9 @@ function addFields(src) {
     if ( !src ) {
         src = {};
     }
-    for (let fieldName of fields) {
-        src[fieldName] = [];
-    }
+    fields.forEach(fieldName => {
+        src[fieldName] = []
+    });
     return src;
 }
 
@@ -31,19 +31,16 @@ class Measures {
         this.fields = fields;
         this.fieldsCount = fieldsCount;
         addFields(this);
-        this.setDates();
     }
 
 
-    setDates() {
-        if ( this.isEmpty() ) {
-            this.dateFrom = undefined;
-            this.dateTo   = undefined;
-        }
-        else {
-            this.dateFrom = this.date[0];
-            this.dateTo   = this.date[this.date.length - 1];
-        }
+    get dateFrom() {
+        return this.isEmpty() ? undefined : this.date[0];
+    }
+
+
+    get dateTo() {
+        return this.isEmpty() ? undefined : this.date[this.date.length - 1];
     }
 
 
@@ -67,7 +64,6 @@ class Measures {
         for (let item of newData) {
             fields.forEach(fieldName => this[fieldName].push(item[fieldName]));
         }
-        this.setDates();
     }
 
 
@@ -86,7 +82,6 @@ class Measures {
                 this[fieldName] = this[fieldName].slice(index);
             });
         }
-        this.setDates();
     }
 
 
