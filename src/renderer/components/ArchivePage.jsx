@@ -269,6 +269,29 @@ class ArchivePage extends React.Component {
             return data;
         }
 
+        let interval;
+        switch(this.state.xScale) {
+            case 2:
+                interval = 5;
+                break;
+            case 3:
+                interval = 15;
+                break;
+            case 4:
+                interval = 30;
+                break;
+            case 5:
+                 interval = 60;
+                 break;
+            case 6:
+                  interval = 120;
+                  break;
+            default:
+                return data;
+        }
+        interval *= 1000;
+
+
         let result = [];
 
         let dt0 = new Date(data[0][0].getTime());
@@ -280,7 +303,7 @@ class ArchivePage extends React.Component {
         let dt1 = data[data.length - 1][0];
         let dt1Int = dt1.getTime();
 
-        let interval = 10*1000;
+
         let index = 0;
         let singles = 0;
 
