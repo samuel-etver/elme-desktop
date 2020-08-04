@@ -5,6 +5,20 @@ import XScaleParameters from './components/XScaleParameters';
 
 let measureParameters = new MeasureParameters();
 let xScaleParameters = new XScaleParameters();
+let tooltip = {
+    trigger: 'axis',
+    axisPointer: {
+        type: 'cross',
+        animation: false,
+        label: {
+            backgroundColor: 'green',
+        },
+    },
+    backgroundColor: '#9999',
+    textStyle: {
+        color: '#000'
+    }
+}
 
 class ChartBuilder {
     buildOptions(inOptions) {
@@ -120,6 +134,7 @@ class ChartBuilder {
                     splitLine: splitLine
                 }
             ],
+            tooltip: tooltip
         }
     }
 

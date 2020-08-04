@@ -363,8 +363,6 @@ class ArchivePage extends React.Component {
             dt0Int = dtNextInt;
         }
 
-        //mainEventManager.publish('log', '1=' + data.length + ',2=' + result.length + ',3=' + singles);
-
         return result;
     }
 
