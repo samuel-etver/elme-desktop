@@ -5,6 +5,17 @@ import XScaleParameters from './components/XScaleParameters';
 
 let measureParameters = new MeasureParameters();
 let xScaleParameters = new XScaleParameters();
+let xFormatter = function(x) {
+  let hour = x.getHours().toString();
+  let minute = x.getMinutes();
+  minute = (minute < 10 ? '0' : '') + minute.toString();
+  let second = x.getSeconds();
+  second = (second < 10 ? '0' : '') + second.toString();
+  return hour + ':' + minute + ':' + second;
+}
+let yFormatter = function(y) {
+    return y.toFixed(1);
+};
 let tooltip = {
     trigger: 'axis',
     axisPointer: {
@@ -17,8 +28,13 @@ let tooltip = {
     backgroundColor: '#9999',
     textStyle: {
         color: '#000'
+    },
+    formatter: function(params) {
+        params = params[0];
+        return '<div style="text-align:left">x=' + xFormatter(params.value[0]) + '<br>' +
+               'y=' + yFormatter(params.value[1])+ '</div>';
     }
-}
+};
 
 class ChartBuilder {
     buildOptions(inOptions) {
