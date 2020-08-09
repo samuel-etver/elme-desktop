@@ -23,16 +23,28 @@ let tooltip = {
         animation: false,
         label: {
             backgroundColor: 'green',
+            formatter: function(params) {
+                if ( params.axisDimension === 'y' ) {
+                    return yFormatter(params.value);
+                }
+                let dt = new Date(params.value);
+                let minute = dt.getMinutes();
+                let second = dt.getSeconds();
+                let txt = dt.getHours() + ':'
+                  + (minute < 10 ? '0' : '') + minute.toString() + ':'
+                  + (second < 10 ? '0' : '') + second.toString();
+                return txt;
+            }
         },
     },
-    backgroundColor: '#9999',
+    backgroundColor: '#c0c9',
     textStyle: {
-        color: '#000'
+        color: '#fff'
     },
     formatter: function(params) {
         params = params[0];
-        return '<div style="text-align:left">x=' + xFormatter(params.value[0]) + '<br>' +
-               'y=' + yFormatter(params.value[1])+ '</div>';
+        return '<div style="text-align:left"><span style="color:#aaff">x=</span>' + xFormatter(params.value[0]) + '<br>' +
+               '<span style="color:#aaff">y=</span>' + yFormatter(params.value[1])+ '</div>';
     }
 };
 
