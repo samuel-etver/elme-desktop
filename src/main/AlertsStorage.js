@@ -1,10 +1,12 @@
 const MainEventManager = require('../common/MainEventManager');
 const GlobalStorage = require('../common/GlobalStorage');
+const AlertStorageItem = require('../common/AlertStorageItem');
 
 let instance;
 
 let mainEventManager = MainEventManager.getInstance();
 let globalStorage = GlobalStorage.getInstance();
+
 
 class AlertsStorage {
     constructor() {
@@ -35,11 +37,34 @@ class AlertsStorage {
 
 
     onTimer() {
-        if ( this.changed ) {
-            this.changed = false;
-            globalStorage['mainWindow'].send('alerts-data-receive', this.alerts);
-        }
+      //  if ( this.changed ) {
+      //      this.changed = false;
+            globalStorage['mainWindow'].send('alerts-storage-receive', this.alerts);
+    //    }
         this.timerId = setTimeout(this.onTimer, 2000);
+    }
+
+
+    push(newItem) {
+        let index = this.find(newItem.id);
+        if ( index < 0 ) {
+            this.alerts.push(newItem);
+            this.changed = true;
+        }
+    }
+
+
+    pull(id) {
+        let index = this.find(id);
+        if ( index >= 0 ) {
+            this.alerts = this.alerts.splice(index, 1);
+            this.changed = true;
+        }
+    }
+
+
+    find(id) {
+        return this.alerts.findIndex(item => item.id === id);
     }
 }
 

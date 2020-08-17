@@ -12,6 +12,8 @@ const Config = require('./Config');
 const DeviceComm = require('./DeviceComm');
 const Archive = require('./Archive');
 const AlertsStorage = require('./AlertsStorage');
+const Logger = require('./Logger');
+const FileLoggerHandler = require('./FileLoggerHandler');
 
 var mainEventManager;
 var globalStorage;
