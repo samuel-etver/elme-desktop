@@ -2,6 +2,12 @@ const infoLevel = 0;
 const warningLevel = 1;
 const severeLevel = 2;
 
+const levelStrings = {
+    [infoLevel]: 'INFO',
+    [warningLevel]: 'WARNING',
+    [severeLevel]: 'SEVERE'
+};
+
 class Logger {
     constructor() {
         this.handlers = [];
@@ -36,6 +42,11 @@ class Logger {
 
     removeHandler(handler) {
         this.handlers = this.handlers.filter(currHandler => currHandler !== handler);
+    }
+
+
+    levelToString(level) {
+        return levelStrings[level];
     }
 }
 

@@ -12,14 +12,16 @@ const Config = require('./Config');
 const DeviceComm = require('./DeviceComm');
 const Archive = require('./Archive');
 const AlertsStorage = require('./AlertsStorage');
-const Logger = require('./Logger');
+const MainLogger = require('./MainLogger');
 const FileLoggerHandler = require('./FileLoggerHandler');
 
 var mainEventManager;
 var globalStorage;
+var mainLogger;
 var deviceComm;
 var mainWindow;
 var archive;
+
 
 init();
 loadConfig();
@@ -76,6 +78,9 @@ function init() {
     globalStorage.configDir = globalStorage.homeDir;
     globalStorage.configFilePath = path.join(globalStorage.configDir,
                                              Constants.configFileName);
+    globalStorage.loggerFolderPath = path.join(globalStorage.homeDir,
+                                               Constants.loggerFolder);                                               
+    mainLogger = MainLogger.getInstance();
 
     deviceComm = DeviceComm.getInstance();
 

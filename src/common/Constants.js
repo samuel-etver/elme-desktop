@@ -77,4 +77,5 @@ module.exports = {
     memoryArchiveEnabled: true,
     localArchiveEnabled: false,
     remoteArchiveEnabled: false,
+    loggerFolder: 'Log',
 };
