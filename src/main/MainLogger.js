@@ -14,7 +14,7 @@ class MainLogger extends Logger {
         if ( !!instance ) {
             return instance;
         }
-        this.fileHandler = new FileLoggerHandler();
+        this.fileHandler = undefined
         this.onAppLoad = this.onAppLoad.bind(this);
         this.onAppClose = this.onAppClose.bind(this);
         mainEventManager.subscribe('app-load', this.onAppLoad);
@@ -25,7 +25,7 @@ class MainLogger extends Logger {
     onAppLoad() {
         mainEventManager.unsubscribe('app-load', this.onAppLoad);
         mainEventManager.subscribe('app-close', this.onAppClose);
-        this.fileHandler.open(globalStorage.loggerFolderPath);
+        this.fileHandler = new FileLoggerHandler(globalStorage.loggerFolderPath);
         this.addHandler(this.fileHandler);
     }
 
