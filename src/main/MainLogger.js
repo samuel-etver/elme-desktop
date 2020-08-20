@@ -10,7 +10,7 @@ let globalStorage = GlobalStorage.getInstance();
 
 class MainLogger extends Logger {
     constructor() {
-        super('Main');
+        super();
         if ( !!instance ) {
             return instance;
         }
