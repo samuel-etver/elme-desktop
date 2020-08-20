@@ -45,7 +45,7 @@ class Logger {
     }
 
 
-    levelToString(level) {
+    static levelToString(level) {
         return levelStrings[level];
     }
 }

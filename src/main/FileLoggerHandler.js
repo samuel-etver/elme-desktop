@@ -1,5 +1,6 @@
 const fs = require('fs');
 const path = require('path');
+const Logger = require('./Logger');
 const MainEventManager = require('../common/MainEventManager');
 
 let mainEventManager = MainEventManager.getInstance();
@@ -17,23 +18,24 @@ class FileLoggerHandler {
             return;
         }
 
-        function openImpl() {
-            if ( !fs.existsSync(rootFolder) ) {
-                fs.mkdirSync(rootFolder);
-            }
-        }
-
         try {
-            openImpl();
+            this.date = new Date();
+            let folderPath = path.join(this.rootFolder, this.date.getFullYear().toString());
+            if ( !fs.existsSync(folderPath) ) {
+                fs.mkdirSync(folderPath);
+            }
+            let filePath = path.join(folderPath, (this.date.getMonth() + 1).toString());
+            this.handle = fs.openSync(filePath, 'a');
         }
-        catch(e) {
+        catch (e) {
+            mainEventManager.publish('log', e.toString());
         }
     }
 
 
     close() {
         if ( this.isOpened() ) {
-            this.handle.close();
+            fs.closeSync(this.handle);
             this.handle = undefined;
         }
     }
@@ -47,7 +49,9 @@ class FileLoggerHandler {
     log(level, date, text) {
         let currDate = new Date();
 
-        function checkOpenNew() {
+        this.isOpened();
+
+        let checkOpenNew = function() {
             if ( !this.isOpened() ) {
                 return true;
             }
@@ -55,7 +59,7 @@ class FileLoggerHandler {
                 return true;
             }
             return false;
-        }
+        }.bind(this);
 
         if ( checkOpenNew() ) {
             this.close();
@@ -66,7 +70,7 @@ class FileLoggerHandler {
             let formatIntTo02 = function(value) {
                 return (value < 10) ? ('0' + value) : value.toString();
             };
-            let outputText = this.levelToString(level) + ' ('
+            let outputText = Logger.levelToString(level) + ' ('
               + date.getFullYear() + '-'
               + formatIntTo02(date.getMonth() + 1) + '-'
               + formatIntTo02(date.getDate()) + ' '
