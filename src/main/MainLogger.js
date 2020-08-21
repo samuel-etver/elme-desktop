@@ -19,6 +19,9 @@ class MainLogger extends Logger {
         this.onAppLoad = this.onAppLoad.bind(this);
         this.onAppClose = this.onAppClose.bind(this);
         this.onTimer = this.onTimer.bind(this);
+        this.onLogInfo = this.onLogInfo.bind(this);
+        this.onLogWarning = this.onLogWarning.bind(this);
+        this.onLogSevere = this.onLogSevere.bind(this);
         mainEventManager.subscribe('app-load', this.onAppLoad);
         instance = this;
     }
@@ -27,6 +30,9 @@ class MainLogger extends Logger {
     onAppLoad() {
         mainEventManager.unsubscribe('app-load', this.onAppLoad);
         mainEventManager.subscribe('app-close', this.onAppClose);
+        mainEventManager.subscribe('log-info', this.onLogInfo);
+        mainEventManager.subscribe('log-warning', this.onLogWarning);
+        mainEventManager.subscribe('log-severe', this.onLogSevere);
         this.fileHandler = new FileLoggerHandler(globalStorage.loggerFolderPath);
         this.addHandler(this.fileHandler);
         this.info("Application started");
@@ -36,6 +42,9 @@ class MainLogger extends Logger {
 
     onAppClose() {
         mainEventManager.unsubscribe('app-close', this.onAppClose);
+        mainEventManager.unsubscribe('log-info', this.onLogInfo);
+        mainEventManager.unsubscribe('log-warning', this.onLogWarning);
+        mainEventManager.unsubscribe('log-severe', this.onLogSevere);
         clearTimeout(this.timerId);
         this.info("Application closed")
         this.removeHandler(this.fileHandler);
@@ -45,6 +54,21 @@ class MainLogger extends Logger {
 
     onTimer() {
         this.info("Application is working");
+    }
+
+
+    onLogInfo(event, arg) {
+        this.info(arg);
+    }
+
+
+    onLogWarning(event, arg) {
+        this.warning(arg);
+    }
+
+
+    onLogSevere(event, arg) {
+        this.severe(arg);
     }
 }
 

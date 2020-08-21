@@ -48,7 +48,6 @@ class Archive {
 
 
     onArchiveDataReady(event, arg) {
-        //mainEventManager.publish('log', '');
         mainEventManager.publish('archive-data-ready', arg);
     }
 }

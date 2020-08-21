@@ -24,11 +24,14 @@ class FileLoggerHandler {
             if ( !fs.existsSync(folderPath) ) {
                 fs.mkdirSync(folderPath);
             }
-            let filePath = path.join(folderPath, (this.date.getMonth() + 1).toString());
+            let filePath = path.join(folderPath,
+              this.date.getFullYear() + '-' +
+              this.formatIntTo02(this.date.getMonth() + 1) +
+              '.txt');
             this.handle = fs.openSync(filePath, 'a');
         }
         catch (e) {
-            mainEventManager.publish('log', e.toString());
+            mainEventManager.publish('to-console', e.toString());
         }
     }
 
@@ -67,21 +70,24 @@ class FileLoggerHandler {
         }
 
         if ( this.isOpened() ) {
-            let formatIntTo02 = function(value) {
-                return (value < 10) ? ('0' + value) : value.toString();
-            };
             let outputText = Logger.levelToString(level) + ' ('
               + date.getFullYear() + '-'
-              + formatIntTo02(date.getMonth() + 1) + '-'
-              + formatIntTo02(date.getDate()) + ' '
-              + formatIntTo02(date.getHours()) + ':'
-              + formatIntTo02(date.getMinutes()) + ':'
-              + formatIntTo02(date.getSeconds()) + ')\r\n'
+              + this.formatIntTo02(date.getMonth() + 1) + '-'
+              + this.formatIntTo02(date.getDate()) + ' '
+              + this.formatIntTo02(date.getHours()) + ':'
+              + this.formatIntTo02(date.getMinutes()) + ':'
+              + this.formatIntTo02(date.getSeconds()) + ')\r\n'
               + text
               + '\r\n\r\n';
             fs.writeSync(this.handle, Buffer.from(outputText));
         }
     }
+
+
+    formatIntTo02(value) {
+        return (value < 10) ? ('0' + value) : value.toString();
+    }
+
 }
 
 module.exports = FileLoggerHandler;

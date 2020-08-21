@@ -16,7 +16,7 @@ const GlobalStorage = require('../common/GlobalStorage');
 
 const globalStorage = GlobalStorage.getInstance();
 const mainEventManager = MainEventManager.getInstance();
-mainEventManager.subscribe('log', onLog);
+mainEventManager.subscribe('to-console', (arg1, arg2) => toConsole(arg2));
 
 
 class App extends React.Component {
@@ -76,13 +76,8 @@ class App extends React.Component {
 }
 
 
-function onLog(arg1, arg2) {
-    log(arg2);
-}
-
-
-function log(arg) {
-    ipc.send('log', arg);
+function toConsole(arg) {
+    ipc.send('to-console', arg);
 }
 
 

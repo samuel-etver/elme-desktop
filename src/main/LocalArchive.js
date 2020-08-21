@@ -46,7 +46,7 @@ class LocalArchive {
         }.bind(this);
 
         let onOpen = function(event, command, ...restArgs) {
-            mainEventManager.publish('log', command);
+            mainEventManager.publish('to-console', command);
 
             switch(command) {
                 case 'start':
@@ -278,10 +278,10 @@ class LocalArchive {
                     }
 
                     /*this.deleteAll((result) => {
-                        mainEventManager.publish('log', result);
+                        mainEventManager.publish('to-console', result);
                     });
                     this.delete(new Date(), (result) => {
-                        mainEventManager.publish('log', result);
+                        mainEventManager.publish('to-cosole', result);
                     });*/
                     break;
 

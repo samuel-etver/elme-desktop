@@ -51,7 +51,10 @@ function createWindow() {
     mainEventManager.subscribe('device-data-ready', onDeviceDataReady);
     mainEventManager.subscribe('device-data-failure', onDeviceDataFailure);
 
-    ipc.on('log', onLog);
+    ipc.on('to-console', (event, arg) => {
+        console.log(arg);
+        event.returnValue = null;      
+    });
 }
 
 app.on('ready', createWindow);
@@ -71,7 +74,7 @@ app.on('activate', () => {
 
 function init() {
     mainEventManager = MainEventManager.getInstance();
-    mainEventManager.subscribe('log', (event, arg) => console.log(arg));
+    mainEventManager.subscribe('to-console', (event, arg) => console.log(arg));
     globalStorage = GlobalStorage.getInstance();
     globalStorage.homeDir = path.join(process.env.APPDATA,
                                       Constants.appName);
@@ -79,7 +82,7 @@ function init() {
     globalStorage.configFilePath = path.join(globalStorage.configDir,
                                              Constants.configFileName);
     globalStorage.loggerFolderPath = path.join(globalStorage.homeDir,
-                                               Constants.loggerFolder);                                               
+                                               Constants.loggerFolder);
     mainLogger = MainLogger.getInstance();
 
     deviceComm = DeviceComm.getInstance();
@@ -125,10 +128,4 @@ function onDeviceDataFailure() {
 
 function sendDeviceData() {
   mainWindow.send('device-data-ready', globalStorage.deviceData);
-}
-
-
-function onLog(event, arg) {
-    console.log(arg);
-    event.returnValue = null;
 }
