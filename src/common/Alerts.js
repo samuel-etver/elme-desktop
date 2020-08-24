@@ -21,7 +21,8 @@ var Alerts = new (function() {
 
 
     this.get = function(name) {
-        for (item in alerts) {
+        for (let id in alerts) {
+            let item = alerts[id];
             if (item.name === name) {
                 return item;
             }

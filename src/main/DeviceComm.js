@@ -6,9 +6,15 @@ const Constants = require('../common/Constants');
 const GlobalStorage = require('../common/GlobalStorage');
 const MainEventManager = require('../common/MainEventManager');
 const DeviceData = require('../common/DeviceData');
+const Trigger = require('../common/Trigger');
+const Alerts = require('../common/Alerts');
+const AlertStorageItem = require('../common/AlertStorageItem');
+const AlertsStorage = require('./AlertsStorage');
 
 const globalStorage = GlobalStorage.getInstance();
 const mainEventManager = MainEventManager.getInstance();
+const alertsStorage = AlertsStorage.getInstance();
+const noDeviceConnectionAlert = (new Alerts()).get('noDeviceConnection');
 
 var DeviceComm = (function() {
     let instance;
@@ -234,10 +240,11 @@ var DeviceMock = (function() {
 
 (function() {
     let timerId;
+    let trigger = new Trigger();
 
     mainEventManager.subscribe('app-load', start);
     mainEventManager.subscribe('app-close', stop);
-    mainEventManager.subscribe('device-data-ready', restart);
+    mainEventManager.subscribe('device-data-ready', onDeviceDataReady);
 
 
     function start() {
@@ -258,10 +265,31 @@ var DeviceMock = (function() {
     }
 
 
+    function onDeviceDataReady() {
+        let triggerChanged = pushAlertInTrigger(AlertStorageItem.stateOff);
+        if ( triggerChanged ) {
+            alertsStorage.pull(trigger.id);
+        }
+        restart();
+    }
+
+
     function watchdog() {
         globalStorage.deviceData = DeviceData.now();
         mainEventManager.publish('device-data-failure');
+        let triggerChanged = pushAlertInTrigger(AlertStorageItem.stateOn);
+        if ( triggerChanged ) {
+            alertsStorage.push(trigger.value);
+        }
         restart();
+    }
+
+
+    function pushAlertInTrigger(state) {
+        let alertStorageItem = AlertStorageItem.now(noDeviceConnectionAlert.id);
+        alertStorageItem.state = state;
+        trigger.value = alertStorageItem;
+        return trigger.changed;
     }
 })();
 
