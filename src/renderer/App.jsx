@@ -5,6 +5,7 @@ import './App.css';
 import RtValuesPage from './components/RtValuesPage';
 import RtChartsPage from './components/RtChartsPage';
 import ArchivePage from './components/ArchivePage';
+import MarkupPage from './components/MarkupPage';
 import ControlPane from './components/ControlPane';
 import NotificationPane from './components/NotificationPane';
 const electron = window.require('electron');
@@ -42,6 +43,7 @@ class App extends React.Component {
                     <RtValuesPage visible={isPageVisible('rt-values')}/>
                     <RtChartsPage visible={isPageVisible('rt-charts')}/>
                     <ArchivePage  visible={isPageVisible('archive')}/>
+                    <MarkupPage   visible={isPageVisible('markup')}/>
                 </div>
             </div>
         );

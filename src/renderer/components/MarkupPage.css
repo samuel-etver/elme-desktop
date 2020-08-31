@@ -1,0 +1,10 @@
+.markup-page {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    padding: 16px;
+    background-image: linear-gradient(to right, #66bbff 0%, #0049aa 30%);
+    width: 100%;
+    height: var(--page-height);
+}
