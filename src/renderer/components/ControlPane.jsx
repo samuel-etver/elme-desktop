@@ -37,8 +37,12 @@ class ControlButton extends React.Component {
 class ControlPane extends React.Component {
     constructor(props) {
         super(props);
+        this.rtValuesName = 'rt-values';
+        this.rtChartsName = 'rt-charts';
+        this.archiveName  = 'archive';
+        this.markupName = 'markup';
         this.state = {
-            selected: 'rt-values'
+            selected: this.rtValuesName
         };
         this.onButtonClick = this.onButtonClick.bind(this);
         this.onPageSelected = this.onPageSelected.bind(this);
@@ -50,17 +54,17 @@ class ControlPane extends React.Component {
             return selected ? 'selected' : '';
         };
         let selected = this.state.selected;
-        let valuesStyle = toStyle(selected === 'rt-values');
-        let chartsStyle = toStyle(selected === 'rt-charts');
-        let archiveStyle = toStyle(selected === 'archive');
-        let marksEditStyle = toStyle(selected === 'marks-edit');
+        let valuesStyle = toStyle(selected === this.rtValuesName);
+        let chartsStyle = toStyle(selected === this.rtChartsName);
+        let archiveStyle = toStyle(selected === this.archiveName);
+        let markupStyle = toStyle(selected === this.markupName);
 
         return (
             <div class="control-pane">
-                <ControlButton type="rt-values"  caption="ВЕЛИЧИНЫ" style={valuesStyle}/>
-                <ControlButton type="rt-charts"  caption="ГРАФИКИ"  style={chartsStyle}/>
-                <ControlButton type="archive"    caption="АРХИВ"    style={archiveStyle}/>
-                <ControlButton type="marks-edit" caption="РАЗМЕТКА" style={marksEditStyle}/>
+                <ControlButton type="rt-values" caption="ВЕЛИЧИНЫ" style={valuesStyle}/>
+                <ControlButton type="rt-charts" caption="ГРАФИКИ"  style={chartsStyle}/>
+                <ControlButton type="archive"   caption="АРХИВ"    style={archiveStyle}/>
+                <ControlButton type="markup"     caption="РАЗМЕТКА" style={markupStyle}/>
             </div>
         );
     }

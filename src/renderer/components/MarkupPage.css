@@ -7,4 +7,14 @@
     background-image: linear-gradient(to right, #66bbff 0%, #0049aa 30%);
     width: 100%;
     height: var(--page-height);
+    z-index: 1;
+}
+
+.markup-page-chart-pane {
+    position: relative;
+    background-image: linear-gradient(to right, #259, #135);
+    border-radius: 5px;
+    box-shadow: 2px 2px 5px black;
+    z-index: -1;
+    height: 400px;
 }
