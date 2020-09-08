@@ -15,6 +15,7 @@ import DateInputPane from './DateInputPane';
 import ChartScaleButtonsGroup from './ChartScaleButtonsGroup';
 import XScaleParameters from './XScaleParameters';
 import ChartHorzScrollBar from './ChartHorzScrollBar';
+import ReactTable from 'react-table';
 
 let mainEventManager = MainEventManager.getInstance();
 let globalStorage = GlobalStorage.getInstance();
@@ -417,19 +418,26 @@ class MarkupPage extends React.Component {
                       selectedId={this.state.selectedMeasureParameterId}
                       callback={this.onChartSelect} />
                     <HorzDivider height="40px" />
-                    <div class="markup-page-chart-pane">
-                        <Chart options={chartOptions} >
-                        </Chart>
-                        <ChartScaleButtonsGroup
-                          buttonIndex={this.state.xScale}
-                          callback={this.onXScaleChange}/>
+                    <div class="markup-page-data-pane">
+                      <div class="markup-page-chart-root-pane">
+                        <div class="markup-page-chart-pane">
+                            <Chart options={chartOptions} >
+                            </Chart>
+                            <ChartScaleButtonsGroup
+                              buttonIndex={this.state.xScale}
+                              callback={this.onXScaleChange}/>
+                        </div>
+                      </div>
+                      <div class="markup-page-table-pane">
+                      </div>
+                      <div>
+                        <HorzDivider height="8px" />
+                        <ChartHorzScrollBar
+                          value={this.state.xScrollBarPosition}
+                          callback={this.onXScrollBarEvent}
+                        />
+                      </div>
                     </div>
-                    <HorzDivider height="8px" />
-                    <ChartHorzScrollBar
-                        value={this.state.xScrollBarPosition}
-                        callback={this.onXScrollBarEvent}
-                    />
-                    <HorzDivider height="20px" />
                     <NumberButtonsGroup
                       count={this.measureParameters.size()}
                       callback={this.onChartNumberButtonClick} />
