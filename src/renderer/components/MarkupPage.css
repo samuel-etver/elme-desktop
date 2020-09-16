@@ -35,3 +35,16 @@
     width: inherit;
     background-color: yellow;
 }
+
+.markup-page .number-button {
+    background-image: linear-gradient(150deg, #80dfff99, #1070ffdd 30%, #444444ff);
+}
+
+.markup-page .measure-parameters-combobox-display-value {
+    background-image: linear-gradient(to right, #25f 0%, #58d 30%);
+}
+
+.markup-page .measure-parameters-combobox-value-text {
+    background-color: rgba(10,10,45,0.9);
+    text-shadow: 1px 1px 30px #fff5;
+}
