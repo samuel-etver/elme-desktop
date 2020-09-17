@@ -1,5 +1,8 @@
 
 .notification-pane {
+    display: flex;
+    flex-direction: row;
+    overflow: hidden;
     background-color: red;
     height: 40px;
     border-bottom: 1px solid darkred;

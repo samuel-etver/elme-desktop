@@ -1,6 +1,7 @@
 var Alerts = new (function() {
     let instance = this;
     let alerts = {};
+    this.size = 0;
 
     create(1000, 'noServerConnection', "Нет связи с сервером");
     create(1100, 'noDeviceConnection', "Нет связи с измерителем");
@@ -12,6 +13,7 @@ var Alerts = new (function() {
             text: text
         };
         alerts[id] = newAlert;
+        this.size++;
     };
 
 
@@ -28,6 +30,7 @@ var Alerts = new (function() {
             }
         }
     }
+
 
 
     return function() {

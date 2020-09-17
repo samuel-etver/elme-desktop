@@ -58,6 +58,22 @@ months.findByPartialMatch = function(str) {
 }
 
 
+let monthsGenetive = [
+    'января',
+    'февраля',
+    'марта',
+    'апреля',
+    'мая',
+    'июня',
+    'июля',
+    'августа',
+    'сентября',
+    'октября',
+    'ноября',
+    'декабря'
+];
+
+
 
 module.exports = {
     debug: false,
@@ -72,6 +88,7 @@ module.exports = {
     rtChartPeriod: 30*60, // seconds
     rtChartRecordInterval: 1, // seconds
     months: months,
+    monthsGenetive: monthsGenetive,
     archiveDateMin: new Date(2000, 0, 1),
     appId: "794D66AB-D85B-4CD5-9FFF-F8763D9FDC39",
     memoryArchiveEnabled: true,

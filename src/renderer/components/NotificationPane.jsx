@@ -1,6 +1,7 @@
 
 import React from 'react';
 import './NotificationPane.css'
+import Clock from './Clock';
 import AlertStorage from '../AlertsStorage';
 import MainEventManager from '../../common/MainEventManager';
 
@@ -30,6 +31,7 @@ class NotificationPane extends React.Component {
 
     render() {
         return <div class="notification-pane">
+                  <Clock />
                </div>
     }
 }
