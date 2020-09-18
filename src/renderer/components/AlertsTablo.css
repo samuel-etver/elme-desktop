@@ -1,0 +1,8 @@
+.alerts-tablo {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    flex-grow: 1;
+    background-color: #f00;
+    text-align: center;
+}
