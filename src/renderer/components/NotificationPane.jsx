@@ -32,6 +32,7 @@ class NotificationPane extends React.Component {
     render() {
         return <div class="notification-pane">
                   <Clock />
+                  <div class="notiication-horizontal-divider" />
                </div>
     }
 }

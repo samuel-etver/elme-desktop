@@ -2,8 +2,14 @@
 .notification-pane {
     display: flex;
     flex-direction: row;
+    flex-wrap: nowrap;
     overflow: hidden;
     background-color: red;
     height: 40px;
     border-bottom: 1px solid darkred;
+}
+
+.notiication-horizontal-divider {
+    background-image: linear-gradient(to right, #358, #135 20%, #f56);
+    min-width: 12px;
 }

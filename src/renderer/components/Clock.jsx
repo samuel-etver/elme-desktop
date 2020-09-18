@@ -45,11 +45,11 @@ class Clock extends React.Component {
 
         return <div class="clock">
                   <div class="clock-time">
-                    <div>{intTo02(dt.getHours())}</div>
+                    <div class="clock-time-value">{intTo02(dt.getHours())}</div>
                     <div class="clock-time-divider">{timeDivider}</div>
-                    <div>{intTo02(dt.getMinutes())}</div>
+                    <div class="clock-time-value">{intTo02(dt.getMinutes())}</div>
                     <div class="clock-time-divider">{timeDivider}</div>
-                    <div>{intTo02(dt.getSeconds())}</div>
+                    <div class="clock-time-value">{intTo02(dt.getSeconds())}</div>
                   </div>
                   <div class="clock-date">
                     {dateStr}

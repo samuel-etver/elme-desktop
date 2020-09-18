@@ -7,30 +7,29 @@
     width: 200px;
     overflow: hidden;
     text-shadow: 1px 1px 2px black;
-    border-right-style: groove;
-    border-right-width: 2px;
-    border-right-color: lime;
 }
 
 .clock-time {
     display: flex;
     flex-direction: row;
+    flex-wrap: nowrap;
     font-size: 15px;
     font-weight: bold;
     color: #ccf;
     margin: 0 auto;
-    transform: scaleX(1.8) scaleY(1.6);
+    transform: scaleX(2.5) scaleY(1.5);
 }
 
-.clock-time div {
-    margin: 0 4px;
+.clock-time-value {
     text-align: left;
     letter-spacing: 1px;
 }
 
 .clock-time-divider {
     min-width: 8px;
-    color: yellow;
+    color: #fa8;
+    text-align: center;
+    transform: translateY(-1px);
 }
 
 .clock-date {
