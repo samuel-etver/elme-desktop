@@ -1,0 +1,37 @@
+.alerts-dropdown {
+    position: relative;
+    width: calc(var(--notification-pane-height));
+    height: calc(var(--notification-pane-height));
+    margin-left: 2px;
+    margin-top: 1px;
+    margin-right: 1px;
+}
+
+.alerts-dropdown-button {
+    position: absolute;
+    width: calc(var(--notification-pane-height) - 2px);
+    height: calc(var(--notification-pane-height) - 2px);
+    background-image:
+      linear-gradient(145deg, #f779, #f669 30%, #c009),
+      linear-gradient(145deg, #f87, #eee 20%, #000);
+    border-radius: 8px;
+    border: 1px solid black;
+    box-sizing: border-box;
+}
+
+.alerts-dropdown-button:active {
+    background-image:
+      linear-gradient(145deg, #c009, #f669 75%, #f779),
+      linear-gradient(145deg, #000, #eee 85%, #f87);
+}
+
+.alerts-dropdown-image {
+    position: absolute;
+    background-image: url("../../assets/alerts-list.png");
+    background-size: 32px 32px;
+    width: 32px;
+    height: 32px;
+    top: 2px;
+    left: 3px;
+    pointer-events: none;
+}

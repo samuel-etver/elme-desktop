@@ -12,7 +12,7 @@
     left: -2px;
     top: -2px;
     height: inherit;
-    width: 100%;
+    width: calc(100% + 4px);
     border-radius: 2px;
     border-width: 1px;
     border-color: black;
@@ -26,8 +26,8 @@
 
 @keyframes tablo-shutter-move {
     0% {margin-top: 0px; }
-    15% { margin-top: calc(var(--notification-pane-height) - 5px); }
-    85% { margin-top: calc(var(--notification-pane-height) - 5px); }
+    15% { margin-top: calc(var(--notification-pane-height)); }
+    85% { margin-top: calc(var(--notification-pane-height)); }
     100% {margin-top: 0px; }
 }
 

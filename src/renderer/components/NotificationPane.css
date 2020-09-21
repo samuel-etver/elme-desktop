@@ -8,6 +8,7 @@
     overflow: hidden;
     height: var(--notification-pane-height);
     border-bottom: 1px solid darkred;
+    background-color: #f79;
 }
 
 .notiication-horizontal-divider {
