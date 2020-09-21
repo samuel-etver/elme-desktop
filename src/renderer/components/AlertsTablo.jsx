@@ -16,12 +16,10 @@ class AlertsTablo extends React.Component {
 
 
     componentDidMount() {
-
     }
 
 
     componentWillUnmount() {
-
     }
 
 
@@ -38,6 +36,8 @@ onAppClose() {
 
     render() {
         return  <div class="alerts-tablo">
+                    <div class="alerts-table-message">This is alert!</div>
+                    <div class="alerts-tablo-shutter" />
                 </div>
     }
 }

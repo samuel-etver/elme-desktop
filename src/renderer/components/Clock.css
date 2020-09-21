@@ -1,9 +1,11 @@
 
 .clock {
     display: flex;
+    flex-grow: 0;
+    flex-shrink: 0;
     flex-direction: column;
     background-color: #579;
-    height: 80px;
+    height: inherit;
     width: 200px;
     overflow: hidden;
     text-shadow: 1px 1px 2px black;

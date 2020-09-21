@@ -1,11 +1,12 @@
-
+:root {
+    --notification-pane-height: 40px;
+}
 .notification-pane {
     display: flex;
     flex-direction: row;
     flex-wrap: nowrap;
     overflow: hidden;
-    background-color: red;
-    height: 40px;
+    height: var(--notification-pane-height);
     border-bottom: 1px solid darkred;
 }
 
