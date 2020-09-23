@@ -11,7 +11,12 @@
     background-color: #f79;
 }
 
-.notiication-horizontal-divider {
+.notiication-horizontal-divider1 {
     background-image: linear-gradient(to right, #358, #135 20%, #f56);
+    min-width: 12px;
+}
+
+.notiication-horizontal-divider2 {
+    background-image: linear-gradient(to right, #f00, #700 20%, #fab);
     min-width: 12px;
 }

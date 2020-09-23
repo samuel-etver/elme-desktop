@@ -41,6 +41,32 @@ class AlertsStorage {
     getAlerts() {
         return this.alerts;
     }
+
+
+    isAlertsSame(alerts1, alerts2) {
+        let alerts1Len = alerts1 ? alerts1.length : 0;
+        let alerts2Len = alerts2 ? alerts2.length : 0;
+
+        if (alerts1Len !== alerts2Len) {
+            return false;
+        }
+
+        if (!alerts1Len) {
+            return true;
+        }
+
+
+        for (let i = 0; i < alerts1Len; i++) {
+            let alerts1Item = alerts1[i];
+            let alerts2Item = alerts2[i];
+            if (alerts1Item.id             !== alerts2Item.id ||
+                alerts1Item.date.getTime() !== alerts2Item.date.getTime()) {
+                return false;
+            }
+        }
+
+        return true;
+    }
 }
 
 

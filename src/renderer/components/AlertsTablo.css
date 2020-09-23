@@ -4,23 +4,23 @@
     background-color: #c00;
     flex-grow: 1;
     box-sizing: border-box;
-    border: 3px ridge #900;
+    border: 0px none #900;
 }
 
 .alerts-tablo-shutter {
     position: absolute;
-    left: -2px;
-    top: -2px;
+    left: -0px;
+    top: -0px;
     height: inherit;
-    width: calc(100% + 4px);
+    width: calc(100% + 0px);
     border-radius: 2px;
     border-width: 1px;
     border-color: black;
     border-style: solid;
     box-sizing: border-box;
     background-image:
-      repeating-linear-gradient(to right, #7b98 12px, #0756 25px, #4887 35px),
-      repeating-linear-gradient(to bottom, #fff 7px, #000 15px);
+      repeating-linear-gradient(45deg, #7b98 12px, #0756 25px, #4887 35px),
+      repeating-linear-gradient(135deg, #fff 7px, #000 35px);
     animation: 4s linear 9s infinite normal tablo-shutter-move;
 }
 
@@ -39,5 +39,5 @@
     color: white;
     text-shadow: 1px 1px 3px black;
     padding-left: 10px;
-    transform: translateY(-6px);
+    transform: translateY(-2px);
 }

@@ -1,5 +1,5 @@
 :root {
-  --alerts-dropdown-container-width: 400px;
+  --alerts-dropdown-container-width: 800px;
   --alerts-dropdown-container-height: 200px;
 }
 
@@ -73,6 +73,7 @@
     box-sizing: border-box;
     text-shadow: 1px 1px 3px grey,
                  -1px -1px 3px white;
+    user-select: none;
 }
 
 .alerts-dropdown-column-date {
