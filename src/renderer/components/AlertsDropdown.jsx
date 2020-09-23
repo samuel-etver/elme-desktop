@@ -70,8 +70,12 @@ class AlertsDropdown extends React.Component {
     render() {
         if (this.state.visible) {
             let alerts = this.state.alerts;
+            alerts = [11, 22, 33];
             if (alerts && alerts.length) {
-                var alertsRows = alerts.map(() => {});
+                var alertsRows = alerts.map((item) => {
+                    return <div class="alerts-dropdown-row">{item.toString()}
+                           </div>
+                });
             }
 
             var dropdownContainer =

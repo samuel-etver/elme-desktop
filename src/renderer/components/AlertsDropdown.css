@@ -51,7 +51,6 @@
     left: calc(100vw/2 - var(--alerts-dropdown-container-width)/2);
     width: var(--alerts-dropdown-container-width);
     height: var(--alerts-dropdown-container-height);
-    background-color: white;
     border: 1px solid black;
     border-radius: 5px;
     z-index: 1000;
@@ -74,6 +73,7 @@
     text-shadow: 1px 1px 3px grey,
                  -1px -1px 3px white;
     user-select: none;
+    border-bottom: 1px solid brown;
 }
 
 .alerts-dropdown-column-date {
@@ -108,4 +108,13 @@
     box-sizing: border-box;
     margin-top: 4px;
     margin-right: 4px;
+}
+
+.alerts-dropdown-row {
+    color: white;
+    font-weight: normal;
+    font-size: 21px;
+    letter-spacing: 1px;
+    text-align: center;
+    border-bottom: 3px groove #f997;
 }
