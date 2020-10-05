@@ -53,7 +53,7 @@ function createWindow() {
 
     ipc.on('to-console', (event, arg) => {
         console.log(arg);
-        event.returnValue = null;      
+        event.returnValue = null;
     });
 }
 

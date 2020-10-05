@@ -7,14 +7,14 @@ const GlobalStorage = require('../common/GlobalStorage');
 const MainEventManager = require('../common/MainEventManager');
 const DeviceData = require('../common/DeviceData');
 const Trigger = require('../common/Trigger');
-const Alerts = require('../common/Alerts');
+const AllAlerts = require('../common/Alerts');
 const AlertStorageItem = require('../common/AlertStorageItem');
 const AlertsStorage = require('./AlertsStorage');
 
 const globalStorage = GlobalStorage.getInstance();
 const mainEventManager = MainEventManager.getInstance();
 const alertsStorage = AlertsStorage.getInstance();
-const noDeviceConnectionAlert = (new Alerts()).get('noDeviceConnection');
+const noDeviceConnectionAlert = (new AllAlerts()).get('noDeviceConnection');
 
 var DeviceComm = (function() {
     let instance;

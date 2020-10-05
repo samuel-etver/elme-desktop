@@ -32,7 +32,6 @@ var Alerts = new (function() {
     }
 
 
-
     return function() {
         return instance;
     };

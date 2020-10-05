@@ -23,7 +23,7 @@ class AlertsStorage {
     onAppLoad() {
         mainEventManager.unsubscribe('app-load', this.onAppLoad);
         mainEventManager.subscribe('app-close', this.onAppClose);
-        ipc.on('alerts-storage-receive', this.onAlertsStorageReceive);
+        ipc.on('alerts-storage-receive', (event, arg) => this.onAlertsStorageReceive(arg));
     }
 
 
@@ -33,7 +33,7 @@ class AlertsStorage {
     }
 
 
-    onAlertsStorageReceive(event, arg) {
+    onAlertsStorageReceive(arg) {
         this.alerts = arg;
     }
 

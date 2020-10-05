@@ -1,10 +1,11 @@
 import React from 'react';
 import './AlertsDropdown.css';
-import MainEventManager from '../../common/MainEventManager';
 import AlertsStorage from '../AlertsStorage';
+import Calendar from '../../common/Calendar'
+import AllAlerts from '../../common/Alerts'
 
-let mainEventManager = MainEventManager.getInstance();
 let alertsStorage = AlertsStorage.getInstance();
+let allAlerts = new AllAlerts();
 
 
 class AlertsDropdown extends React.Component {
@@ -70,10 +71,15 @@ class AlertsDropdown extends React.Component {
     render() {
         if (this.state.visible) {
             let alerts = this.state.alerts;
-            alerts = [11, 22, 33];
             if (alerts && alerts.length) {
                 var alertsRows = alerts.map((item) => {
-                    return <div class="alerts-dropdown-row">{item.toString()}
+                    let dt = Calendar.timeToStr(item.date);
+                    let tm = Calendar.dateToStr(item.date);
+                    let msg = allAlerts.byId(item.id).text;
+                    return <div class="alerts-dropdown-row">
+                              <div class="alerts-dropdown-cell alerts-dropdown-cell-date">{dt}</div>
+                              <div class="alerts-dropdown-cell alerts-dropdown-cell-time">{tm}</div>
+                              <div class="alerts-dropdown-cell alerts-dropdown-cell-alert">{msg}</div>
                            </div>
                 });
             }

@@ -1,6 +1,8 @@
 :root {
   --alerts-dropdown-container-width: 800px;
   --alerts-dropdown-container-height: 200px;
+  --alerts-dropdown-column-date-width: 100px;
+  --alerts-dropdown-column-time-width: 100px;
 }
 
 .alerts-dropdown {
@@ -77,13 +79,13 @@
 }
 
 .alerts-dropdown-column-date {
-    width: 80px;
+    width: var(--alerts-dropdown-column-date-width);
     border-right: 3px groove #f998;
     padding-left: 4px;
 }
 
 .alerts-dropdown-column-time {
-    width: 80px;
+    width: var(--alerts-dropdown-column-time-width);
     padding-left: 4px;
     border-right: 3px groove #f998;
 }
@@ -111,10 +113,34 @@
 }
 
 .alerts-dropdown-row {
+    display: flex;
+    flex-direction: row;
     color: white;
     font-weight: normal;
     font-size: 21px;
     letter-spacing: 1px;
     text-align: center;
     border-bottom: 3px groove #f997;
+    user-select: none;
+}
+
+.alerts-dropdown-cell {
+    text-align: center;
+    border-right: 3px groove #f997;
+    padding-left: 4px;
+    text-shadow: 1px 1px 3px #500,
+                 -1px -1px 3px white;
+}
+
+.alerts-dropdown-cell-date {
+    width: var(--alerts-dropdown-column-date-width);
+}
+
+.alerts-dropdown-cell-time {
+    width: var(--alerts-dropdown-column-time-width);
+}
+
+.alerts-dropdown-cell-alert {
+    flex-grow: 1;
+    text-align: left;
 }
