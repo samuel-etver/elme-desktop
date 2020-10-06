@@ -39,7 +39,7 @@ class AlertsStorage {
 
 
     getAlerts() {
-        return this.alerts;
+        return this.alerts ?? [];
     }
 
 

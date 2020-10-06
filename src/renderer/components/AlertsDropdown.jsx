@@ -4,8 +4,8 @@ import AlertsStorage from '../AlertsStorage';
 import Calendar from '../../common/Calendar'
 import AllAlerts from '../../common/Alerts'
 
-let alertsStorage = AlertsStorage.getInstance();
-let allAlerts = new AllAlerts();
+const alertsStorage = AlertsStorage.getInstance();
+const allAlerts = new AllAlerts();
 
 
 class AlertsDropdown extends React.Component {

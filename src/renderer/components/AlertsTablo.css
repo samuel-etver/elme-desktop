@@ -21,10 +21,21 @@
     background-image:
       repeating-linear-gradient(45deg, #7b98 12px, #0756 25px, #4887 35px),
       repeating-linear-gradient(135deg, #fff 7px, #000 35px);
-    animation: 4s linear 9s infinite normal tablo-shutter-move;
+    animation-duration: 4s;
+    animation-delay: 0s;
+    animation-iteration-count: 1;
+    animation-timing-function: linear;
+    animation-name: none;
 }
 
-@keyframes tablo-shutter-move {
+@keyframes tablo-shutter-move0 {
+    0% {margin-top: 0px; }
+    15% { margin-top: calc(var(--notification-pane-height)); }
+    85% { margin-top: calc(var(--notification-pane-height)); }
+    100% {margin-top: 0px; }
+}
+
+@keyframes tablo-shutter-move1 {
     0% {margin-top: 0px; }
     15% { margin-top: calc(var(--notification-pane-height)); }
     85% { margin-top: calc(var(--notification-pane-height)); }

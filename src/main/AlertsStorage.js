@@ -15,7 +15,6 @@ class AlertsStorage {
         }
         instance = this;
         this.alerts = [
-
         ];
         this.onAppLoad = this.onAppLoad.bind(this);
         this.onAppClose = this.onAppClose.bind(this);
@@ -23,6 +22,7 @@ class AlertsStorage {
         this.timerId = undefined;
         this.changed = false;
         mainEventManager.subscribe('app-load', this.onAppLoad);
+        this.i = 0;
     }
 
 
@@ -41,9 +41,11 @@ class AlertsStorage {
     onTimer() {
       //  if ( this.changed ) {
       //      this.changed = false;
+            this.i = this.i ? 0 : 1;
             let item1 = AlertStorageItem.now(1000);
             let item2 = AlertStorageItem.now(1100);
-            globalStorage['mainWindow'].send('alerts-storage-receive', [item1, item2]);//this.alerts);
+            let a = this.i ? [item1, item2] : [item1];
+            globalStorage['mainWindow'].send('alerts-storage-receive', a);//this.alerts);
     //    }
         this.timerId = setTimeout(this.onTimer, 2000);
     }
