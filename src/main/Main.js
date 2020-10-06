@@ -1,6 +1,7 @@
 const electron = require('electron');
 const app = electron.app;
 const BrowserWindow = electron.BrowserWindow;
+const Menu = electron.Menu;
 const ipc = electron.ipcMain;
 const path = require('path');
 const fs = require('fs');
@@ -15,12 +16,13 @@ const AlertsStorage = require('./AlertsStorage');
 const MainLogger = require('./MainLogger');
 const FileLoggerHandler = require('./FileLoggerHandler');
 
-var mainEventManager;
-var globalStorage;
-var mainLogger;
-var deviceComm;
-var mainWindow;
-var archive;
+let mainEventManager;
+let globalStorage;
+let mainLogger;
+let deviceComm;
+let mainWindow;
+let aboutWindow;
+let archive;
 
 
 init();
@@ -55,6 +57,29 @@ function createWindow() {
         console.log(arg);
         event.returnValue = null;
     });
+
+
+    let mainMenu = Menu.buildFromTemplate([
+        {
+            label: "Файл",
+            submenu: [
+                {
+                    label: "Выход",
+                    click: onExitClick
+                }
+            ]
+        },
+        {
+            label: "Справка",
+            submenu: [
+                {
+                    label: "О программе...",
+                    click: onAboutClick
+                }
+            ]
+        }
+    ]);
+    mainWindow.setMenu(mainMenu);
 }
 
 app.on('ready', createWindow);
@@ -127,5 +152,27 @@ function onDeviceDataFailure() {
 
 
 function sendDeviceData() {
-  mainWindow.send('device-data-ready', globalStorage.deviceData);
+    mainWindow.send('device-data-ready', globalStorage.deviceData);
+}
+
+
+function onAboutClick() {
+    aboutWindow = new BrowserWindow({
+        parent: mainWindow,
+        modal: true,
+        center: true,
+        resizable: false,
+        minimizable: false,
+        width: 400,
+        height: 500,
+        webPreferences: {
+          nodeIntegration: true
+        }
+    });
+    aboutWindow.removeMenu();
+    aboutWindow.loadFile(`./public/about.html`);
+}
+
+function onExitClick() {
+    app.quit();
 }
