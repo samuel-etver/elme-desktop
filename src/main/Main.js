@@ -171,8 +171,17 @@ function onAboutClick() {
     });
     aboutWindow.removeMenu();
     aboutWindow.loadFile(`./public/about.html`);
+    ipc.removeListener('about-window-close', onCloseAboutWindow)
+    ipc.once('about-window-close', onCloseAboutWindow);
 }
+
 
 function onExitClick() {
     app.quit();
+}
+
+
+function onCloseAboutWindow() {
+    aboutWindow.close();
+    aboutWindow = undefined;
 }

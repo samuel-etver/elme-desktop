@@ -1,3 +1,8 @@
+import Constants from '../../common/Constants';
+import XScaleParameters from './XScaleParameters';
+
+let xScaleParameters = new XScaleParameters();
+
 let ArchivePageMixin = {
     packData(data) {
         if ( !data || data.length < 1000) {
@@ -99,6 +104,90 @@ let ArchivePageMixin = {
         }
 
         return result;
+    },
+
+
+    onChartNumberButtonClickImpl(index) {
+        this.setState((oldState) => {
+            let newState = Object.assign({}, oldState);
+            newState.selectedMeasureParameterId = this.measureParameters.byIndex(index).id;
+            return newState;
+        });
+    },
+
+
+    onChartSelectImpl(event, id) {
+        this.setState((oldState) => {
+            let newState = Object.assign({}, oldState);
+            newState.selectedMeasureParameterId = id;
+            return newState;
+        });
+    },
+
+
+    onXScrollBarEventImpl(event, value) {
+        let newValue;
+        let xScale = this.state.xScale;
+        let options = this.chartBuilder.buildXScrollBarOptions({
+              xScale: xScale
+        });
+        let step;
+        let newValueSaved;
+
+        var validatePosition = function() {
+            if ( newValue < options.valueMin ) {
+                newValue += 50 - options.valueMin;
+            }
+            else if ( newValue > options.valueMax ) {
+                newValue -= options.valueMax - 50;
+            }
+        };
+
+        switch(event) {
+            case 'scroll':
+                newValue = value;
+                newValueSaved = newValue;
+                break;
+            case 'stop':
+                newValue = value;
+                newValueSaved = newValue;
+                validatePosition();
+                break;
+            case 'double-left':
+                step = -options.doubleStep;
+            case 'left':
+                step = step ?? -options.step;
+            case 'right':
+                step = step ?? options.step;
+            case 'double-right':
+                step = step ?? options.doubleStep;
+                newValue = this.state.xScrollBarPosition + step;
+                newValueSaved = newValue;
+                validatePosition();
+
+            default: ;
+        }
+
+        if ( newValue !== undefined ) {
+            this.setState((oldState) => {
+                let newState = Object.assign({}, oldState);
+                newState.xScrollBarPosition = newValue;
+                let xMax = new Date(oldState.xMax.getTime() + (newValueSaved - oldState.xScrollBarPosition)*0.01*options.interval);
+                if ( xMax.getTime() < Constants.archiveDateMin.getTime() ) {
+                    xMax = Constants.archiveDateMin;
+                }
+                newState.xMax = xMax;
+                newState.dateInputPaneData.hour = xMax.getHours();
+                newState.dateInputPaneData.day = xMax.getDate();
+                newState.dateInputPaneData.month = Constants.months.capitalize(xMax.getMonth());
+                newState.dateInputPaneData.year = xMax.getFullYear();
+                this.archiveMessageManager.publish( {
+                    dateFrom: new Date(xMax.getTime() - xScaleParameters.get(xScale).value*60*1000),
+                    dateTo: xMax
+                });
+                return newState;
+            });
+        }
     },
 };
 

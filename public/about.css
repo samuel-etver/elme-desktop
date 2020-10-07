@@ -1,3 +1,49 @@
+:root {
+    --button-width: 120px;
+    --button-height: 2.0rem;
+    --image-width: calc(100vw - 18px);
+    --image-height: calc(100vh - 18px);
+    --image-margin: 8px;
+}
+
 body {
-    background-color: #fbb;    
+    position: absolute;
+    background-color: white;
+    margin: 0;
+}
+
+#button-close {
+    position: absolute;
+    background-image:
+      linear-gradient(165deg, #bbbd, #fffa 20%, #4445),
+      linear-gradient(to bottom, #666, #aaa 20%, #444);
+    border-radius: 15px;
+    width: var(--button-width);
+    height: var(--button-height);
+    border: 2px solid grey;
+    outline: none;
+    letter-spacing: 1px;
+    font-size: 0.8rem;
+    top: calc(var(--image-margin) + var(--image-height) - var(--button-height) - 8px);
+    left: calc(var(--image-width)/2 - var(--button-width)/2 + var(--image-margin));
+}
+
+#button-close:active {
+    background-image:
+      linear-gradient(295deg, #bbbd, #fffa 20%, #4445),
+      linear-gradient(to top, #666, #aaa 20%, #444);
+    border: 2px ridge grey;
+    text-shadow: 1px 1px 3px #555,
+                 -1px -1px 1px #aaa;
+}
+
+#image-about {
+    position: absolute;
+    left: var(--image-margin);
+    top: var(--image-margin);
+    width: var(--image-width);
+    height: var(--image-height);
+    border-radius: 5px;
+    border: 1px solid black;
+    box-shadow: 1px 1px 5px black;
 }
