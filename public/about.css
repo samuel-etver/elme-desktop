@@ -4,6 +4,8 @@
     --image-width: calc(100vw - 18px);
     --image-height: calc(100vh - 18px);
     --image-margin: 8px;
+    --info-tabs-height: 180px;
+    --info-tabs-button-height: 20px;
 }
 
 body {
@@ -24,6 +26,7 @@ body {
     outline: none;
     letter-spacing: 1px;
     font-size: 0.8rem;
+    font-weight: bold;
     top: calc(var(--image-margin) + var(--image-height) - var(--button-height) - 8px);
     left: calc(var(--image-width)/2 - var(--button-width)/2 + var(--image-margin));
 }
@@ -44,6 +47,125 @@ body {
     width: var(--image-width);
     height: var(--image-height);
     border-radius: 5px;
-    border: 1px solid black;
+    border: 1px none black;
     box-shadow: 1px 1px 5px black;
+}
+
+.info-tabs {
+    position: absolute;
+    left: calc(var(--image-margin) + 8px);
+    width: calc(var(--image-width) - 16px);
+    min-width: 350px;
+    height: var(--info-tabs-height);
+    top: calc(var(--image-height) + var(--image-margin) - var(--info-tabs-height) - 50px);
+    font-size: 0;
+    background-color: #7776;
+    overflow-y: hidden;
+    box-sizing: border-box;
+    box-shadow: 1px 1px 5px black;
+}
+
+.info-tabs * {
+    box-sizing: border-box;
+}
+
+.info-tabs>input[type="radio"] {
+    display: none;
+}
+
+.info-tabs>div {
+    display: none;
+    border: 1px solid #4448;
+    padding: 10px 15px;
+    font-size: 16px;
+    overflow-y: auto;
+    height: calc(var(--info-tabs-height) - var(--info-tabs-button-height));
+}
+
+.info-tabs ::-webkit-scrollbar-track {
+    border-radius: 5px;
+    box-shadow: inset 1px 1px 3px #0008;
+}
+
+.info-tabs ::-webkit-scrollbar-thumb {
+    box-shadow: inset -1px -1px 3px #0008;
+    background-color: #fff4;
+    border-radius: 5px;
+}
+
+.info-tabs ::-webkit-scrollbar {
+    background: #0000;
+    width: 10px;
+}
+
+
+
+.info-tabs #content-1 {
+    text-align: center;
+    color: black;
+}
+
+#app-title {
+    font-size: 21px;
+    font-weight: black;
+}
+
+#app-version {
+    margin-top: 12px;
+    font-size: 15px;
+    font-weight: bold;
+}
+
+#app-date {
+    margin-top: 8px;
+    font-size: 13px;
+    font-weight: bold;
+}
+
+#tab-button-1:checked~#content-1,
+#tab-button-2:checked~#content-2,
+#tab-button-3:checked~#content-3 {
+    display: block;
+    background-color: #f448;
+}
+
+.info-tabs>label {
+    display: inline-block;
+    text-align: center;
+    vertical-align: middle;
+    user-select: none;
+    background-color: #fff5;
+    border: 1px solid #4448;
+    padding: 2px 8px;
+    font-size: 13px;
+    letter-spacing: 1px;
+    height: 20px;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out;
+    position: relative;
+    top: 1px;
+}
+
+.info-tabs>label:not(:first-of-type) {
+    border-left: none;
+}
+
+.info-tabs>input[type="radio"]:checked+label {
+    background-color: #fffb;
+    border-bottom: 1px solid #fff5;
+}
+
+.packages-list {
+    display: grid;
+    width: inherit;
+    grid-template-columns: 1fr 60px;
+}
+
+.packages-list > div {
+    border-bottom: 2px ridge #5553;
+    margin-bottom: 7px;
+    letter-spacing: 0px;
+    font-size: 13px;
+    font-weight: bold;
+    color: #000c;
+    user-select: none;
 }

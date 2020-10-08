@@ -6,7 +6,75 @@
   </head>
 
   <body>
-    <img src="about.jpg" alt="the image is not loaded" id="image-about"></img>
+    <img src="assets/about.jpg" alt="the image is not loaded" id="image-about"></img>
+
+    <div class="info-tabs">
+        <input type="radio" name="tab-button" id="tab-button-1" value="" checked>
+        <label for="tab-button-1">Версия</label>
+        <input type="radio" name="tab-button" id="tab-button-2" value="">
+        <label for="tab-button-2">Описание</label>
+        <input type="radio" name="tab-button" id="tab-button-3" value="">
+        <label for="tab-button-3">Пакеты</label>
+
+        <div id="content-1">
+            <div id="app-title"> Title </div>
+
+            <div id="app-version"> Версия: 0.1.0 </div>
+
+            <div id="app-date"> Дата: 2020-10-08 </div>
+        </div>
+
+        <div id="content-2">
+        </div>
+
+        <div id="content-3">
+            <div class="packages-list">
+                <div>antd</div>
+                <div>4.0.4</div>
+
+                <div>concurrently</div>
+                <div>5.1.0</div>
+
+                <div>cross-env</div>
+                <div>7.0.2</div>
+
+                <div>echarts</div>
+                <div>4.8.0</div>
+
+                <div>echarts-for-react</div>
+                <div>2.0.16</div>
+
+                <div>electron</div>
+                <div>8.2.0</div>
+
+                <div>electron-is-dev</div>
+                <div>1.1.0</div>
+
+                <div>jsmodbus</div>
+                <div>3.1.6</div>
+
+                <div>react</div>
+                <div>16.13.1</div>
+
+                <div>react-dom</div>
+                <div>16.13.1</div>
+
+                <div>react-scripts</div>
+                <div>3.4.1</div>
+
+                <div>react-table</div>
+                <div>7.5.0</div>
+
+                <div>sqlite3</div>
+                <div>5.0.0</div>
+
+                <div>wait-on</div>
+                <div>4.0.1</div>
+            </div>
+        </div>
+    </div>
+
+
     <button id="button-close">Закрыть</button>
     <script src="./about.js"></script>
   </body>
