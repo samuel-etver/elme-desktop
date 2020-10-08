@@ -1,9 +1,53 @@
 import Constants from '../../common/Constants';
 import XScaleParameters from './XScaleParameters';
+import MainEventManager from '../../common/MainEventManager';
+import MeasureParameters from '../MeasureParameters';
+import ChartBuilder from '../ChartBuilder';
 
+let mainEventManager = MainEventManager.getInstance();
 let xScaleParameters = new XScaleParameters();
 
 let ArchivePageMixin = {
+    initImpl() {
+        this.wasSelected = false;
+        this.measureParameters = new MeasureParameters();
+        this.chartBuilder = new ChartBuilder();
+        let measureParameter = this.measureParameters.get('inductorTemperature1');
+        this.state = {
+            selectedMeasureParameterId: measureParameter.id,
+            dateInputPaneData: {
+                year: '',
+                month: '',
+                day: '',
+                hour: ''
+            },
+            xScale: 1,
+            xScrollBarPosition: 50,
+            xMax: undefined,
+            dataPacketCount: 0
+        };
+        this.archiveData = undefined;
+        this.onPageSelected = this.onPageSelected.bind(this);
+        this.onChartNumberButtonClick = this.onChartNumberButtonClick.bind(this);
+        this.onChartSelect = this.onChartSelect.bind(this);
+        this.onDateInput = this.onDateInput.bind(this);
+        this.onXScaleChange = this.onXScaleChange.bind(this);
+        this.onXScrollBarEvent = this.onXScrollBarEvent.bind(this);
+        this.onArchiveDataReady = this.onArchiveDataReady.bind(this);
+        this.archiveMessageManager = {
+            timerId: undefined,
+            publish: function(...args) {
+                clearTimeout(this.timerId);
+                this.timerId = setTimeout(() => {
+                    mainEventManager.publish('archive-data-read', ...args);
+                }, 500);
+            }
+        };
+        this.series = null;
+        this.seriesParameterId = -1;
+    },
+
+
     packData(data) {
         if ( !data || data.length < 1000) {
             return data;
@@ -189,6 +233,49 @@ let ArchivePageMixin = {
             });
         }
     },
+
+
+    buildSeries(id) {
+        let series = [];
+        let data = [];
+        let measureParameter = this.measureParameters.byId(id);
+        if ( this.archiveData ) {
+            let measures = this.archiveData.measures;
+            let xs  = measures['date'];
+            let ys  = measures[measureParameter.name];
+            data = this.packData(Array.from(xs, (x, i) => [x, ys[i]]));
+        }
+        let newSerie = this.chartBuilder.buildSerie({
+            data: data
+        });
+        series.push(newSerie);
+        return series;
+    },
+
+
+    onXScaleChange(buttonIndex) {
+        this.setState((oldState) => {
+            let newState = Object.assign({}, oldState);
+            newState.xScale = buttonIndex;
+            this.archiveMessageManager.publish( {
+                dateFrom: new Date(oldState.xMax.getTime() - xScaleParameters.get(newState.xScale).value*60*1000),
+                dateTo: oldState.xMax
+            });
+            return newState;
+        });
+    },
+
+
+    componentDidMountImpl() {
+        mainEventManager.subscribe('page-selected', this.onPageSelected);
+        mainEventManager.subscribe('archive-data-ready', this.onArchiveDataReady);
+    },
+
+
+    componentWillUnmountImpl() {
+        mainEventManager.unsubscribe('page-selected', this.onPageSelected);
+        mainEventManager.unsubscribe('archive-data-ready', this.onArchiveDataReady);
+    }
 };
 
 export default ArchivePageMixin;
