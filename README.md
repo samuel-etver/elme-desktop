@@ -1,1 +1,1 @@
-# elme
+# elme-desktop
