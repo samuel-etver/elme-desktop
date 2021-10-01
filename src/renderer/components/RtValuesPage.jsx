@@ -5,68 +5,82 @@ import MeasureParameters from '../MeasureParameters.js';
 import GlobalStorage from '../../common/GlobalStorage';
 
 const globalStorage = GlobalStorage.getInstance();
+const measureParams = new MeasureParameters();
 
 class RtValuesPane extends React.Component {
     constructor(props) {
         super(props);
-        this.state = {
-            count: 0,
-        };
+        this.paramsProperties = this.createParamsProperties();
+        this.state = this.createNewState();
         this.timerId = undefined;
     }
 
 
-    renderParam(paramName, value) {
-        let measureParams = new MeasureParameters();
+    createParamsProperties () {
+        let properties = [];
+
+        let temperatureToStr = function (t) {
+            let value = parseFloat(t);
+            return isNaN(value) ? '' : value.toFixed(1);
+        };
+
+        let waterFlowToStr = function (flow) {
+            let value = parseFloat(flow);
+            return isNaN(value) ? '' : value.toFixed(1);
+        };
+
+        let append = function(parameterName, toString) {
+            properties.push({
+                name:     parameterName,
+                toString: toString
+            });
+        };
+
+
+        append('inductorTemperature1', temperatureToStr);
+        append('inductorTemperature2', temperatureToStr);
+        append('thermostatTemperature1', temperatureToStr);
+        append('thermostatTemperature2', temperatureToStr);
+        append('sprayerTemperature', temperatureToStr);
+        append('heatingTemperature', temperatureToStr);
+        append('waterFlow', waterFlowToStr);
+
+        return properties;
+    }
+
+
+    createNewState () {
+        let newState = {};
+
+        let deviceData = globalStorage['deviceData'];
+        if (deviceData) {
+            for (let property of this.paramsProperties) {
+                let name = property.name;
+                newState[name] = property.toString(deviceData[name]);
+            }
+        };
+
+        return newState;
+    }
+
+
+    renderParam(paramName) {
         let param = measureParams.get(paramName);
         return <ValuePane caption = {param.caption}
-                          value   = {value}
+                          value   = {this.state[paramName]}
                           units   = {param.units} />;
     }
 
 
     render() {
-        var measureParams = new MeasureParameters();
-        var inductorTemperature1Param = measureParams.get('inductorTemperature1');
-        var inductorTemperature2Param = measureParams.get('inductorTemperature2');
-        var thermostatTemperature1Param = measureParams.get('thermostatTemperature1');
-        var thermostatTemperature2Param = measureParams.get('thermostatTemperature2');
-        var sprayerTemperatureParam = measureParams.get('sprayerTemperature');
-        var heatingTemperatureParam = measureParams.get('heatingTemperature');
-        var waterFlowParam = measureParams.get('waterFlow');
-
-        let deviceData = globalStorage['deviceData'];
-        if ( deviceData ) {
-            var inductorTemperature1 = deviceData.inductorTemperature1;
-            var inductorTemperature2 = deviceData.inductorTemperature2;
-            var thermostatTemperature1 = deviceData.thermostatTemperature1;
-            var thermostatTemperature2 = deviceData.thermostatTemperature2;
-            var sprayerTemperature = deviceData.sprayerTemperature;
-            var heatingTemperature = deviceData.heatingTemperature;
-            var waterFlow =  deviceData.waterFlow;
+        let valuePanes = [];
+        for (let property of this.paramsProperties) {
+            valuePanes.push(this.renderParam(property.name));
         }
 
         return (
             <div class="rt-values-pane">
-                {this.renderParam('inductorTemperature1', this.temperatureToStr(inductorTemperature1))}
-                <ValuePane caption = {inductorTemperature2Param.caption}
-                             value = {this.temperatureToStr(inductorTemperature2)}
-                             units = {inductorTemperature2Param.units} />
-                <ValuePane caption = {thermostatTemperature1Param.caption}
-                             value = {this.temperatureToStr(thermostatTemperature1)}
-                             units = {thermostatTemperature1Param.units} />
-                <ValuePane caption = {thermostatTemperature2Param.caption}
-                             value = {this.temperatureToStr(thermostatTemperature2)}
-                             units = {thermostatTemperature2Param.units} />
-                <ValuePane caption = {sprayerTemperatureParam.caption}
-                             value = {this.temperatureToStr(sprayerTemperature)}
-                            units  = {sprayerTemperatureParam.units} />
-                <ValuePane caption = {heatingTemperatureParam.caption}
-                             value = {this.temperatureToStr(heatingTemperature)}
-                             units = {heatingTemperatureParam.units} />
-                <ValuePane caption = {waterFlowParam.caption}
-                             value = {this.waterFlowToStr(waterFlow)}
-                             units = {waterFlowParam.units} />
+                {valuePanes}
             </div>
         );
     }
@@ -82,36 +96,20 @@ class RtValuesPane extends React.Component {
     }
 
 
-    temperatureToStr(t) {
-        let value = parseFloat(t);
-        return isNaN(value) ? '' : value.toFixed(1);
-    }
-
-
-    waterFlowToStr(flow) {
-        let value = parseFloat(flow);
-        return isNaN(value) ? '' : value.toFixed(1);
-    }
-
-
     onTimer() {
-      this.setState((oldState) => {
-          let newState = Object.assign({}, oldState);
-          newState.count++;
-          return newState;
-      });
+        let newState = this.createNewState();
+        this.setState(newState);
     }
 }
 
-class RtValuesPage extends React.Component {
-    render() {
-        if ( !this.props.visible ) {
-            return  <div class='rt-values-page back-page hidden' />
-        }
-        return  <div class='rt-values-page front-page'>
-                    <RtValuesPane />
-                </div>
+
+function RtValuesPage (props) {
+    if ( !props.visible ) {
+        return  <div class='rt-values-page back-page hidden' />
     }
+    return  <div class='rt-values-page front-page'>
+                <RtValuesPane />
+            </div>
 }
 
 
