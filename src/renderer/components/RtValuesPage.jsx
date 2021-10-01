@@ -13,7 +13,15 @@ class RtValuesPane extends React.Component {
             count: 0,
         };
         this.timerId = undefined;
-        this.onTimer = this.onTimer.bind(this);
+    }
+
+
+    renderParam(paramName, value) {
+        let measureParams = new MeasureParameters();
+        let param = measureParams.get(paramName);
+        return <ValuePane caption = {param.caption}
+                          value   = {value}
+                          units   = {param.units} />;
     }
 
 
@@ -40,9 +48,7 @@ class RtValuesPane extends React.Component {
 
         return (
             <div class="rt-values-pane">
-                <ValuePane caption = {inductorTemperature1Param.caption}
-                             value = {this.temperatureToStr(inductorTemperature1)}
-                             units = {inductorTemperature1Param.units} />
+                {this.renderParam('inductorTemperature1', this.temperatureToStr(inductorTemperature1))}
                 <ValuePane caption = {inductorTemperature2Param.caption}
                              value = {this.temperatureToStr(inductorTemperature2)}
                              units = {inductorTemperature2Param.units} />
@@ -67,12 +73,12 @@ class RtValuesPane extends React.Component {
 
 
     componentDidMount() {
-        this.timerId = setTimeout(this.onTimer, 1000);
+        this.timerId = setInterval(this.onTimer.bind(this), 1000);
     }
 
 
     componentWillUnmount() {
-        clearTimeout(this.timerId);
+        clearInterval(this.timerId);
     }
 
 
@@ -94,7 +100,6 @@ class RtValuesPane extends React.Component {
           newState.count++;
           return newState;
       });
-      this.timerId = setTimeout(this.onTimer, 1000);
     }
 }
 
@@ -108,5 +113,6 @@ class RtValuesPage extends React.Component {
                 </div>
     }
 }
+
 
 export default RtValuesPage;
