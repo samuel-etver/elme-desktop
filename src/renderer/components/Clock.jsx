@@ -3,58 +3,73 @@ import './Clock.css';
 import Constants from '../../common/Constants';
 
 class Clock extends React.Component {
-    constructor() {
-        super();
-        this.onTimer = this.onTimer.bind(this);
-        this.state = {
-            date: new Date(),
-            counter: 0
-        }
+    constructor (props) {
+        super(props);
+        this.state = this.createNewState();
     }
 
 
-    componentDidMount() {
-        this.timerId = setInterval(this.onTimer, 500);
+    componentDidMount () {
+        this.timerId = setInterval(this.onTimer.bind(this), 500);
     }
 
 
-    componentWillUnmount() {
+    componentWillUnmount () {
         clearInterval(this.timerId);
     }
 
 
-    onTimer() {
-        this.setState(oldState => {
-            return {
-                date: new Date(),
-                counter: oldState.counter + 1
-            };
-        });
-    }
+    createNewState () {
+        function intTo02 (value) {
+            return (value < 10 ? '0' : '') + value;
+        }
 
-
-    render() {
-        let dt = this.state.date;
-
-        let intTo02 = value => (value < 10 ? '0' : '') + value;
-        let timeDivider = (this.state.counter & 1) ? '' : ':';
+        let dt = new Date();
+        let seconds = dt.getSeconds();
+        let timeDivider = (seconds & 1) ? '' : ':';
         let dateStr = dt.getDate() + " " +
                       Constants.monthsGenetive[dt.getMonth()] + " " +
                       dt.getFullYear();
 
+        return {
+            date: dateStr,
+            hour: intTo02(dt.getHours()),
+            min: intTo02(dt.getMinutes()),
+            sec: intTo02(seconds),
+            timeDivider: timeDivider,
+        };
+    }
 
+
+    onTimer () {
+        let newState = this.createNewState();
+        this.setState(newState);
+    }
+
+
+    renderTimeDivider () {
+        return <div class="clock-time-divider">{this.state.timeDivider}</div>;
+    }
+
+
+    renderTimeValue (value) {
+        return <div class="clock-time-value">{this.state[value]}</div>;
+    }
+
+
+    render () {
         return <div class="clock">
                   <div class="clock-time">
-                    <div class="clock-time-value">{intTo02(dt.getHours())}</div>
-                    <div class="clock-time-divider">{timeDivider}</div>
-                    <div class="clock-time-value">{intTo02(dt.getMinutes())}</div>
-                    <div class="clock-time-divider">{timeDivider}</div>
-                    <div class="clock-time-value">{intTo02(dt.getSeconds())}</div>
+                      {this.renderTimeValue('hour')}
+                      {this.renderTimeDivider()}
+                      {this.renderTimeValue('min')}
+                      {this.renderTimeDivider()}
+                      {this.renderTimeValue('sec')}
                   </div>
                   <div class="clock-date">
-                    {dateStr}
+                      {this.state.date}
                   </div>
-               </div>
+               </div>;
     }
 }
 
