@@ -8,11 +8,10 @@ const globalStorage = GlobalStorage.getInstance();
 const measureParams = new MeasureParameters();
 
 class RtValuesPane extends React.Component {
-    constructor(props) {
+    constructor (props) {
         super(props);
         this.paramsProperties = this.createParamsProperties();
         this.state = this.createNewState();
-        this.timerId = undefined;
     }
 
 
@@ -64,7 +63,7 @@ class RtValuesPane extends React.Component {
     }
 
 
-    renderParam(paramName) {
+    renderParam (paramName) {
         let param = measureParams.get(paramName);
         return <ValuePane caption = {param.caption}
                           value   = {this.state[paramName]}
@@ -72,7 +71,7 @@ class RtValuesPane extends React.Component {
     }
 
 
-    render() {
+    render () {
         let valuePanes = [];
         for (let property of this.paramsProperties) {
             valuePanes.push(this.renderParam(property.name));
@@ -86,17 +85,17 @@ class RtValuesPane extends React.Component {
     }
 
 
-    componentDidMount() {
+    componentDidMount () {
         this.timerId = setInterval(this.onTimer.bind(this), 1000);
     }
 
 
-    componentWillUnmount() {
+    componentWillUnmount () {
         clearInterval(this.timerId);
     }
 
 
-    onTimer() {
+    onTimer () {
         let newState = this.createNewState();
         this.setState(newState);
     }
@@ -104,7 +103,7 @@ class RtValuesPane extends React.Component {
 
 
 function RtValuesPage (props) {
-    if ( !props.visible ) {
+    if (!props.visible) {
         return  <div class='rt-values-page back-page hidden' />
     }
     return  <div class='rt-values-page front-page'>
