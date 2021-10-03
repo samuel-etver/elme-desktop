@@ -5,17 +5,17 @@ import MeasureParameters from '../MeasureParameters.js';
 import GlobalStorage from '../../common/GlobalStorage';
 
 const globalStorage = GlobalStorage.getInstance();
-const measureParams = new MeasureParameters();
+const measureParameters = new MeasureParameters();
 
 class RtValuesPane extends React.Component {
     constructor (props) {
         super(props);
-        this.paramsProperties = this.createParamsProperties();
+        this.parametersProperties = this.createParametersProperties();
         this.state = this.createNewState();
     }
 
 
-    createParamsProperties () {
+    createParametersProperties () {
         let properties = [];
 
         let temperatureToStr = function (t) {
@@ -35,7 +35,6 @@ class RtValuesPane extends React.Component {
             });
         };
 
-
         append('inductorTemperature1', temperatureToStr);
         append('inductorTemperature2', temperatureToStr);
         append('thermostatTemperature1', temperatureToStr);
@@ -53,7 +52,7 @@ class RtValuesPane extends React.Component {
 
         let deviceData = globalStorage['deviceData'];
         if (deviceData) {
-            for (let property of this.paramsProperties) {
+            for (let property of this.parametersProperties) {
                 let name = property.name;
                 newState[name] = property.toString(deviceData[name]);
             }
@@ -63,18 +62,18 @@ class RtValuesPane extends React.Component {
     }
 
 
-    renderParam (paramName) {
-        let param = measureParams.get(paramName);
-        return <ValuePane caption = {param.caption}
-                          value   = {this.state[paramName]}
-                          units   = {param.units} />;
+    renderParameter (parameterName) {
+        let parameter = measureParameters.get(parameterName);
+        return <ValuePane caption = {parameter.caption}
+                          value   = {this.state[parameterName]}
+                          units   = {parameter.units} />;
     }
 
 
     render () {
         let valuePanes = [];
-        for (let property of this.paramsProperties) {
-            valuePanes.push(this.renderParam(property.name));
+        for (let property of this.parametersProperties) {
+            valuePanes.push(this.renderParameter(property.name));
         }
 
         return (

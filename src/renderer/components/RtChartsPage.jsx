@@ -14,67 +14,65 @@ import Chart from './Chart';
 
 let mainEventManager = MainEventManager.getInstance();
 let globalStorage = GlobalStorage.getInstance();
+let measureParameters = new MeasureParameters();
 
 class RtChartsPage extends React.Component {
-    constructor(props) {
+    constructor (props) {
         super(props);
-        this.measureParameters = new MeasureParameters();
         this.chartBuilder = new ChartBuilder();
+        this.oldUpdateId = 0;
+        this.newUpdateId = this.oldUpdateId + 1;
         this.state = {
-            count: 0,
-            selectedMeasureParameterId:  this.measureParameters.get('inductorTemperature1').id,
+            selectedMeasureParameterId:  measureParameters.get('inductorTemperature1').id,
+            newUpdateId: this.updateId
         };
-        this.rtDeviceData = null;
         this.chartData = {};
-        for (let i = 0; i < this.measureParameters.size(); i++) {
-            let parameter = this.measureParameters.byIndex(i);
+        for (let i = 0; i < measureParameters.size(); i++) {
+            let parameter = measureParameters.byIndex(i);
             this.chartData[parameter.name] = [];
         }
         this.onChartNumberButtonClick = this.onChartNumberButtonClick.bind(this);
         this.onChartSelect = this.onChartSelect.bind(this);
         this.onRtDeviceDataReady = this.onRtDeviceDataReady.bind(this);
-        this.onTimer = this.onTimer.bind(this);
-        this.timerId = null;
     }
 
 
-    componentDidMount() {
+    componentDidMount () {
         mainEventManager.subscribe('rt-device-data-ready', this.onRtDeviceDataReady);
-        this.timerId = setTimeout(this.onTimer, 1000);
+        this.timerId = setInterval(this.onTimer.bind(this), 1000);
     }
 
 
-    componentWillUnmount() {
+    componentWillUnmount () {
         mainEventManager.unsubscribe('rt-device-data-ready', this.onRtDeviceDataReady);
-        clearTimeout(this.timerId);
+        clearInterval(this.timerId);
     }
 
 
-    onRtDeviceDataReady() {
+    onRtDeviceDataReady () {
         this.appendChartData(globalStorage['deviceData']);
     }
 
 
-    onTimer() {
+    onTimer () {
         this.removeChartData(new Date());
 
-        if ( this.props.visible ) {
+        if (this.props.visible) {
+            let newUpdateId = ++this.newUpdateId;
             this.setState((oldState) => {
                 let newState = Object.assign({}, oldState);
-                newState.count++;
+                newState.newUpdateId = newUpdateId;
                 return newState;
             });
         }
-
-        this.timerId = setTimeout(this.onTimer, 1000);
     }
 
 
-    appendChartData(newItem) {
+    appendChartData (newItem) {
         let date = newItem.date;
-        let n = this.measureParameters.size();
+        let n = measureParameters.size();
         for (let i = 0; i < n; i++) {
-            let parameterName = this.measureParameters.byIndex(i).name;
+            let parameterName = measureParameters.byIndex(i).name;
             this.chartData[parameterName].push(
               [date, newItem[parameterName]]
             );
@@ -82,7 +80,7 @@ class RtChartsPage extends React.Component {
     }
 
 
-    removeChartData(toDate) {
+    removeChartData (toDate) {
         let fromDateInt = toDate.getTime() - 1000*(Constants.rtChartPeriod + 3*60);
         for (let parameterName in this.chartData) {
             this.chartData[parameterName] = this.chartData[parameterName].filter(
@@ -92,9 +90,9 @@ class RtChartsPage extends React.Component {
     }
 
 
-    buildSeries(id) {
+    buildSeries (id) {
         let series = [];
-        let measureParameter = this.measureParameters.byId(id);
+        let measureParameter = measureParameters.byId(id);
         let data = this.chartData[measureParameter.name];
         let newSerie = this.chartBuilder.buildSerie({
             data: data
@@ -104,39 +102,48 @@ class RtChartsPage extends React.Component {
     }
 
 
-    onChartNumberButtonClick(index) {
-        this.setState((oldState) => {
-            let newState = Object.assign({}, oldState);
-            newState.selectedMeasureParameterId = this.measureParameters.byIndex(index).id;
-            return newState;
-        });
+    onChartNumberButtonClick (index) {
+        let id = measureParameters.byIndex(index).id;
+        this.selectMeasureParameter(id);
     }
 
 
-    onChartSelect(event, id) {
-        this.setState((oldState) => {
+    onChartSelect (event, id) {
+        this.selectMeasureParameter(id);
+    }
+
+
+    selectMeasureParameter (id) {
+        let newUpdateId = ++this.newUpdateId;
+        this.setState(oldState => {
             let newState = Object.assign({}, oldState);
             newState.selectedMeasureParameterId = id;
+            newState.newUpdateId = newUpdateId;
             return newState;
         });
     }
 
 
-    render() {
-        if ( !this.props.visible ) {
+    render () {
+        if (!this.props.visible) {
             return <div class='rt-charts-page back-page hidden' />
         }
 
         let parameterId = this.state.selectedMeasureParameterId;
-        let chartOptions = this.chartBuilder.buildOptions({
-            measureParameterId: parameterId,
-            realTime: true
-        });
-        chartOptions.series = this.buildSeries(parameterId);
+
+        if (this.state.newUpdateId != this.oldUpdateId) {
+            this.oldUpdateId = this.state.newUpdateId;
+            this.chartOptions = this.chartBuilder.buildOptions({
+                measureParameterId: parameterId,
+                realTime: true
+            });
+            this.chartOptions.series = this.buildSeries(parameterId);
+        }
+        let chartOptions = this.chartOptions;
 
         return  <div class='rt-charts-page front-page'>
                       <MeasureParametersComboBox
-                        selectedId={this.state.selectedMeasureParameterId}
+                        selectedId={parameterId}
                         callback={this.onChartSelect}/>
                       <HorzDivider height="40px" />
                       <div class="rt-charts-page-chart-pane">
@@ -144,7 +151,7 @@ class RtChartsPage extends React.Component {
                       </div>
                       <HorzDivider height="20px" />
                       <NumberButtonsGroup
-                        count={this.measureParameters.size()}
+                        count={measureParameters.size()}
                         callback={this.onChartNumberButtonClick}/>
                 </div>
     }
