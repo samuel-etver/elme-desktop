@@ -1,28 +1,22 @@
 import React from 'react';
 import './NumberButtonsGroup.css';
 
-class NumberButton extends React.Component {
-    render() {
-        return  <button class="number-button" onClick={this.props.onClick}>
-                    {this.props.caption}
-                </button>
-    }
+function NumberButton (props) {
+    return  <button class="number-button" onClick={props.onClick}>
+                {props.caption}
+            </button>
 }
 
 
 class NumberButtonsGroup extends React.Component {
-    onClick(index) {
-        if ( this.props.callback ) {
-            this.props.callback(index);
-        }
+    onClick (index) {
+        this.props.callback && this.props.callback(index);
     }
 
 
-    render() {
+    render () {
         let buttons = [];
-        let count = this.props.count ?? 0;
-
-        for (let i = 0; i < count; i++) {
+        for (let i = 0; i <  this.props.count; i++) {
             buttons.push( <NumberButton caption={i + 1} onClick={() => this.onClick(i)}/> );
         }
 

@@ -3,30 +3,29 @@ import './MeasureParametersComboBox.css';
 import MeasureParameters from './../MeasureParameters';
 import ComboBoxMixin from './ComboBoxMixin';
 
+let measureParameters = new MeasureParameters();
+
 
 class MeasureParametersComboBox extends React.Component {
-    constructor(props) {
+    constructor (props) {
         super(props);
         this.initComboBoxMixin();
     }
 
 
-    render() {
-        let measureParameters = new MeasureParameters();
+    render () {
         let captions = [];
-        let selectedCaption = '';
-        let selectedId;
-        if ( this.props.selectedId ) {
-            selectedId = this.props.selectedId;
-        }
+        let selectedId = this.props.selectedId;
         for (let i = 0; i < measureParameters.size(); i++) {
             let parameter = measureParameters.byIndex(i);
             let caption = (i + 1).toString() + '. ' + parameter.caption;
-            if ( parameter.id == selectedId ) {
-                selectedCaption = caption;
+            if (parameter.id == selectedId) {
+                var selectedCaption = caption;
             }
             captions.push(
-                <li class="measure-parameters-combobox-select-option" onClick={() => this.onClickItem(parameter.id)} value={parameter.id}>{caption}</li>
+                <li class="measure-parameters-combobox-select-option"
+                  onClick={() => this.onClickItem(parameter.id)}
+                  value={parameter.id}>{caption}</li>
             );
         }
 
