@@ -19,12 +19,11 @@ mainEventManager.subscribe('to-console', (arg1, arg2) => toConsole(arg2));
 
 
 class App extends React.Component {
-    constructor(props) {
+    constructor (props) {
         super(props);
         this.state = {
             activatePage: 'rt-values',
         }
-        this.onControlPaneButtonClick = this.onControlPaneButtonClick.bind(this);
     }
 
 
@@ -36,7 +35,10 @@ class App extends React.Component {
         return (
             <div className="App">
                 <NotificationPane />
-                <ControlPane />
+                <ControlPane
+                  selected={this.state.activatePage}
+                  onClick={this.onControlPaneButtonClick.bind(this)}
+                />
                 <div>
                     <RtValuesPage visible={isPageVisible('rt-values')}/>
                     <RtChartsPage visible={isPageVisible('rt-charts')}/>
@@ -50,18 +52,16 @@ class App extends React.Component {
 
     componentDidMount() {
         mainEventManager.publish('app-load');
-        mainEventManager.subscribe('control-pane-button-click', this.onControlPaneButtonClick);
         ipc.on('device-data-ready', (event, arg) => this.onDeviceDataReady(arg));
     }
 
 
     componentWillUnmount() {
         mainEventManager.publish('app-close');
-        mainEventManager.unsubscribe('control-pane-button-click', this.onControlPaneButtonClick);
     }
 
 
-    onControlPaneButtonClick(event, type) {
+    onControlPaneButtonClick(type) {
         mainEventManager.publish('page-selected', type);
         this.setState({
             activatePage: type
