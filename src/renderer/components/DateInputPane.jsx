@@ -3,12 +3,29 @@ import React from 'react';
 import EditableComboBox from './EditableComboBox';
 import Constants from '../../common/Constants';
 
-class Label extends React.Component {
-    render() {
-        return  <div class="date-input-pane-label">
-                    {this.props.text}
-                </div>
-    }
+
+function Label (props) {
+    return  <div class="date-input-pane-label">
+                {props.text}
+            </div>;
+}
+
+
+function addToList(list, caption, id) {
+    list.push({
+        caption: caption,
+        id: id
+    });
+};
+
+let monthList = [];
+for (let i = 0; i < Constants.months.length; i++) {
+    addToList(monthList, Constants.months.capitalize(i), i);
+}
+
+let hourList = [];
+for (let i = 0; i < 24; i++) {
+    addToList(hourList, i.toString(), i);
 }
 
 
@@ -16,26 +33,12 @@ class DateInputPane extends React.Component {
     constructor(props) {
         super(props);
 
-        var add = function(list, caption, id) {
-            list.push({
-                caption: caption,
-                id: id
-            });
-        };
+        var add = addToList;
 
         this.yearList = [];
-
-        this.monthList = [];
-        for (let i = 0; i < Constants.months.length; i++) {
-            add(this.monthList, Constants.months.capitalize(i), i);
-        }
-
+        this.monthList = monthList;
         this.dayList = [];
-
-        this.hourList = [];
-        for (let i = 0; i < 24; i++) {
-            add(this.hourList, i.toString(), i);
-        }
+        this.hourList = hourList;
 
         this.onClockButtonClick = this.onClockButtonClick.bind(this);
         this.onChange = this.onChange.bind(this);

@@ -5,16 +5,14 @@ import Clock from './Clock';
 import AlertsTablo from './AlertsTablo';
 import AlertsDropdown from './AlertsDropdown';
 
-class NotificationPane extends React.Component {
-    render() {
-        return <div class="notification-pane">
-                  <Clock />
-                  <div class="notiication-horizontal-divider1" />
-                  <AlertsTablo />
-                  <div class="notiication-horizontal-divider2" />
-                  <AlertsDropdown />
-               </div>
-    }
+function NotificationPane () {
+    return <div class="notification-pane">
+              <Clock />
+              <div class="notiication-horizontal-divider1" />
+              <AlertsTablo />
+              <div class="notiication-horizontal-divider2" />
+              <AlertsDropdown />
+           </div>
 }
 
 export default NotificationPane;

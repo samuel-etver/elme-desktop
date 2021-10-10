@@ -9,11 +9,10 @@ const allAlerts = new AllAlerts();
 
 
 class AlertsDropdown extends React.Component {
-    constructor() {
+    constructor () {
         super();
         this.onCloseClick = this.onCloseClick.bind(this);
         this.onToggleClick = this.onToggleClick.bind(this);
-        this.onTimer = this.onTimer.bind(this);
         this.state = {
             visible: false,
             alerts: undefined
@@ -21,17 +20,17 @@ class AlertsDropdown extends React.Component {
     }
 
 
-    componentDidMount() {
-        setInterval(this.onTimer, 1000);
+    componentDidMount () {
+        this.timerId = setInterval(this.onTimer.bind(this), 1000);
     }
 
 
-    componentWillUnmount() {
-        clearInterval(this.onTimer);
+    componentWillUnmount () {
+        clearInterval(this.timerId);
     }
 
 
-    onTimer() {
+    onTimer () {
         let newAlerts = AlertsStorage.getInstance().getAlerts();
         let oldAlerts = this.state.alerts;
 
@@ -49,12 +48,12 @@ class AlertsDropdown extends React.Component {
     }
 
 
-    onCloseClick() {
+    onCloseClick () {
         this.setListVisible(false);
     }
 
 
-    setListVisible(visible) {
+    setListVisible (visible) {
         this.setState(oldState => {
             let newState = Object.assign({}, oldState);
             newState.visible = visible;
@@ -63,16 +62,16 @@ class AlertsDropdown extends React.Component {
     }
 
 
-    onToggleClick() {
+    onToggleClick () {
         this.setListVisible(!this.state.visible);
     }
 
 
-    render() {
+    render () {
         if (this.state.visible) {
             let alerts = this.state.alerts;
             if (alerts && alerts.length) {
-                var alertsRows = alerts.map((item) => {
+                var alertsRows = alerts.map(item => {
                     let dt = Calendar.timeToStr(item.date);
                     let tm = Calendar.dateToStr(item.date);
                     let msg = allAlerts.byId(item.id).text;
@@ -95,14 +94,14 @@ class AlertsDropdown extends React.Component {
                       </div>
                   </div>
                   {alertsRows}
-              </div>
+              </div>;
         }
 
         return  <div class="alerts-dropdown">
                     <div class="alerts-dropdown-button" onClick={this.onToggleClick} />
                     <div class="alerts-dropdown-image" />
                     {dropdownContainer}
-                </div>
+                </div>;
     }
 }
 
