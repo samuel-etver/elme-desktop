@@ -10,13 +10,15 @@
 
 .chart-scale-button + label {
     font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 2px;
     color: black;
-    width: 30px;
+    width: 40px;
     float: left;
     padding: .1em 1em;
     border: 1px solid #28608f;
     margin-right: -1px;
-    background-image: linear-gradient(150deg, #52fbfa, #a2fbfa 30%, #52cbcb);
+    background-image: linear-gradient(180deg, #ddf, #77f);
     user-select: none;
 }
 
@@ -25,6 +27,7 @@
 }
 
 .chart-scale-button:checked + label {
+    font-weight: normal;
     background-image: linear-gradient(-210deg, #023b3a, #126b6a 30%, #427b7a);
     color: white;
 }

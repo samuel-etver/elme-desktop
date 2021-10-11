@@ -4,22 +4,21 @@ import XScaleParameters from './XScaleParameters';
 
 
 class ChartScaleButton extends React.Component {
-    constructor(props) {
+    constructor (props) {
         super(props);
+        this.id = this.props.group + '-button' + this.props.parameter.index;
         this.onChange = this.onChange.bind(this);
     }
 
 
-    onChange() {
-        if ( this.props.callback ) {
-            this.props.callback(this.props.parameter.index);
-        }
+    onChange () {
+        this.props.callback && this.props.callback(this.props.parameter.index);
     }
 
 
-    render() {
+    render () {
         let parameter = this.props.parameter;
-        let id = this.props.group + '-button' + parameter.index;
+        let id = this.id;
         return  <div>
                     <input type="radio"
                       name={this.props.group}
@@ -32,36 +31,33 @@ class ChartScaleButton extends React.Component {
                     <label for={id}>
                         {parameter.caption}
                     </label>
-                </div>
+                </div>;
     }
 }
 
 
-class ChartScaleButtonsGroup extends React.Component {
-    static groupAutoInc = 0;
-    static buttonAutoInc = 0;
+let groupAutoInc = 0;
+let xScaleParameters = new XScaleParameters();
 
-    constructor(props) {
+class ChartScaleButtonsGroup extends React.Component {
+    constructor (props) {
         super(props);
-        this.xScaleParameters = new XScaleParameters();
-        this.groupName = 'chartScaleButtonsGroupName' + (ChartScaleButtonsGroup.groupAutoInc++);
+        this.groupName = 'chartScaleButtonsGroupName' + groupAutoInc++;
         this.onChange = this.onChange.bind(this);
     }
 
 
-    onChange(buttonIndex) {
-        if ( this.props.callback ) {
-            this.props.callback(buttonIndex);
-        }
+    onChange (buttonIndex) {
+        this.props.callback && this.props.callback(buttonIndex);
     }
 
 
-    render() {
+    render () {
         let buttons = [];
-        for (let i = 0; i < this.xScaleParameters.size(); i++) {
+        for (let i = 0; i < xScaleParameters.size(); i++) {
             buttons.push(<ChartScaleButton
                             group={this.groupName}
-                            parameter={this.xScaleParameters.get(i)}
+                            parameter={xScaleParameters.get(i)}
                             checked={i==this.props.buttonIndex}
                             callback={this.onChange}
                          />);
@@ -69,9 +65,8 @@ class ChartScaleButtonsGroup extends React.Component {
 
         return  <div class="chart-scale-buttons-group">
                     {buttons}
-                </div>
+                </div>;
     }
-
 }
 
 

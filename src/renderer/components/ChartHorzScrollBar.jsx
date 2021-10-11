@@ -2,7 +2,7 @@ import React from 'react';
 import './ChartHorzScrollBar.css';
 
 class ChartHorzScrollButton extends React.Component {
-    constructor(props) {
+    constructor (props) {
         super(props);
         this.timerId = undefined;
         this.onMouseDown = this.onMouseDown.bind(this);
@@ -11,50 +11,48 @@ class ChartHorzScrollButton extends React.Component {
     }
 
 
-    onMouseDown() {
+    onMouseDown () {
         this.clicked = false;
         this.timerId = setTimeout(() => this.repeatClick(), 500);
     }
 
 
-    onMouseUp() {
+    onMouseUp () {
         this.stopTimer();
     }
 
 
-    onClick() {
-        if ( !this.clicked ) {
+    onClick () {
+        if (!this.clicked) {
             this.stopTimer();
             this.notify();
         }
     }
 
 
-    repeatClick() {
+    repeatClick () {
         this.clicked = true;
         this.notify();
         this.timerId = setTimeout(() => this.repeatClick(), 50);
     }
 
 
-    notify() {
-        if ( this.props.callback ) {
-            this.props.callback();
-        }
+    notify () {
+        this.props.callback && this.props.callback();
     }
 
 
-    stopTimer() {
+    stopTimer () {
         clearTimeout(this.timerId);
     }
 
 
-    componentWillUnmount() {
+    componentWillUnmount () {
         this.stopTimer();
     }
 
 
-    render() {
+    render () {
         return  <button
                   class="chart-horz-scroll-button"
                   onMouseUp={this.onMouseUp}
@@ -67,7 +65,7 @@ class ChartHorzScrollButton extends React.Component {
 
 
 class ChartHorzScroller extends React.Component {
-    constructor(props) {
+    constructor (props) {
         super(props);
         this.thumbRef = React.createRef();
         this.scrollerRef = React.createRef();
@@ -77,34 +75,32 @@ class ChartHorzScroller extends React.Component {
     }
 
 
-    componentDidMount() {
+    componentDidMount () {
         this.thumbW = this.thumbRef.current.offsetWidth;
     }
 
 
-    componentWillUnmount() {
+    componentWillUnmount () {
         document.removeEventListener('mousemove', this.onThumbMouseMove);
         document.removeEventListener('mouseup', this.onThumbMouseUp);
     }
 
 
-    onThumbMouseDown(event) {
+    onThumbMouseDown (event) {
         this.thumbX = event.nativeEvent.offsetX;
         document.addEventListener('mousemove', this.onThumbMouseMove);
         document.addEventListener('mouseup', this.onThumbMouseUp);
     }
 
 
-    onThumbMouseUp(event) {
+    onThumbMouseUp (event) {
         document.removeEventListener('mousemove', this.onThumbMouseMove);
         document.removeEventListener('mouseup', this.onThumbMouseUp);
-        if ( this.props.callback ) {
-            this.props.callback('stop', this.props.value);
-        }
+        this.props.callback &&  this.props.callback('stop', this.props.value);
     }
 
 
-    onThumbMouseMove(event) {
+    onThumbMouseMove (event) {
         let rect = this.scrollerRef.current.getBoundingClientRect();
         let minX = 0;
         let maxX =  rect.right - rect.left - this.thumbW;
@@ -117,21 +113,20 @@ class ChartHorzScroller extends React.Component {
         }
 
         let value;
-        if ( maxX - minX > 0) {
+        if (maxX - minX > 0) {
             value = 100.0*(newX - minX)/(maxX - minX);
         }
 
-        if ( this.props.callback ) {
-            this.props.callback('scroll', value??50);
-        }
+        this.props.callback && this.props.callback('scroll', value??50);
     }
 
 
-    render() {
-       let value = 'calc(' + this.props.value + '% - 40px)';
+    render () {
+        let value = 'calc(' + this.props.value + '% - 40px)';
 
         return  <div class="chart-horz-scroller-wrapper">
-                    <div class="chart-horz-scroller" ref={this.scrollerRef}>
+                    <div class="chart-horz-scroller"
+                      ref={this.scrollerRef}>
                     </div>
                     <div class="chart-horz-scroller-inner">
                       <div class="chart-horz-scroller-thumb"
@@ -145,50 +140,41 @@ class ChartHorzScroller extends React.Component {
 }
 
 
-class ChartHorzScrollDivider extends React.Component {
-    render() {
-        return <div class="chart-horz-scroll-divider" />
-    }
+function ChartHorzScrollDivider () {
+    return <div class="chart-horz-scroll-divider" />;
 }
 
 
 class ChartHorzScrollBar extends React.Component {
-    onButtonClick(event) {
-        if ( this.props.callback ) {
-            this.props.callback(event);
-        }
+    onButtonClick (event) {
+        this.props.callback && this.props.callback(event);
     }
 
 
     onChange(event, value) {
-        if ( this.props.callback ) {
-
-            this.props.callback(event, value);
-        }
+        this.props.callback && this.props.callback(event, value);
     }
 
 
-    render() {
+    renderButton (name) {
+        return <>
+            <ChartHorzScrollDivider />
+            <ChartHorzScrollButton
+              image={'scroll-' + name}
+              callback={() => this.onButtonClick(name)}/>
+          </>;
+    }
+
+
+    render () {
         return  <div class="chart-horz-scroll-bar">
                     <ChartHorzScroller
                       value={this.props.value}
                       callback={(event, value) => this.onChange(event, value)}/>
-                    <ChartHorzScrollDivider />
-                    <ChartHorzScrollButton
-                      image="scroll-double-left"
-                      callback={() => this.onButtonClick('double-left')}/>
-                    <ChartHorzScrollDivider />
-                    <ChartHorzScrollButton
-                      image="scroll-left"
-                      callback={() => this.onButtonClick('left')}/>
-                    <ChartHorzScrollDivider />
-                    <ChartHorzScrollButton
-                      image="scroll-right"
-                      callback={() => this.onButtonClick('right')}/>
-                    <ChartHorzScrollDivider />
-                    <ChartHorzScrollButton
-                      image="scroll-double-right"
-                      callback={() => this.onButtonClick('double-right')}/>
+                    {this.renderButton('double-left')}
+                    {this.renderButton('left')}
+                    {this.renderButton('right')}
+                    {this.renderButton('double-right')}
                 </div>
     }
 }
