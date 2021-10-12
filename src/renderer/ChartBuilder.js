@@ -2,20 +2,22 @@ import MeasureParameters from './MeasureParameters';
 import Constants from '../common/Constants';
 import XScaleParameters from './components/XScaleParameters';
 
-
 let measureParameters = new MeasureParameters();
 let xScaleParameters = new XScaleParameters();
-let xFormatter = function(x) {
+
+let xFormatter = function (x) {
   let hour = x.getHours().toString();
   let minute = x.getMinutes();
   minute = (minute < 10 ? '0' : '') + minute.toString();
   let second = x.getSeconds();
   second = (second < 10 ? '0' : '') + second.toString();
   return hour + ':' + minute + ':' + second;
-}
-let yFormatter = function(y) {
+};
+
+let yFormatter = function (y) {
     return y.toFixed(1);
 };
+
 let tooltip = {
     trigger: 'axis',
     axisPointer: {
@@ -41,19 +43,28 @@ let tooltip = {
     textStyle: {
         color: '#fff'
     },
-    formatter: function(params) {
+    formatter: function (params) {
         params = params[0];
         return '<div style="text-align:left"><span style="color:#aaff">x=</span>' + xFormatter(params.value[0]) + '<br>' +
                '<span style="color:#aaff">y=</span>' + yFormatter(params.value[1])+ '</div>';
     }
 };
 
+let splitLine = {
+    show: true,
+    lineStyle: {
+        type: 'dotted',
+        color: '#888'
+    }
+};
+
+
 class ChartBuilder {
-    buildOptions(inOptions) {
+    buildOptions (inOptions) {
         let measureParameter = measureParameters.byId(inOptions.measureParameterId);
         let yMin;
         let yMax;
-        switch ( measureParameter.name ) {
+        switch (measureParameter.name) {
             case 'inductorTemperature1':
             case 'inductorTemperature2':
             case 'thermostatTemperature1':
@@ -83,12 +94,12 @@ class ChartBuilder {
         let xAxisLabel = Object.assign({}, axisLabel);
         xAxisLabel.showMinLabel = false;
         xAxisLabel.showMaxLabel = false;
-        xAxisLabel.formatter = function(value) {
+        xAxisLabel.formatter = function (value) {
             let dt = new Date(value);
             let minutes = dt.getMinutes();
             let result = dt.getHours() + ':' +
               (minutes < 10 ? '0' + minutes : minutes);
-            if ( !inOptions.realTime ) {
+            if (!inOptions.realTime) {
                 let month = dt.getMonth() + 1;
                 result += '\n' +
                   dt.getDate() + '.' +
@@ -102,23 +113,16 @@ class ChartBuilder {
         yAxisLabel.formatter = function(value) {
             return value.toString();
         }
-        let splitLine = {
-            show: true,
-            lineStyle: {
-                type: 'dotted',
-                color: '#888'
-            }
-        };
 
         let xMin;
         let xMax;
-        if ( inOptions.realTime || !inOptions.xMax ) {
+        if (inOptions.realTime || !inOptions.xMax) {
             xMax = new Date();
         }
         else {
             xMax = inOptions.xMax;
         }
-        if ( !inOptions.xScaleParameter ) {
+        if (!inOptions.xScaleParameter) {
             xMin = new Date(xMax.getTime() - 1000*Constants.rtChartPeriod);
         }
         else {
@@ -167,7 +171,7 @@ class ChartBuilder {
     }
 
 
-    buildSerie(inOptions) {
+    buildSerie (inOptions) {
         return {
             type: 'line',
             lineStyle: {
@@ -180,7 +184,7 @@ class ChartBuilder {
     }
 
 
-    buildXScrollBarOptions(inOptions) {
+    buildXScrollBarOptions (inOptions) {
         return {
             step: 1,
             doubleStep: 5,

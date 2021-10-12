@@ -33,8 +33,6 @@ class DateInputPane extends React.Component {
     constructor(props) {
         super(props);
 
-        var add = addToList;
-
         this.yearList = [];
         this.monthList = monthList;
         this.dayList = [];
@@ -46,7 +44,7 @@ class DateInputPane extends React.Component {
 
 
     onClockButtonClick() {
-        if ( this.props.options.callback ) {
+        if (this.props.options.callback) {
             let date = new Date();
             this.props.options.callback('submit', {
                 hour: date.getHours(),
