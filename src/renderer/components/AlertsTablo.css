@@ -12,34 +12,21 @@
     left: -0px;
     top: -0px;
     height: inherit;
-    width: calc(100% + 0px);
-    border-radius: 2px;
-    border-width: 1px;
-    border-color: black;
-    border-style: solid;
+    width: calc(0px);
+    border-style: none;
     box-sizing: border-box;
-    background-image:
-      repeating-linear-gradient(45deg, #7b98 12px, #0756 25px, #4887 35px),
-      repeating-linear-gradient(135deg, #fff 7px, #000 35px);
-    animation-duration: 4s;
+    background-color: #f30;
+    animation-duration: 3s;
     animation-delay: 0s;
-    animation-iteration-count: 1;
+    animation-iteration-count: infinite;
     animation-timing-function: linear;
-    animation-name: none;
+    animation-name: tablo-shutter-move;
 }
 
-@keyframes tablo-shutter-move0 {
-    0% {margin-top: 0px; }
-    15% { margin-top: calc(var(--notification-pane-height)); }
-    85% { margin-top: calc(var(--notification-pane-height)); }
-    100% {margin-top: 0px; }
-}
-
-@keyframes tablo-shutter-move1 {
-    0% {margin-top: 0px; }
-    15% { margin-top: calc(var(--notification-pane-height)); }
-    85% { margin-top: calc(var(--notification-pane-height)); }
-    100% {margin-top: 0px; }
+@keyframes tablo-shutter-move {
+    0% {width: 0%; }
+    15% {width: 0%; }
+    100% {width: 100%; }
 }
 
 .alerts-table-message {
@@ -48,6 +35,7 @@
     font-size: 28px;
     letter-spacing: 3px;
     color: white;
+    background-color: none;
     text-shadow: 1px 1px 3px black;
     padding-left: 10px;
     transform: translateY(-2px);
