@@ -88,7 +88,7 @@ class AlertsTablo extends React.Component {
                     <div class="alerts-tablo-shutter"
                          style={{"animation-name": shutterAnimation}}
                          ref={this.shutterRef} />
-                </div>
+                </div>;
     }
 }
 
