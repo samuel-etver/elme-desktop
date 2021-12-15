@@ -58,7 +58,7 @@ class ChartScaleButtonsGroup extends React.Component {
             buttons.push(<ChartScaleButton
                             group={this.groupName}
                             parameter={xScaleParameters.get(i)}
-                            checked={i==this.props.buttonIndex}
+                            checked={i===this.props.buttonIndex}
                             callback={this.onChange}
                          />);
         }

@@ -8,7 +8,7 @@ let mainEventManager = MainEventManager.getInstance();
 let xScaleParameters = new XScaleParameters();
 
 let ArchivePageMixin = {
-    initImpl() {
+    initImpl () {
         this.wasSelected = false;
         this.measureParameters = new MeasureParameters();
         this.chartBuilder = new ChartBuilder();
@@ -48,8 +48,8 @@ let ArchivePageMixin = {
     },
 
 
-    packData(data) {
-        if ( !data || data.length < 1000) {
+    packData (data) {
+        if (!data || data.length < 1000) {
             return data;
         }
 
@@ -89,7 +89,6 @@ let ArchivePageMixin = {
 
 
         let index = 0;
-        let singles = 0;
 
         while (dt0Int <= dt1Int) {
             let dtNextInt = dt0Int + interval;
@@ -102,21 +101,21 @@ let ArchivePageMixin = {
 
             for(; index < data.length; index++) {
                 let [x, y] = data[index];
-                if ( x.getTime() >= dtNextInt ) {
+                if (x.getTime() >= dtNextInt) {
                     break;
                 }
                 dotCount++;
-                if ( y !== undefined ) {
-                    if ( minY === undefined) {
+                if (y !== undefined) {
+                    if (minY === undefined) {
                         minY = y;
                         maxY = y;
                     }
                     else {
-                        if ( minY > y ) {
+                        if (minY > y) {
                             minY = y;
                             minIndex = index;
                         }
-                        if ( maxY < y ) {
+                        if (maxY < y) {
                             maxY = y;
                             maxIndex = index;
                         }
@@ -124,17 +123,16 @@ let ArchivePageMixin = {
                 }
             }
 
-            if ( dotCount ) {
-                if ( minIndex === undefined ) {
+            if (dotCount) {
+                if (minIndex === undefined) {
                     result.push(data[index - 1]);
                 }
                 else {
-                    if ( dotCount === 1 || minIndex === maxIndex) {
+                    if (dotCount === 1 || minIndex === maxIndex) {
                         result.push( data[minIndex] );
-                        singles++;
                     }
                     else {
-                        if ( minIndex < maxIndex ) {
+                        if (minIndex < maxIndex ) {
                             result.push( data[minIndex], data[maxIndex] );
                         }
                         else {
@@ -151,8 +149,8 @@ let ArchivePageMixin = {
     },
 
 
-    onChartNumberButtonClickImpl(index) {
-        this.setState((oldState) => {
+    onChartNumberButtonClickImpl (index) {
+        this.setState(oldState => {
             let newState = Object.assign({}, oldState);
             newState.selectedMeasureParameterId = this.measureParameters.byIndex(index).id;
             return newState;
@@ -160,8 +158,8 @@ let ArchivePageMixin = {
     },
 
 
-    onChartSelectImpl(event, id) {
-        this.setState((oldState) => {
+    onChartSelectImpl (event, id) {
+        this.setState(oldState => {
             let newState = Object.assign({}, oldState);
             newState.selectedMeasureParameterId = id;
             return newState;
@@ -169,25 +167,25 @@ let ArchivePageMixin = {
     },
 
 
-    onXScrollBarEventImpl(event, value) {
+    onXScrollBarEventImpl (event, value) {
         let newValue;
         let xScale = this.state.xScale;
         let options = this.chartBuilder.buildXScrollBarOptions({
-              xScale: xScale
+            xScale: xScale
         });
         let step;
         let newValueSaved;
 
-        var validatePosition = function() {
-            if ( newValue < options.valueMin ) {
+        var validatePosition = function () {
+            if (newValue < options.valueMin) {
                 newValue += 50 - options.valueMin;
             }
-            else if ( newValue > options.valueMax ) {
+            else if (newValue > options.valueMax) {
                 newValue -= options.valueMax - 50;
             }
         };
 
-        switch(event) {
+        switch (event) {
             case 'scroll':
                 newValue = value;
                 newValueSaved = newValue;
@@ -212,12 +210,12 @@ let ArchivePageMixin = {
             default: ;
         }
 
-        if ( newValue !== undefined ) {
+        if (newValue !== undefined) {
             this.setState((oldState) => {
                 let newState = Object.assign({}, oldState);
                 newState.xScrollBarPosition = newValue;
                 let xMax = new Date(oldState.xMax.getTime() + (newValueSaved - oldState.xScrollBarPosition)*0.01*options.interval);
-                if ( xMax.getTime() < Constants.archiveDateMin.getTime() ) {
+                if (xMax.getTime() < Constants.archiveDateMin.getTime()) {
                     xMax = Constants.archiveDateMin;
                 }
                 newState.xMax = xMax;
@@ -235,11 +233,11 @@ let ArchivePageMixin = {
     },
 
 
-    buildSeries(id) {
+    buildSeries (id) {
         let series = [];
         let data = [];
         let measureParameter = this.measureParameters.byId(id);
-        if ( this.archiveData ) {
+        if (this.archiveData) {
             let measures = this.archiveData.measures;
             let xs  = measures['date'];
             let ys  = measures[measureParameter.name];
@@ -253,8 +251,8 @@ let ArchivePageMixin = {
     },
 
 
-    onXScaleChange(buttonIndex) {
-        this.setState((oldState) => {
+    onXScaleChange (buttonIndex) {
+        this.setState(oldState => {
             let newState = Object.assign({}, oldState);
             newState.xScale = buttonIndex;
             this.archiveMessageManager.publish( {
@@ -266,13 +264,13 @@ let ArchivePageMixin = {
     },
 
 
-    componentDidMountImpl() {
+    componentDidMountImpl () {
         mainEventManager.subscribe('page-selected', this.onPageSelected);
         mainEventManager.subscribe('archive-data-ready', this.onArchiveDataReady);
     },
 
 
-    componentWillUnmountImpl() {
+    componentWillUnmountImpl () {
         mainEventManager.unsubscribe('page-selected', this.onPageSelected);
         mainEventManager.unsubscribe('archive-data-ready', this.onArchiveDataReady);
     }

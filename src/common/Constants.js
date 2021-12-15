@@ -17,13 +17,13 @@ let months = [
 ];
 
 
-months.capitalize = function(index) {
+months.capitalize = function (index) {
     let str = months[index];
     return str.charAt(0).toUpperCase() + str.slice(1);
 }
 
 
-months.find = function(str) {
+months.find = function (str) {
     if ( !str ) {
         return -1;
     }
@@ -33,18 +33,18 @@ months.find = function(str) {
 }
 
 
-months.has = function(str) {
+months.has = function (str) {
     return months.find(str) >= 0;
 }
 
 
-months.findByPartialMatch = function(str) {
-    if ( !str ) {
+months.findByPartialMatch = function (str) {
+    if (!str) {
         return -1;
     }
     str = str.trim().toLowerCase();
     let strLen = str.length;
-    if ( strLen == 0 ) {
+    if (!strLen) {
         return -1;
     }
 

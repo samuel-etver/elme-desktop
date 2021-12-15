@@ -1,17 +1,14 @@
 import MeasureParameters from './MeasureParameters';
 import Constants from '../common/Constants';
 import XScaleParameters from './components/XScaleParameters';
+import Calendar from '../common/Calendar';
 
 let measureParameters = new MeasureParameters();
 let xScaleParameters = new XScaleParameters();
 
+
 let xFormatter = function (x) {
-  let hour = x.getHours().toString();
-  let minute = x.getMinutes();
-  minute = (minute < 10 ? '0' : '') + minute.toString();
-  let second = x.getSeconds();
-  second = (second < 10 ? '0' : '') + second.toString();
-  return hour + ':' + minute + ':' + second;
+    return Calendar.timeToStr(x);
 };
 
 let yFormatter = function (y) {

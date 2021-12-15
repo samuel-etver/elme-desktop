@@ -19,7 +19,7 @@ class MeasureParametersComboBox extends React.Component {
         for (let i = 0; i < measureParameters.size(); i++) {
             let parameter = measureParameters.byIndex(i);
             let caption = (i + 1).toString() + '. ' + parameter.caption;
-            if (parameter.id == selectedId) {
+            if (parameter.id === selectedId) {
                 var selectedCaption = caption;
             }
             captions.push(

@@ -6,7 +6,6 @@ import NumberButtonsGroup from './NumberButtonsGroup';
 import HorzDivider from './HorzDivider';
 import Constants from '../../common/Constants';
 import MeasureParameters from '../MeasureParameters';
-import DeviceData from '../../common/DeviceData';
 import MainEventManager from '../../common/MainEventManager';
 import GlobalStorage from '../../common/GlobalStorage';
 import ChartBuilder from '../ChartBuilder';
@@ -24,7 +23,7 @@ class RtChartsPage extends React.Component {
         this.newUpdateId = this.oldUpdateId + 1;
         this.state = {
             selectedMeasureParameterId:  measureParameters.get('inductorTemperature1').id,
-            newUpdateId: this.updateId
+            newUpdateId: this.newUpdateId
         };
         this.chartData = {};
         for (let i = 0; i < measureParameters.size(); i++) {
@@ -59,7 +58,7 @@ class RtChartsPage extends React.Component {
 
         if (this.props.visible) {
             let newUpdateId = ++this.newUpdateId;
-            this.setState((oldState) => {
+            this.setState(oldState => {
                 let newState = Object.assign({}, oldState);
                 newState.newUpdateId = newUpdateId;
                 return newState;
@@ -131,7 +130,7 @@ class RtChartsPage extends React.Component {
 
         let parameterId = this.state.selectedMeasureParameterId;
 
-        if (this.state.newUpdateId != this.oldUpdateId) {
+        if (this.state.newUpdateId !== this.oldUpdateId) {
             this.oldUpdateId = this.state.newUpdateId;
             this.chartOptions = this.chartBuilder.buildOptions({
                 measureParameterId: parameterId,
@@ -153,7 +152,7 @@ class RtChartsPage extends React.Component {
                       <NumberButtonsGroup
                         count={measureParameters.size()}
                         callback={this.onChartNumberButtonClick}/>
-                </div>
+                </div>;
     }
 }
 

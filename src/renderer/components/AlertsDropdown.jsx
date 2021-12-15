@@ -34,11 +34,7 @@ class AlertsDropdown extends React.Component {
         let newAlerts = AlertsStorage.getInstance().getAlerts();
         let oldAlerts = this.state.alerts;
 
-        let isAlertsSame = function(alerts1, alerts2) {
-            return alertsStorage.isAlertsSame(alerts1, alerts2);
-        }
-
-        if (!isAlertsSame(newAlerts, oldAlerts)) {
+        if (!alertsStorage.isAlertsSame(newAlerts, oldAlerts)) {
             this.setState(oldState => {
                 let newState = Object.assign({}, oldState);
                 newState.alerts = newAlerts;
@@ -79,7 +75,7 @@ class AlertsDropdown extends React.Component {
                               <div class="alerts-dropdown-cell alerts-dropdown-cell-date">{dt}</div>
                               <div class="alerts-dropdown-cell alerts-dropdown-cell-time">{tm}</div>
                               <div class="alerts-dropdown-cell alerts-dropdown-cell-alert">{msg}</div>
-                           </div>
+                           </div>;
                 });
             }
 

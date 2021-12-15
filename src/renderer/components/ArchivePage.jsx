@@ -24,24 +24,24 @@ let xScaleParameters = new XScaleParameters();
 
 
 class ArchivePage extends React.Component {
-    constructor(props) {
+    constructor (props) {
         super(props);
         this.initImpl();
     }
 
 
-    componentDidMount() {
+    componentDidMount () {
         this.componentDidMountImpl();
     }
 
 
-    componentWillUnmount() {
+    componentWillUnmount () {
         this.componentWillUnmountImpl();
     }
 
 
-    onPageSelected() {
-        if ( !this.wasSelected ) {
+    onPageSelected () {
+        if (!this.wasSelected) {
             this.wasSelected = true;
 
             let xScale = this.state.xScale;
@@ -52,11 +52,11 @@ class ArchivePage extends React.Component {
                 month: Constants.months.capitalize(date.getMonth()),
                 year:  date.getFullYear().toString()
             };
-            this.setState((oldState) => {
+            this.setState(oldState => {
                 let newState = Object.assign({}, oldState);
                 newState.dateInputPaneData = dateInputPaneData;
                 newState.xMax = date;
-                this.archiveMessageManager.publish( {
+                this.archiveMessageManager.publish({
                     dateFrom: new Date(newState.xMax.getTime() - xScaleParameters.get(xScale).value*60*1000),
                     dateTo: newState.xMax
                 });
@@ -66,22 +66,22 @@ class ArchivePage extends React.Component {
     }
 
 
-    onChartNumberButtonClick(index) {
+    onChartNumberButtonClick (index) {
         this.onChartNumberButtonClickImpl(index);
     }
 
 
-    onChartSelect(event, id) {
+    onChartSelect (event, id) {
         this.onChartSelectImpl(event, id);
     }
 
 
-    onDateInput(event, data) {
+    onDateInput (event, data) {
         let dateInputPaneData;
 
-        if ( event === 'change' || event === 'submit' ) {
+        if (event === 'change' || event === 'submit') {
             for (let item in data) {
-                switch( item ) {
+                switch (item) {
                     case 'hour':
                     case 'minute':
                     case 'second':
@@ -97,8 +97,8 @@ class ArchivePage extends React.Component {
         }
 
 
-        if ( dateInputPaneData ) {
-            this.setState((oldState) => {
+        if (dateInputPaneData) {
+            this.setState(oldState => {
                 let newState = Object.assign({}, oldState);
                 newState.dateInputPaneData = Object.assign(newState.dateInputPaneData, dateInputPaneData);
                 if ( data.valid ) {
@@ -112,7 +112,7 @@ class ArchivePage extends React.Component {
                         parseInt(minute),
                         parseInt(second)
                     );
-                    this.archiveMessageManager.publish( {
+                    this.archiveMessageManager.publish({
                         dateFrom: new Date(newState.xMax.getTime() - xScaleParameters.get(this.state.xScale).value*60*1000),
                         dateTo: newState.xMax
                     });
@@ -123,15 +123,15 @@ class ArchivePage extends React.Component {
     }
 
 
-    onXScrollBarEvent(event, value) {
+    onXScrollBarEvent (event, value) {
         this.onXScrollBarEventImpl(event, value);
     }
 
 
-    onArchiveDataReady(event, arg) {
+    onArchiveDataReady (event, arg) {
         this.archiveData = arg;
         this.seriesParameterId = -1;
-        this.setState((oldState) => {
+        this.setState(oldState => {
             let newState = Object.assign({}, oldState);
             newState.dataPacketCount++;
             return newState;
@@ -139,7 +139,7 @@ class ArchivePage extends React.Component {
     }
 
 
-    render() {
+    render () {
         let style = 'archive-page ';
         if ( this.props.visible ) {
             style += 'front-page';
