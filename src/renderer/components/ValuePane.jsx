@@ -23,4 +23,4 @@ function ValuePane(props) {
     );
 }
 
-export default ValuePane;
+export default React.memo(ValuePane);

@@ -2,7 +2,7 @@ import React from 'react';
 import './Clock.css';
 import Constants from '../../common/Constants';
 
-class Clock extends React.Component {
+class Clock extends React.PureComponent {
     constructor (props) {
         super(props);
         this.state = this.createNewState();

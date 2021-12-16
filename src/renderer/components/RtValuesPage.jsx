@@ -7,7 +7,7 @@ import GlobalStorage from '../../common/GlobalStorage';
 const globalStorage = GlobalStorage.getInstance();
 const measureParameters = new MeasureParameters();
 
-class RtValuesPane extends React.Component {
+class RtValuesPane extends React.PureComponent {
     constructor (props) {
         super(props);
         this.parametersProperties = this.createParametersProperties();
@@ -76,11 +76,9 @@ class RtValuesPane extends React.Component {
             valuePanes.push(this.renderParameter(property.name));
         }
 
-        return (
-            <div class="rt-values-pane">
-                {valuePanes}
-            </div>
-        );
+        return <div class="rt-values-pane">
+                  {valuePanes}
+              </div>;
     }
 
 
@@ -107,8 +105,8 @@ function RtValuesPage (props) {
     }
     return  <div class='rt-values-page front-page'>
                 <RtValuesPane />
-            </div>
+            </div>;
 }
 
 
-export default RtValuesPage;
+export default React.memo(RtValuesPage);

@@ -1,14 +1,14 @@
 import React from 'react';
 import './NumberButtonsGroup.css';
 
-function NumberButton (props) {
+let NumberButton = React.memo(function(props) {
     return  <button class="number-button" onClick={props.onClick}>
                 {props.caption}
-            </button>
-}
+            </button>;
+});
 
 
-class NumberButtonsGroup extends React.Component {
+class NumberButtonsGroup extends React.PureComponent {
     onClick (index) {
         this.props.callback && this.props.callback(index);
     }
@@ -22,7 +22,7 @@ class NumberButtonsGroup extends React.Component {
 
         return  <div class="number-buttons-group">
                     {buttons}
-                </div>
+                </div>;
     }
 }
 
