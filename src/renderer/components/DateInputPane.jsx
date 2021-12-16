@@ -4,13 +4,6 @@ import EditableComboBox from './EditableComboBox';
 import Constants from '../../common/Constants';
 
 
-function Label (props) {
-    return  <div class="date-input-pane-label">
-                {props.text}
-            </div>;
-}
-
-
 function addToList(list, caption, id) {
     list.push({
         caption: caption,
@@ -23,20 +16,28 @@ for (let i = 0; i < Constants.months.length; i++) {
     addToList(monthList, Constants.months.capitalize(i), i);
 }
 
+let dayList = [];
+for (let i = 1; i < 31; i++) {
+    addToList(dayList, i.toString(), i);
+}
+
 let hourList = [];
 for (let i = 0; i < 24; i++) {
     addToList(hourList, i.toString(), i);
 }
 
 
-class DateInputPane extends React.Component {
+function Label (props) {
+    return  <div class="date-input-pane-label">
+                {props.text}
+            </div>;
+}
+
+
+
+class DateInputPane extends React.PureComponent {
     constructor(props) {
         super(props);
-
-        this.yearList = [];
-        this.monthList = monthList;
-        this.dayList = [];
-        this.hourList = hourList;
 
         this.onClockButtonClick = this.onClockButtonClick.bind(this);
         this.onChange = this.onChange.bind(this);
@@ -198,33 +199,30 @@ class DateInputPane extends React.Component {
                     />
                     <Label text="Год:" />
                     <EditableComboBox
-                      style="date-input-pane-year-combobox"
+                      addinClasses="date-input-pane-year-combobox"
                       value={this.props.options.year}
-                      prefix="year-"
+                      items={[]}
                       callback={(...args) => this.onChange('year', ...args)}
                     />
                     <Label text="Месяц:" />
                     <EditableComboBox
-                      style="date-input-pane-month-combobox"
+                      addinClasses="date-input-pane-month-combobox"
                       value={this.props.options.month}
-                      items={this.monthList}
-                      prefix="month-"
+                      items={monthList}
                       callback={(...args) => this.onChange('month', ...args)}
                     />
                     <Label text="День:" />
                     <EditableComboBox
-                      style="date-input-pane-day-combobox"
+                      addinClasses="date-input-pane-day-combobox"
                       value={this.props.options.day}
-                      list={this.dayList}
-                      prefix="day-"
+                      items={dayList}
                       callback={(...args) => this.onChange('day', ...args)}
                     />
                     <Label text="Час:" />
                     <EditableComboBox
-                      style="date-input-pane-hour-combobox"
+                      addinClasses="date-input-pane-hour-combobox"
                       value={this.props.options.hour}
-                      items={this.hourList}
-                      prefix="hour-"
+                      items={hourList}
                       callback={(...args) => this.onChange('hour', ...args)}
                     />
                 </div>;

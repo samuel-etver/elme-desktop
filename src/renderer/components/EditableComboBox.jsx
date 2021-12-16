@@ -17,7 +17,7 @@ class EditableComboBox extends React.Component {
 
     render() {
         let list = [];
-        if ( this.props.items ) {
+        if (this.props.items) {
             let mainClass = "editable-combobox-select-option";
             let checkedClass = mainClass + " editable-combobox-select-option-checked";
             for (let item of this.props.items) {
@@ -31,7 +31,7 @@ class EditableComboBox extends React.Component {
             }
         }
 
-        return  <div ref={this.comboboxRef} class={"editable-combobox " + this.props.style}>
+        return  <div ref={this.comboboxRef} class={"editable-combobox " + this.props.addinClasses}>
                     <div class={"editable-combobox-container "}>
                         <input class="editable-combobox-input"
                           value={this.props.value}
