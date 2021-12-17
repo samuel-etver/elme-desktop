@@ -125,7 +125,7 @@ class RtChartsPage extends React.Component {
 
     render () {
         if (!this.props.visible) {
-            return <div class='rt-charts-page back-page hidden' />
+            return <div class='rt-charts-page back-page hidden' />;
         }
 
         let parameterId = this.state.selectedMeasureParameterId;

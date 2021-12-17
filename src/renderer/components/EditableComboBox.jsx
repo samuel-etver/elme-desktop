@@ -2,20 +2,20 @@ import './EditableComboBox.css';
 import React from 'react';
 import ComboBoxMixin from './ComboBoxMixin';
 
-class EditableComboBox extends React.Component {
-    constructor(props) {
+class EditableComboBox extends React.PureComponent {
+    constructor (props) {
         super(props);
         this.initComboBoxMixin();
     }
 
 
-    componentDidMount() {
+    componentDidMount () {
         let width = this.comboboxRef.current.offsetWidth;
         this.selectContainerRef.current.style["width"] = width + "px";
     }
 
 
-    render() {
+    render () {
         let list = [];
         if (this.props.items) {
             let mainClass = "editable-combobox-select-option";
@@ -45,7 +45,7 @@ class EditableComboBox extends React.Component {
                       onBlur={this.onToggle}>
                         {list}
                     </ul>
-                </div>
+                </div>;
     }
 }
 

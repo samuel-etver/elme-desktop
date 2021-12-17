@@ -6,9 +6,9 @@ import AllAlerts from '../../common/Alerts';
 const alertsStorage = AlertStorage.getInstance();
 const allAlerts = new AllAlerts();
 
-class AlertsTablo extends React.Component {
-    constructor() {
-        super();
+class AlertsTablo extends React.PureComponent {
+    constructor (props) {
+        super(props);
         this.currAlerts = [];
         this.shutterRef = React.createRef();
         this.alertIndex = 0;
@@ -19,24 +19,24 @@ class AlertsTablo extends React.Component {
     }
 
 
-    componentDidMount() {
+    componentDidMount () {
         let shutter = this.shutterRef.current;
         shutter.addEventListener('animationiteration', this.onShutterAnimationEnd);
     }
 
 
-    componentWillUnmount() {
+    componentWillUnmount () {
         let shutter = this.shutterRef.current;
         shutter.removeEventListener('animationiteration', this.onShutterAnimationEnd);
     }
 
 
-    onShutterAnimationEnd() {
+    onShutterAnimationEnd () {
         this.animateNext();
     }
 
 
-    animateNext() {
+    animateNext () {
         if (++this.alertIndex >= this.currAlerts.length) {
             this.alertIndex = 0;
             this.currAlerts = alertsStorage.getAlerts();
@@ -51,7 +51,7 @@ class AlertsTablo extends React.Component {
     }
 
 
-    render() {
+    render () {
         return  <div class="alerts-tablo">
                     <div class="alerts-tablo-shutter"
                          ref={this.shutterRef} />

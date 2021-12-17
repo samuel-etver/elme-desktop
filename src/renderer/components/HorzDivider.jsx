@@ -5,4 +5,4 @@ function HorzDivider (props) {
     return  <div class="horz-divider" style={{height:props.height}} />;
 }
 
-export default HorzDivider;
+export default React.memo(HorzDivider);

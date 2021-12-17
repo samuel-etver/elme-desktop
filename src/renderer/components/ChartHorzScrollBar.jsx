@@ -1,7 +1,7 @@
 import React from 'react';
 import './ChartHorzScrollBar.css';
 
-class ChartHorzScrollButton extends React.Component {
+class ChartHorzScrollButton extends React.PureComponent {
     constructor (props) {
         super(props);
         this.timerId = undefined;
@@ -59,12 +59,12 @@ class ChartHorzScrollButton extends React.Component {
                   onMouseDown={this.onMouseDown}
                   onClick={this.onClick}>
                   <img src={"assets/" + this.props.image +  ".png"} />
-                </button>
+                </button>;
     }
 }
 
 
-class ChartHorzScroller extends React.Component {
+class ChartHorzScroller extends React.PureComponent {
     constructor (props) {
         super(props);
         this.thumbRef = React.createRef();
@@ -129,40 +129,25 @@ class ChartHorzScroller extends React.Component {
                       ref={this.scrollerRef}>
                     </div>
                     <div class="chart-horz-scroller-inner">
-                      <div class="chart-horz-scroller-thumb"
-                        ref={this.thumbRef}
-                        style={{left: value}}
-                        onMouseDown={this.onThumbMouseDown}>
-                      </div>
+                        <div class="chart-horz-scroller-thumb"
+                          ref={this.thumbRef}
+                          style={{left: value}}
+                          onMouseDown={this.onThumbMouseDown}>
+                        </div>
                     </div>
-                </div>
+                </div>;
     }
 }
 
 
-function ChartHorzScrollDivider () {
-    return <div class="chart-horz-scroll-divider" />;
-}
-
-
-class ChartHorzScrollBar extends React.Component {
-    onButtonClick (event) {
-        this.props.callback && this.props.callback(event);
-    }
-
-
-    onChange(event, value) {
-        this.props.callback && this.props.callback(event, value);
-    }
-
-
+class ChartHorzScrollBar extends React.PureComponent {
     renderButton (name) {
-        return <>
-            <ChartHorzScrollDivider />
-            <ChartHorzScrollButton
-              image={'scroll-' + name}
-              callback={() => this.onButtonClick(name)}/>
-          </>;
+        return  <>
+                    <div class="chart-horz-scroll-divider" />
+                    <ChartHorzScrollButton
+                      image={'scroll-' + name}
+                      callback={() => this.props.callback(name)}/>
+                </>;
     }
 
 
@@ -170,12 +155,12 @@ class ChartHorzScrollBar extends React.Component {
         return  <div class="chart-horz-scroll-bar">
                     <ChartHorzScroller
                       value={this.props.value}
-                      callback={(event, value) => this.onChange(event, value)}/>
+                      callback={(event, value) =>  this.props.callback(event, value)}/>
                     {this.renderButton('double-left')}
                     {this.renderButton('left')}
                     {this.renderButton('right')}
                     {this.renderButton('double-right')}
-                </div>
+                </div>;
     }
 }
 

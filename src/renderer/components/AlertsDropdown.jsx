@@ -8,9 +8,9 @@ const alertsStorage = AlertsStorage.getInstance();
 const allAlerts = new AllAlerts();
 
 
-class AlertsDropdown extends React.Component {
-    constructor () {
-        super();
+class AlertsDropdown extends React.PureComponent {
+    constructor (props) {
+        super(props);
         this.onCloseClick = this.onCloseClick.bind(this);
         this.onToggleClick = this.onToggleClick.bind(this);
         this.state = {

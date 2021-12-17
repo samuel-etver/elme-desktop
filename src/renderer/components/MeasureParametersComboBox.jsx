@@ -6,7 +6,7 @@ import ComboBoxMixin from './ComboBoxMixin';
 let measureParameters = new MeasureParameters();
 
 
-class MeasureParametersComboBox extends React.Component {
+class MeasureParametersComboBox extends React.PureComponent {
     constructor (props) {
         super(props);
         this.initComboBoxMixin();
@@ -37,7 +37,7 @@ class MeasureParametersComboBox extends React.Component {
                     <ul ref={this.selectContainerRef} class="measure-parameters-combobox-select-container" onBlur={this.onToggle}>
                         {captions}
                     </ul><br />
-                </div>
+                </div>;
     }
 }
 

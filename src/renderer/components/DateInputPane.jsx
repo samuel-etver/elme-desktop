@@ -17,7 +17,7 @@ for (let i = 0; i < Constants.months.length; i++) {
 }
 
 let dayList = [];
-for (let i = 1; i < 31; i++) {
+for (let i = 1; i <= 31; i++) {
     addToList(dayList, i.toString(), i);
 }
 
