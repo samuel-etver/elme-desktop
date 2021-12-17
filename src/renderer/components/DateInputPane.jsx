@@ -4,7 +4,7 @@ import EditableComboBox from './EditableComboBox';
 import Constants from '../../common/Constants';
 
 
-function addToList(list, caption, id) {
+function addToList(list, caption, id, checked = false) {
     list.push({
         caption: caption,
         id: id
@@ -45,9 +45,9 @@ class DateInputPane extends React.PureComponent {
 
 
     onClockButtonClick() {
-        if (this.props.options.callback) {
+        if (this.props.callback) {
             let date = new Date();
-            this.props.options.callback('submit', {
+            this.props.callback('submit', {
                 hour: date.getHours(),
                 minute: date.getMinutes(),
                 second: date.getSeconds(),
@@ -67,14 +67,14 @@ class DateInputPane extends React.PureComponent {
 
 
         if ( event === 'change' ) {
-            if ( this.props.options.callback ) {
-                this.props.options.callback(event, data);
+            if ( this.props.callback ) {
+                this.props.callback(event, data);
             }
             return;
         }
 
         if ( value === undefined ) {
-            value = this.props.options[source];
+            value = this.props[source];
             data[source] = value;
         }
 
@@ -137,7 +137,7 @@ class DateInputPane extends React.PureComponent {
         }
 
 
-        if ( newValue !== undefined ) {
+        if (newValue !== undefined) {
             data[source] = newValue.toString();
         }
 
@@ -146,12 +146,12 @@ class DateInputPane extends React.PureComponent {
         for (let item of ['hour', 'day', 'month', 'year']) {
             checkingDate[item] = data[item] !== undefined
               ? data[item]
-              : this.props.options[item];
+              : this.props[item];
         }
         data['valid'] = this.checkDate(checkingDate);
 
-        if ( this.props.options.callback ) {
-            this.props.options.callback(event, data);
+        if ( this.props.callback ) {
+            this.props.callback(event, data);
         }
     }
 
@@ -191,7 +191,38 @@ class DateInputPane extends React.PureComponent {
     }
 
 
+    createYearList () {
+        let year = (new Date()).getFullYear();
+        let yearList = [];
+        for (let i = 0; i < 5; i++) {
+            addToList(yearList, year.toString(), year);
+            year--;
+        }
+        return yearList;
+    }
+
+
+    createMonthList () {
+        return monthList;
+    }
+
+
+    createDayList () {
+        return dayList;
+    }
+
+
+    createHourList () {
+        return hourList;
+    }
+
+
     render() {
+        let yearList = this.createYearList();
+        let monthList = this.createMonthList();
+        let dayList = this.createDayList();
+        let hourList = this.createHourList();
+
         return  <div class="date-input-pane">
                     <button
                       class="date-input-pane-current-time-button"
@@ -200,28 +231,28 @@ class DateInputPane extends React.PureComponent {
                     <Label text="Год:" />
                     <EditableComboBox
                       addinClasses="date-input-pane-year-combobox"
-                      value={this.props.options.year}
-                      items={[]}
+                      value={this.props.year}
+                      items={yearList}
                       callback={(...args) => this.onChange('year', ...args)}
                     />
                     <Label text="Месяц:" />
                     <EditableComboBox
                       addinClasses="date-input-pane-month-combobox"
-                      value={this.props.options.month}
+                      value={this.props.month}
                       items={monthList}
                       callback={(...args) => this.onChange('month', ...args)}
                     />
                     <Label text="День:" />
                     <EditableComboBox
                       addinClasses="date-input-pane-day-combobox"
-                      value={this.props.options.day}
+                      value={this.props.day}
                       items={dayList}
                       callback={(...args) => this.onChange('day', ...args)}
                     />
                     <Label text="Час:" />
                     <EditableComboBox
                       addinClasses="date-input-pane-hour-combobox"
-                      value={this.props.options.hour}
+                      value={this.props.hour}
                       items={hourList}
                       callback={(...args) => this.onChange('hour', ...args)}
                     />

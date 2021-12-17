@@ -101,7 +101,7 @@ class ArchivePage extends React.Component {
             this.setState(oldState => {
                 let newState = Object.assign({}, oldState);
                 newState.dateInputPaneData = Object.assign(newState.dateInputPaneData, dateInputPaneData);
-                if ( data.valid ) {
+                if (data.valid) {
                     let minute = dateInputPaneData.minute ?? 0;
                     let second = dateInputPaneData.second ?? 0;
                     newState.xMax = new Date(
@@ -141,30 +141,20 @@ class ArchivePage extends React.Component {
 
     render () {
         let style = 'archive-page ';
-        if ( this.props.visible ) {
+        if (this.props.visible) {
             style += 'front-page';
         }
         else {
             style += 'back-page hidden';
-        }
-
-        if ( !this.props.visible ) {
             return <div class={style} />;
         }
 
-        let dateInputPaneOptions = {
-            year: this.state.dateInputPaneData.year,
-            month: this.state.dateInputPaneData.month,
-            day: this.state.dateInputPaneData.day,
-            hour: this.state.dateInputPaneData.hour,
-            callback: this.onDateInput
-        };
         let chartOptions = this.chartBuilder.buildOptions({
             measureParameterId: this.state.selectedMeasureParameterId,
             xScaleParameter: xScaleParameters.get(this.state.xScale),
             xMax: this.state.xMax
         });
-        if ( this.seriesParameterId === this.state.selectedMeasureParameterId) {
+        if (this.seriesParameterId === this.state.selectedMeasureParameterId) {
             chartOptions.series = this.series;
         }
         else {
@@ -174,24 +164,27 @@ class ArchivePage extends React.Component {
         }
 
         return  <div class={style}>
-                    <DateInputPane options={dateInputPaneOptions}/>
+                    <DateInputPane
+                      year={this.state.dateInputPaneData.year}
+                      month={this.state.dateInputPaneData.month}
+                      day={this.state.dateInputPaneData.day}
+                      hour={this.state.dateInputPaneData.hour}
+                      callback={this.onDateInput} />
                     <HorzDivider height="16px" />
                     <MeasureParametersComboBox
                       selectedId={this.state.selectedMeasureParameterId}
                       callback={this.onChartSelect} />
                     <HorzDivider height="40px" />
                     <div class="archive-page-chart-pane">
-                        <Chart options={chartOptions} >
-                        </Chart>
+                        <Chart options={chartOptions} />
                         <ChartScaleButtonsGroup
                           buttonIndex={this.state.xScale}
-                          callback={this.onXScaleChange}/>
+                          callback={this.onXScaleChange} />
                     </div>
                     <HorzDivider height="8px" />
                     <ChartHorzScrollBar
                         value={this.state.xScrollBarPosition}
-                        callback={this.onXScrollBarEvent}
-                    />
+                        callback={this.onXScrollBarEvent} />
                     <HorzDivider height="20px" />
                     <NumberButtonsGroup
                       count={this.measureParameters.size()}

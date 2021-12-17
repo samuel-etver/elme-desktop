@@ -144,19 +144,9 @@ class MarkupPage extends React.Component {
         }
         else {
             style += 'back-page hidden';
-        }
-
-        if ( !this.props.visible ) {
             return <div class={style} />;
         }
 
-        let dateInputPaneOptions = {
-            year: this.state.dateInputPaneData.year,
-            month: this.state.dateInputPaneData.month,
-            day: this.state.dateInputPaneData.day,
-            hour: this.state.dateInputPaneData.hour,
-            callback: this.onDateInput
-        };
         let chartOptions = this.chartBuilder.buildOptions({
             measureParameterId: this.state.selectedMeasureParameterId,
             xScaleParameter: xScaleParameters.get(this.state.xScale),
@@ -172,7 +162,12 @@ class MarkupPage extends React.Component {
         }
 
         return  <div class='markup-page'>
-                    <DateInputPane options={dateInputPaneOptions}/>
+                    <DateInputPane
+                      year={this.state.dateInputPaneData.year}
+                      month={this.state.dateInputPaneData.month}
+                      day={this.state.dateInputPaneData.day}
+                      hour={this.state.dateInputPaneData.hour}
+                      callback={this.onDateInput} />
                     <HorzDivider height="16px" />
                     <MeasureParametersComboBox
                       selectedId={this.state.selectedMeasureParameterId}
@@ -181,11 +176,10 @@ class MarkupPage extends React.Component {
                     <div class="markup-page-data-pane">
                       <div class="markup-page-chart-root-pane">
                         <div class="markup-page-chart-pane">
-                            <Chart options={chartOptions} >
-                            </Chart>
+                            <Chart options={chartOptions} />
                             <ChartScaleButtonsGroup
                               buttonIndex={this.state.xScale}
-                              callback={this.onXScaleChange}/>
+                              callback={this.onXScaleChange} />
                         </div>
                       </div>
                       <div class="markup-page-table-pane">
@@ -194,8 +188,7 @@ class MarkupPage extends React.Component {
                         <HorzDivider height="8px" />
                         <ChartHorzScrollBar
                           value={this.state.xScrollBarPosition}
-                          callback={this.onXScrollBarEvent}
-                        />
+                          callback={this.onXScrollBarEvent} />
                       </div>
                     </div>
                     <NumberButtonsGroup
