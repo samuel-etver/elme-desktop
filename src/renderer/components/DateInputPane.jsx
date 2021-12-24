@@ -11,27 +11,17 @@ function addToList(list, caption, id, checked = false) {
     });
 };
 
-let monthList = [];
-for (let i = 0; i < Constants.months.length; i++) {
-    addToList(monthList, Constants.months.capitalize(i), i);
-}
-
 let dayList = [];
 for (let i = 1; i <= 31; i++) {
     addToList(dayList, i.toString(), i);
 }
 
-let hourList = [];
-for (let i = 0; i < 24; i++) {
-    addToList(hourList, i.toString(), i);
-}
 
-
-function Label (props) {
+let Label = React.memo(function (props) {
     return  <div class="date-input-pane-label">
                 {props.text}
             </div>;
-}
+});
 
 
 
@@ -203,17 +193,34 @@ class DateInputPane extends React.PureComponent {
 
 
     createMonthList () {
-        return monthList;
+        if (this.monthList === undefined) {
+            let monthList = [];
+            for (let i = 0; i < Constants.months.length; i++) {
+                addToList(monthList, Constants.months.capitalize(i), i);
+            }
+            this.monthList = monthList;
+        }
+        return this.monthList;
     }
 
 
     createDayList () {
+        if (this.props.year && this.props.month) {
+
+        }
         return dayList;
     }
 
 
     createHourList () {
-        return hourList;
+        if (this.hourList === undefined) {
+            let hourList = [];
+            for (let i = 0; i < 24; i++) {
+                addToList(hourList, i.toString(), i);
+            }
+            this.hourList = hourList;
+        }
+        return this.hourList;
     }
 
 
