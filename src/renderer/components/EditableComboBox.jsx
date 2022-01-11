@@ -11,7 +11,7 @@ class EditableComboBox extends React.PureComponent {
 
     componentDidMount () {
         let width = this.comboboxRef.current.offsetWidth;
-        this.selectContainerRef.current.style["width"] = width + "px";
+        this.selectContainerRef.current.style["width"] = 2*width + "px";
     }
 
 
@@ -22,11 +22,11 @@ class EditableComboBox extends React.PureComponent {
             let checkedClass = mainClass + " editable-combobox-select-option-checked";
             for (let item of this.props.items) {
                 list.push(
-                  <li class={item.checked ? checkedClass : mainClass}
+                  <div class={item.checked ? checkedClass : mainClass}
                     value={item.id}
                     onClick={() => this.onClickItem(item.caption)}>
                       {item.caption}
-                  </li>
+                  </div>
                 );
             }
         }
@@ -40,11 +40,11 @@ class EditableComboBox extends React.PureComponent {
                           onKeyPress={this.onKeyPressed}/>
                         <div class="editable-combobox-button" onClick={this.onToggle}/>
                     </div>
-                    <ul ref={this.selectContainerRef}
+                    <div ref={this.selectContainerRef}
                       class="editable-combobox-select-container"
                       onBlur={this.onToggle}>
                         {list}
-                    </ul>
+                    </div>
                 </div>;
     }
 }
