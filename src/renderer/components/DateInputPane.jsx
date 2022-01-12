@@ -240,6 +240,8 @@ class DateInputPane extends React.PureComponent {
                       addinClasses="date-input-pane-year-combobox"
                       value={this.props.year}
                       items={yearList}
+                      columnsCount="1"
+                      columnWidth="80px"
                       callback={(...args) => this.onChange('year', ...args)}
                     />
                     <Label text="Месяц:" />
@@ -247,6 +249,8 @@ class DateInputPane extends React.PureComponent {
                       addinClasses="date-input-pane-month-combobox"
                       value={this.props.month}
                       items={monthList}
+                      columnsCount="3"
+                      columnWidth="120px"
                       callback={(...args) => this.onChange('month', ...args)}
                     />
                     <Label text="День:" />
@@ -254,12 +258,16 @@ class DateInputPane extends React.PureComponent {
                       addinClasses="date-input-pane-day-combobox"
                       value={this.props.day}
                       items={dayList}
+                      columnsCount="10"
+                      columnWidth="40px"
                       callback={(...args) => this.onChange('day', ...args)}
                     />
                     <Label text="Час:" />
                     <EditableComboBox
                       addinClasses="date-input-pane-hour-combobox"
                       value={this.props.hour}
+                      columnsCount="6"
+                      columnWidth="40px"
                       items={hourList}
                       callback={(...args) => this.onChange('hour', ...args)}
                     />

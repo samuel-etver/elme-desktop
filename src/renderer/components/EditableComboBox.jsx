@@ -9,12 +9,6 @@ class EditableComboBox extends React.PureComponent {
     }
 
 
-    componentDidMount () {
-        let width = this.comboboxRef.current.offsetWidth;
-        this.selectContainerRef.current.style["width"] = 2*width + "px";
-    }
-
-
     render () {
         let list = [];
         if (this.props.items) {
@@ -31,6 +25,10 @@ class EditableComboBox extends React.PureComponent {
             }
         }
 
+        let gridTemplateColumns = "repeat(" +
+          (this.props.columnsCount ?? "1") + ", " +
+          (this.props.columnWidth ?? "100px") + ")";
+
         return  <div ref={this.comboboxRef} class={"editable-combobox " + this.props.addinClasses}>
                     <div class={"editable-combobox-container "}>
                         <input class="editable-combobox-input"
@@ -42,6 +40,7 @@ class EditableComboBox extends React.PureComponent {
                     </div>
                     <div ref={this.selectContainerRef}
                       class="editable-combobox-select-container"
+                      style={{gridTemplateColumns: gridTemplateColumns}}
                       onBlur={this.onToggle}>
                         {list}
                     </div>

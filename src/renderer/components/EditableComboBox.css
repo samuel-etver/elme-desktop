@@ -68,7 +68,6 @@
     display: grid;
     top: 36px;
     z-index: 5;
-    grid-template-columns: 100px 100px
 }
 
 .editable-combobox-select-container:focus {
