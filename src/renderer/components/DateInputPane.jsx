@@ -4,19 +4,6 @@ import EditableComboBox from './EditableComboBox';
 import Constants from '../../common/Constants';
 
 
-function addToList(list, caption, id, checked = false) {
-    list.push({
-        caption: caption,
-        id: id
-    });
-};
-
-let dayList = [];
-for (let i = 1; i <= 31; i++) {
-    addToList(dayList, i.toString(), i);
-}
-
-
 let Label = React.memo(function (props) {
     return  <div class="date-input-pane-label">
                 {props.text}
@@ -26,7 +13,7 @@ let Label = React.memo(function (props) {
 
 
 class DateInputPane extends React.PureComponent {
-    constructor(props) {
+    constructor (props) {
         super(props);
 
         this.onClockButtonClick = this.onClockButtonClick.bind(this);
@@ -34,7 +21,16 @@ class DateInputPane extends React.PureComponent {
     }
 
 
-    onClockButtonClick() {
+    addToList (list, caption, id, checked = false) {
+        list.push({
+            caption: caption,
+            id: id,
+            checked: checked
+        });
+    };
+
+
+    onClockButtonClick () {
         if (this.props.callback) {
             let date = new Date();
             this.props.callback('submit', {
@@ -50,20 +46,18 @@ class DateInputPane extends React.PureComponent {
     }
 
 
-    onChange(source, event, value) {
+    onChange (source, event, value) {
         let data = {
             [source]: value
         };
 
 
-        if ( event === 'change' ) {
-            if ( this.props.callback ) {
-                this.props.callback(event, data);
-            }
+        if (event === 'change') {
+            this.props.callback && this.props.callback(event, data);
             return;
         }
 
-        if ( value === undefined ) {
+        if (value === undefined) {
             value = this.props[source];
             data[source] = value;
         }
@@ -72,13 +66,13 @@ class DateInputPane extends React.PureComponent {
         let valueInt = parseInt(value);
         let newValue;
 
-        switch(source) {
+        switch (source) {
             case 'year': {
-                if ( valueInt >= 0 && valueInt < 100 ) {
+                if (valueInt >= 0 && valueInt < 100) {
                     let currDate = new Date();
                     newValue = ((currDate.getFullYear()/100) >> 0)*100 + valueInt;
                 }
-                else if ( valueInt < 0 && valueInt > -100 ) {
+                else if (valueInt < 0 && valueInt > -100) {
                     let currDate = new Date();
                     newValue = currDate.getFullYear() + valueInt;
                 }
@@ -86,10 +80,10 @@ class DateInputPane extends React.PureComponent {
             }
 
             case 'month': {
-                if ( valueInt >= 1 && valueInt <= 12 ) {
+                if (valueInt >= 1 && valueInt <= 12) {
                     newValue = Constants.months.capitalize(valueInt - 1);
                 }
-                else if ( valueInt <= 0 && valueInt <= 12 ) {
+                else if (valueInt <= 0 && valueInt <= 12) {
                     let currDate = new Date();
                     newValue = Constants.months.capitalize((currDate.getMonth() + 12 + valueInt) % 12);
                 }
@@ -103,17 +97,17 @@ class DateInputPane extends React.PureComponent {
             }
 
             case 'day': {
-                if ( valueInt <= 0 && valueInt > -1000 ) {
-                  let currDate = new Date( Date.now() + valueInt*24*60*60*1000 );
-                  data['year'] = currDate.getFullYear().toString();
-                  data['month'] = Constants.months.capitalize( currDate.getMonth() );
-                  newValue = currDate.getDate();
+                if (valueInt <= 0 && valueInt > -1000) {
+                    let currDate = new Date( Date.now() + valueInt*24*60*60*1000 );
+                    data['year'] = currDate.getFullYear().toString();
+                    data['month'] = Constants.months.capitalize( currDate.getMonth() );
+                    newValue = currDate.getDate();
                 }
                 break;
             }
 
             case 'hour': {
-                if ( valueInt < 0 && valueInt > -1000 ) {
+                if (valueInt < 0 && valueInt > -1000) {
                     let currDate = new Date( Date.now() + valueInt*60*60*1000 );
                     data['year'] = currDate.getFullYear().toString();
                     data['month'] = Constants.months.capitalize( currDate.getMonth() );
@@ -140,41 +134,39 @@ class DateInputPane extends React.PureComponent {
         }
         data['valid'] = this.checkDate(checkingDate);
 
-        if ( this.props.callback ) {
-            this.props.callback(event, data);
-        }
+        this.props.callback && this.props.callback(event, data);
     }
 
 
-    checkDate(checkingDate) {
+    checkDate (checkingDate) {
         let year = parseInt(checkingDate.year);
-        if ( !(year >= 2000 && year <= 2100) ) {
+        if (!(year >= 2000 && year <= 2100)) {
             return false;
         }
 
         let hour = parseInt(checkingDate.hour);
-        if ( !(hour >= 0 && hour <= 23) ) {
+        if (!(hour >= 0 && hour <= 23)) {
             return false;
         }
 
         let month = checkingDate.month;
-        if ( !Constants.months.has(month) ) {
+        if (!Constants.months.has(month)) {
             return false;
         }
 
         let day = checkingDate.day;
-        if ( !(day >= 1 && day <= 31) ) {
+        if (!(day >= 1 && day <= 31)) {
             return false;
         }
 
         let date = new Date(year, Constants.months.find(month) + 1, 0);
-        if ( !(day <= date.getDate()) ) {
+        if (!(day <= date.getDate())) {
             return false;
         }
 
         date = new Date(year, Constants.months.find(month), day);
-        if ( date.getTime() < Constants.archiveDateMin.getTime() ) {
-          return false;
+        if (date.getTime() < Constants.archiveDateMin.getTime()) {
+            return false;
         }
 
         return true;
@@ -185,7 +177,7 @@ class DateInputPane extends React.PureComponent {
         let year = (new Date()).getFullYear();
         let yearList = [];
         for (let i = 0; i < 5; i++) {
-            addToList(yearList, year.toString(), year);
+            this.addToList(yearList, year.toString(), year);
             year--;
         }
         return yearList;
@@ -196,7 +188,7 @@ class DateInputPane extends React.PureComponent {
         if (this.monthList === undefined) {
             let monthList = [];
             for (let i = 0; i < Constants.months.length; i++) {
-                addToList(monthList, Constants.months.capitalize(i), i);
+                this.addToList(monthList, Constants.months.capitalize(i), i);
             }
             this.monthList = monthList;
         }
@@ -205,10 +197,14 @@ class DateInputPane extends React.PureComponent {
 
 
     createDayList () {
-        if (this.props.year && this.props.month) {
-
+        if (this.dayList === undefined) {
+            let dayList = [];
+            for (let i = 1; i <= 31; i++) {
+                this.addToList(dayList, i.toString(), i);
+            }
+            this.dayList = dayList;
         }
-        return dayList;
+        return this.dayList;
     }
 
 
@@ -216,7 +212,7 @@ class DateInputPane extends React.PureComponent {
         if (this.hourList === undefined) {
             let hourList = [];
             for (let i = 0; i < 24; i++) {
-                addToList(hourList, i.toString(), i);
+                this.addToList(hourList, i.toString(), i);
             }
             this.hourList = hourList;
         }
@@ -224,7 +220,7 @@ class DateInputPane extends React.PureComponent {
     }
 
 
-    render() {
+    render () {
         let yearList = this.createYearList();
         let monthList = this.createMonthList();
         let dayList = this.createDayList();
