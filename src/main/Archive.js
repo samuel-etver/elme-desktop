@@ -112,6 +112,9 @@ class Archive {
     onReadArchiveData(event, options) {
         let dateFromInt = options.dateFrom.getTime();
         let dateToInt   = options.dateTo.getTime();
+        let interval    = options.interval;
+        let measureParameterId = options.measureParamerId;
+
         let archives = this.archives;
         let searchArchives = [];
         for (let i = 0; i < archives.length; i++) {
@@ -151,6 +154,8 @@ class Archive {
         function joinData() {
             return {
                 measures: allData[0],
+                interval: interval,
+                measureParamerId: measureParameterId
             };
         }
 

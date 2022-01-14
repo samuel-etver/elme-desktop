@@ -39,8 +39,12 @@ class MarkupPage extends React.Component {
     }
 
 
-    onPageSelected() {
-        if ( !this.wasSelected ) {
+    onPageSelected(event, pageName) {
+        if (pageName !== 'markup') {
+            return;
+        }
+
+        if (!this.wasSelected) {
             this.wasSelected = true;
 
             let xScale = this.state.xScale;
@@ -55,6 +59,7 @@ class MarkupPage extends React.Component {
                 let newState = Object.assign({}, oldState);
                 newState.dateInputPaneData = dateInputPaneData;
                 newState.xMax = date;
+                mainEventManager.publish('to-console', 'arhive msg 10');
                 this.archiveMessageManager.publish( {
                     dateFrom: new Date(newState.xMax.getTime() - xScaleParameters.get(xScale).value*60*1000),
                     dateTo: newState.xMax

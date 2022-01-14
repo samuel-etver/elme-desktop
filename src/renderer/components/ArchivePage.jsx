@@ -40,7 +40,11 @@ class ArchivePage extends React.Component {
     }
 
 
-    onPageSelected () {
+    onPageSelected (event, pageName) {
+        if (pageName !== 'archive') {
+            return;
+        }
+
         if (!this.wasSelected) {
             this.wasSelected = true;
 
@@ -53,18 +57,20 @@ class ArchivePage extends React.Component {
                 year:  date.getFullYear().toString()
             };
             let measureParameterId = this.state.selectedMeasureParameterId;
+            let interval = this.getInterval(xScale);
             this.setState(oldState => {
                 let newState = Object.assign({}, oldState);
                 newState.dateInputPaneData = dateInputPaneData;
                 newState.xMax = date;
-                this.archiveMessageManager.publish({
-                    dateFrom: new Date(newState.xMax.getTime() - xScaleParameters.get(xScale).value*60*1000),
-                    dateTo: newState.xMax,
-                    interval: this.getInterval(),
-                    measureParameterId: measureParameterId
-                });
                 return newState;
             });
+            this.archiveMessageManager.publish({
+                dateFrom: new Date(date.getTime() - xScaleParameters.get(xScale).value*60*1000),
+                dateTo: date,
+                interval: interval,
+                measureParameterId: measureParameterId
+            });
+            mainEventManager.publish('to-console', 'archive msg 1');
         }
     }
 
@@ -102,6 +108,8 @@ class ArchivePage extends React.Component {
 
         if (dateInputPaneData) {
             let measureParameterId = this.state.selectedMeasureParameterId;
+            let interval = this.getInterval();
+
             this.setState(oldState => {
                 let newState = Object.assign({}, oldState);
                 newState.dateInputPaneData = Object.assign(newState.dateInputPaneData, dateInputPaneData);
@@ -116,10 +124,11 @@ class ArchivePage extends React.Component {
                         parseInt(minute),
                         parseInt(second)
                     );
+                    mainEventManager.publish('to-console', 'arhive msg 2');
                     this.archiveMessageManager.publish({
                         dateFrom: new Date(newState.xMax.getTime() - xScaleParameters.get(this.state.xScale).value*60*1000),
                         dateTo: newState.xMax,
-                        interval: this.getInterval(),
+                        interval: interval,
                         measureParameterId: measureParameterId
                     });
                 }

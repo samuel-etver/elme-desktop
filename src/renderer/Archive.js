@@ -40,6 +40,7 @@ class Archive {
 
 
     onArchiveDataRead (event, options) {
+      mainEventManager.publish('to-console', 'x---' + options.interval);
         ++this.packetId;
         ipc.send('archive-data-read', {
             dateFrom: options.dateFrom,
@@ -52,6 +53,9 @@ class Archive {
 
 
     onArchiveDataReady (event, arg) {
+        let interval = arg.interval;
+        for (let n in arg)
+        mainEventManager.publish('to-console', interval);
         let measures = arg.measures;
         let xs  = measures['date'];
         /*let ys  = measures[measureParameter.name];

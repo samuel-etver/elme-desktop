@@ -52,7 +52,7 @@ let ArchivePageMixin = {
         if (xScale === undefined) {
             xScale = this.state.xScale;
         }
-        switch(this.state.xScale) {
+        switch(xScale) {
             case 2:
                 interval = 5;
                 break;
@@ -218,7 +218,8 @@ let ArchivePageMixin = {
 
         if (newValue !== undefined) {
             let measureParameterId = this.state.selectedMeasureParameterId;
-            this.setState((oldState) => {
+            let interval = this.getInterval(xScale);
+            this.setState(oldState => {
                 let newState = Object.assign({}, oldState);
                 newState.xScrollBarPosition = newValue;
                 let xMax = new Date(oldState.xMax.getTime() + (newValueSaved - oldState.xScrollBarPosition)*0.01*options.interval);
@@ -230,10 +231,11 @@ let ArchivePageMixin = {
                 newState.dateInputPaneData.day = xMax.getDate();
                 newState.dateInputPaneData.month = Constants.months.capitalize(xMax.getMonth());
                 newState.dateInputPaneData.year = xMax.getFullYear();
+                mainEventManager.publish('to-console', 'arhive msg 3');
                 this.archiveMessageManager.publish( {
                     dateFrom: new Date(xMax.getTime() - xScaleParameters.get(xScale).value*60*1000),
                     dateTo: xMax,
-                    interval: this.getInterval(),
+                    interval: interval,
                     measureParameterId: measureParameterId
                 });
                 return newState;
@@ -262,16 +264,18 @@ let ArchivePageMixin = {
 
     onXScaleChange (buttonIndex) {
         let measureParameterId = this.state.selectedMeasureParameterId;
+        let dateTo = this.state.xMax;
         this.setState(oldState => {
             let newState = Object.assign({}, oldState);
             newState.xScale = buttonIndex;
-            this.archiveMessageManager.publish( {
-                dateFrom: new Date(oldState.xMax.getTime() - xScaleParameters.get(newState.xScale).value*60*1000),
-                dateTo: oldState.xMax,
-                interval: this.getInterval(),
-                measureParameterId: measureParameterId
-            });
             return newState;
+        });
+        mainEventManager.publish('to-console', 'arhive msg 4');
+        this.archiveMessageManager.publish({
+            dateFrom: new Date(dateTo.getTime() - xScaleParameters.get(buttonIndex).value*60*1000),
+            dateTo: dateTo,
+            interval: this.getInterval(buttonIndex),
+            measureParameterId: measureParameterId
         });
     },
 
