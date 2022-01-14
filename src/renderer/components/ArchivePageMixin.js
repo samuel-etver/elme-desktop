@@ -48,12 +48,10 @@ let ArchivePageMixin = {
     },
 
 
-    packData (data) {
-        if (!data || data.length < 1000) {
-            return data;
+    getInterval (xScale) {
+        if (xScale === undefined) {
+            xScale = this.state.xScale;
         }
-
-        let interval;
         switch(this.state.xScale) {
             case 2:
                 interval = 5;
@@ -65,16 +63,24 @@ let ArchivePageMixin = {
                 interval = 30;
                 break;
             case 5:
-                 interval = 60;
-                 break;
+                interval = 60;
+                break;
             case 6:
-                  interval = 120;
-                  break;
+                interval = 120;
+                break;
             default:
-                return data;
+                var interval = 0;
         }
-        interval *= 1000;
+        return interval * 1000;
+    },
 
+
+    packData (data) {
+        let interval = this.getInterval();
+
+        if (!interval || !data || data.length < 1000) {
+            return data;
+        }
 
         let result = [];
 
@@ -129,14 +135,14 @@ let ArchivePageMixin = {
                 }
                 else {
                     if (dotCount === 1 || minIndex === maxIndex) {
-                        result.push( data[minIndex] );
+                        result.push(data[minIndex]);
                     }
                     else {
                         if (minIndex < maxIndex ) {
-                            result.push( data[minIndex], data[maxIndex] );
+                            result.push(data[minIndex], data[maxIndex]);
                         }
                         else {
-                            result.push( data[maxIndex], data[minIndex] );
+                            result.push(data[maxIndex], data[minIndex]);
                         }
                     }
                 }
@@ -211,6 +217,7 @@ let ArchivePageMixin = {
         }
 
         if (newValue !== undefined) {
+            let measureParameterId = this.state.selectedMeasureParameterId;
             this.setState((oldState) => {
                 let newState = Object.assign({}, oldState);
                 newState.xScrollBarPosition = newValue;
@@ -225,7 +232,9 @@ let ArchivePageMixin = {
                 newState.dateInputPaneData.year = xMax.getFullYear();
                 this.archiveMessageManager.publish( {
                     dateFrom: new Date(xMax.getTime() - xScaleParameters.get(xScale).value*60*1000),
-                    dateTo: xMax
+                    dateTo: xMax,
+                    interval: this.getInterval(),
+                    measureParameterId: measureParameterId
                 });
                 return newState;
             });
@@ -252,12 +261,15 @@ let ArchivePageMixin = {
 
 
     onXScaleChange (buttonIndex) {
+        let measureParameterId = this.state.selectedMeasureParameterId;
         this.setState(oldState => {
             let newState = Object.assign({}, oldState);
             newState.xScale = buttonIndex;
             this.archiveMessageManager.publish( {
                 dateFrom: new Date(oldState.xMax.getTime() - xScaleParameters.get(newState.xScale).value*60*1000),
-                dateTo: oldState.xMax
+                dateTo: oldState.xMax,
+                interval: this.getInterval(),
+                measureParameterId: measureParameterId
             });
             return newState;
         });

@@ -52,13 +52,16 @@ class ArchivePage extends React.Component {
                 month: Constants.months.capitalize(date.getMonth()),
                 year:  date.getFullYear().toString()
             };
+            let measureParameterId = this.state.selectedMeasureParameterId;
             this.setState(oldState => {
                 let newState = Object.assign({}, oldState);
                 newState.dateInputPaneData = dateInputPaneData;
                 newState.xMax = date;
                 this.archiveMessageManager.publish({
                     dateFrom: new Date(newState.xMax.getTime() - xScaleParameters.get(xScale).value*60*1000),
-                    dateTo: newState.xMax
+                    dateTo: newState.xMax,
+                    interval: this.getInterval(),
+                    measureParameterId: measureParameterId
                 });
                 return newState;
             });
@@ -98,6 +101,7 @@ class ArchivePage extends React.Component {
 
 
         if (dateInputPaneData) {
+            let measureParameterId = this.state.selectedMeasureParameterId;
             this.setState(oldState => {
                 let newState = Object.assign({}, oldState);
                 newState.dateInputPaneData = Object.assign(newState.dateInputPaneData, dateInputPaneData);
@@ -114,7 +118,9 @@ class ArchivePage extends React.Component {
                     );
                     this.archiveMessageManager.publish({
                         dateFrom: new Date(newState.xMax.getTime() - xScaleParameters.get(this.state.xScale).value*60*1000),
-                        dateTo: newState.xMax
+                        dateTo: newState.xMax,
+                        interval: this.getInterval(),
+                        measureParameterId: measureParameterId
                     });
                 }
                 return newState;
