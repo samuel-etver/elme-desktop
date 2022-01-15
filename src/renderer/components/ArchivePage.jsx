@@ -70,7 +70,6 @@ class ArchivePage extends React.Component {
                 interval: interval,
                 measureParameterId: measureParameterId
             });
-            mainEventManager.publish('to-console', 'archive msg 1');
         }
     }
 
@@ -109,28 +108,32 @@ class ArchivePage extends React.Component {
         if (dateInputPaneData) {
             let measureParameterId = this.state.selectedMeasureParameterId;
             let interval = this.getInterval();
+            let newDateInputPaneData = Object.assign({}, this.state.dateInputPaneData, dateInputPaneData);
+            let dateTo;
+            if (data.valid) {
+                let minute = dateInputPaneData.minute ?? 0;
+                let second = dateInputPaneData.second ?? 0;
+                dateTo = new Date(
+                    parseInt(newDateInputPaneData.year),
+                    Constants.months.find(newDateInputPaneData.month),
+                    parseInt(newDateInputPaneData.day),
+                    parseInt(newDateInputPaneData.hour),
+                    parseInt(minute),
+                    parseInt(second)
+                );
+                this.archiveMessageManager.publish({
+                    dateFrom: new Date(dateTo.getTime() - xScaleParameters.get(this.state.xScale).value*60*1000),
+                    dateTo: dateTo,
+                    interval: interval,
+                    measureParameterId: measureParameterId
+                });
+            }
 
             this.setState(oldState => {
                 let newState = Object.assign({}, oldState);
-                newState.dateInputPaneData = Object.assign(newState.dateInputPaneData, dateInputPaneData);
+                Object.assign(newState.dateInputPaneData, newDateInputPaneData);
                 if (data.valid) {
-                    let minute = dateInputPaneData.minute ?? 0;
-                    let second = dateInputPaneData.second ?? 0;
-                    newState.xMax = new Date(
-                        parseInt(newState.dateInputPaneData.year),
-                        Constants.months.find(newState.dateInputPaneData.month),
-                        parseInt(newState.dateInputPaneData.day),
-                        parseInt(newState.dateInputPaneData.hour),
-                        parseInt(minute),
-                        parseInt(second)
-                    );
-                    mainEventManager.publish('to-console', 'arhive msg 2');
-                    this.archiveMessageManager.publish({
-                        dateFrom: new Date(newState.xMax.getTime() - xScaleParameters.get(this.state.xScale).value*60*1000),
-                        dateTo: newState.xMax,
-                        interval: interval,
-                        measureParameterId: measureParameterId
-                    });
+                    newState.xMax = dateTo;
                 }
                 return newState;
             });

@@ -212,32 +212,30 @@ let ArchivePageMixin = {
                 newValue = this.state.xScrollBarPosition + step;
                 newValueSaved = newValue;
                 validatePosition();
-
             default: ;
         }
 
         if (newValue !== undefined) {
             let measureParameterId = this.state.selectedMeasureParameterId;
             let interval = this.getInterval(xScale);
+            let dateTo = new Date(this.state.xMax.getTime() + (newValueSaved - this.state.xScrollBarPosition)*0.01*options.interval);
+            if (dateTo.getTime() < Constants.archiveDateMin.getTime()) {
+                dateTo = Constants.archiveDateMin;
+            }
+            this.archiveMessageManager.publish( {
+                dateFrom: new Date(dateTo.getTime() - xScaleParameters.get(xScale).value*60*1000),
+                dateTo: dateTo,
+                interval: interval,
+                measureParameterId: measureParameterId
+            });
             this.setState(oldState => {
                 let newState = Object.assign({}, oldState);
                 newState.xScrollBarPosition = newValue;
-                let xMax = new Date(oldState.xMax.getTime() + (newValueSaved - oldState.xScrollBarPosition)*0.01*options.interval);
-                if (xMax.getTime() < Constants.archiveDateMin.getTime()) {
-                    xMax = Constants.archiveDateMin;
-                }
-                newState.xMax = xMax;
-                newState.dateInputPaneData.hour = xMax.getHours();
-                newState.dateInputPaneData.day = xMax.getDate();
-                newState.dateInputPaneData.month = Constants.months.capitalize(xMax.getMonth());
-                newState.dateInputPaneData.year = xMax.getFullYear();
-                mainEventManager.publish('to-console', 'arhive msg 3');
-                this.archiveMessageManager.publish( {
-                    dateFrom: new Date(xMax.getTime() - xScaleParameters.get(xScale).value*60*1000),
-                    dateTo: xMax,
-                    interval: interval,
-                    measureParameterId: measureParameterId
-                });
+                newState.xMax = dateTo;
+                newState.dateInputPaneData.hour = dateTo.getHours();
+                newState.dateInputPaneData.day = dateTo.getDate();
+                newState.dateInputPaneData.month = Constants.months.capitalize(dateTo.getMonth());
+                newState.dateInputPaneData.year = dateTo.getFullYear();
                 return newState;
             });
         }
@@ -270,7 +268,6 @@ let ArchivePageMixin = {
             newState.xScale = buttonIndex;
             return newState;
         });
-        mainEventManager.publish('to-console', 'arhive msg 4');
         this.archiveMessageManager.publish({
             dateFrom: new Date(dateTo.getTime() - xScaleParameters.get(buttonIndex).value*60*1000),
             dateTo: dateTo,
