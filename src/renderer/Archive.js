@@ -45,26 +45,29 @@ class Archive {
             dateFrom: options.dateFrom,
             dateTo: options.dateTo,
             interval: options.interval,
-            measureParamerId: options.measureParameterId,
+            measureParameterId: options.measureParameterId,
             id: this.packetId
         });
     }
 
 
     onArchiveDataReady (event, arg) {
-        let interval = arg.interval;
-        let measures = arg.measures;
-        let xs  = measures['date'];
-        /*let ys  = measures[measureParameter.name];
-        data = this.packData(Array.from(xs, (x, i) => [x, ys[i]]));*/
+        if (arg.packedData === undefined) {
+            let interval = arg.interval;
+            let measureParameterId = arg.measureParameterId;
+            let measureParameterName = measureParameters.byId(measureParameterId).name;
+            let measures = arg.measures;
+            let xs  = measures['date'];
+            let ys  = measures[measureParameterName];
+            let data = this.packData(Array.from(xs, (x, i) => [x, ys[i]]), interval);
+            arg.packedData = data;
+        }
 
         mainEventManager.publish('archive-data-ready', arg);
     }
 
 
-    packData (data) {
-        let interval = this.getInterval();
-
+    packData (data, interval) {
         if (!interval || !data || data.length < 1000) {
             return data;
         }
@@ -143,7 +146,7 @@ class Archive {
 }
 
 
-(function() {
+(function () {
     new Archive();
 })();
 
