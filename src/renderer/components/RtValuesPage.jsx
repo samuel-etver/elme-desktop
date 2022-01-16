@@ -1,7 +1,7 @@
 import React from 'react';
 import './RtValuesPage.css';
-import ValuePane from './ValuePane.jsx';
-import MeasureParameters from '../MeasureParameters.js';
+import ValuePane from './ValuePane';
+import MeasureParameters from '../../common/MeasureParameters';
 import GlobalStorage from '../../common/GlobalStorage';
 
 const globalStorage = GlobalStorage.getInstance();

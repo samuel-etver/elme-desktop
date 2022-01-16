@@ -5,6 +5,7 @@ const MainEventManager = require('../common/MainEventManager');
 const GlobalStorage = require('../common/GlobalStorage');
 const Constants = require('../common/Constants');
 const DeviceData = require('../common/DeviceData');
+const MeasureParameters = require('../common/MeasureParameters');
 const electron = require('electron');
 const ipc = electron.ipcMain;
 
@@ -14,18 +15,18 @@ let globalStorage = GlobalStorage.getInstance();
 let instance;
 
 class Archive {
-    constructor() {
-        if ( !! instance ) {
+    constructor () {
+        if (!!instance) {
             return instance;
         }
         this.archives = [];
-        if ( Constants.memoryArchiveEnabled ) {
+        if (Constants.memoryArchiveEnabled) {
             this.archives.push(new MemoryArchive());
         }
-        if ( Constants.localArchiveEnabled ) {
+        if (Constants.localArchiveEnabled) {
             this.archives.push(new LocalArchive());
         }
-        if ( Constants.remoteArchiveEnabled ) {
+        if (Constants.remoteArchiveEnabled) {
             this.archives.push(new RemoteArchive());
         }
 
@@ -41,7 +42,7 @@ class Archive {
     }
 
 
-    onAppLoad() {
+    onAppLoad () {
         mainEventManager.unsubscribe('app-load', this.onAppLoad);
         mainEventManager.subscribe('app-close', this.onAppClose);
         this.timerId = setTimeout(this.onTimer, 1000);
@@ -49,37 +50,37 @@ class Archive {
     }
 
 
-    onAppClose() {
+    onAppClose () {
         clearTimeout(this.timerId);
         mainEventManager.unsubscribe('app-close', this.onAppClose);
     }
 
 
-    onTimer() {
+    onTimer () {
         this.run();
         this.timerId = setTimeout(this.onTimer, 1000);
     }
 
 
-    run() {
+    run () {
         let archives = this.archives;
         archives.forEach(a => {
-            if ( !a.isOpened() ) {
+            if (!a.isOpened()) {
                 a.open();
             }
         });
 
         let mostRecentArchive = archives[0];
-        if ( mostRecentArchive.isOpened() ) {
+        if (mostRecentArchive.isOpened()) {
             if ( this.appendDataOnLoad ) {
                 this.appendDataOnLoad = false;
                 this.appendDummyData(mostRecentArchive);
             }
             let newDeviceData = globalStorage['deviceData'];
-            if ( !newDeviceData ) {
+            if (!newDeviceData) {
                 newDeviceData = DeviceData.now();
             }
-            if ( !this.lastDeviceData || newDeviceData.id != this.lastDeviceData.id) {
+            if (!this.lastDeviceData || newDeviceData.id != this.lastDeviceData.id) {
                 this.lastDeviceData = newDeviceData;
                 mostRecentArchive.appendMeasures([newDeviceData]);
             }
@@ -87,7 +88,7 @@ class Archive {
     }
 
 
-    appendDummyData(archive) {
+    appendDummyData (archive) {
         let genValue =
           (baseValue) => baseValue + Math.random()*10 - 5;
         let now = Date.now();
@@ -109,7 +110,7 @@ class Archive {
     }
 
 
-    onReadArchiveData(event, options) {
+    onReadArchiveData (event, options) {
         let dateFromInt = options.dateFrom.getTime();
         let dateToInt   = options.dateTo.getTime();
         let interval    = options.interval;
@@ -134,7 +135,7 @@ class Archive {
             }
         }
 
-        if ( searchArchives.length == 0 ) {
+        if (searchArchives.length == 0) {
             return;
         }
 
@@ -151,7 +152,7 @@ class Archive {
             });
         };
 
-        function joinData() {
+        function joinData () {
             return {
                 measures: allData[0],
                 interval: interval,

@@ -76,4 +76,4 @@ var MeasureParameters = new (function() {
     };
 })();
 
-export default MeasureParameters;
+module.exports = MeasureParameters;

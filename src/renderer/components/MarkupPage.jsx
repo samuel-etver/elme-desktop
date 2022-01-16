@@ -2,7 +2,7 @@ import React from 'react';
 import './MarkupPage.css'
 import ArchivePageMixin from './ArchivePageMixin';
 import Constants from '../../common/Constants';
-import MeasureParameters from '../MeasureParameters';
+import MeasureParameters from '../../common/MeasureParameters';
 import MainEventManager from '../../common/MainEventManager';
 import GlobalStorage from '../../common/GlobalStorage';
 import Archive from '../Archive';

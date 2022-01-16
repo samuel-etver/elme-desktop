@@ -1,7 +1,7 @@
 import Constants from '../../common/Constants';
 import XScaleParameters from './XScaleParameters';
 import MainEventManager from '../../common/MainEventManager';
-import MeasureParameters from '../MeasureParameters';
+import MeasureParameters from '../../common/MeasureParameters';
 import ChartBuilder from '../ChartBuilder';
 
 let mainEventManager = MainEventManager.getInstance();
@@ -52,6 +52,7 @@ let ArchivePageMixin = {
         if (xScale === undefined) {
             xScale = this.state.xScale;
         }
+        let interval;
         switch(xScale) {
             case 2:
                 interval = 5;
@@ -69,7 +70,7 @@ let ArchivePageMixin = {
                 interval = 120;
                 break;
             default:
-                var interval = 0;
+                interval = 0;
         }
         return interval * 1000;
     },
@@ -166,8 +167,8 @@ let ArchivePageMixin = {
         let series = [];
         let data = [];
         let measureParameter = this.measureParameters.byId(id);
-        if (this.archiveData) {
-            data = this.archiveData.packedData;
+        if (this.archiveData && id === this.archiveData.measureParameterId) {
+            data = this.archiveData.packedArchiveData;
         }
         let newSerie = this.chartBuilder.buildSerie({
             data: data

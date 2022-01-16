@@ -1,11 +1,9 @@
 import MainEventManager from '../common/MainEventManager';
-import GlobalStorage from '../common/GlobalStorage';
-import MeasureParameters from './MeasureParameters';
+import MeasureParameters from '../common/MeasureParameters';
 const electron = window.require('electron');
 const ipc = electron.ipcRenderer;
 
 let mainEventManager = MainEventManager.getInstance();
-let globalStorage = GlobalStorage.getInstance();
 let measureParameters = new MeasureParameters();
 
 let instance;
@@ -52,7 +50,7 @@ class Archive {
 
 
     onArchiveDataReady (event, arg) {
-        if (arg.packedData === undefined) {
+        if (arg.packedArchivedData === undefined) {
             let interval = arg.interval;
             let measureParameterId = arg.measureParameterId;
             let measureParameterName = measureParameters.byId(measureParameterId).name;
@@ -60,7 +58,7 @@ class Archive {
             let xs  = measures['date'];
             let ys  = measures[measureParameterName];
             let data = this.packData(Array.from(xs, (x, i) => [x, ys[i]]), interval);
-            arg.packedData = data;
+            arg.packedArchiveData = data;
         }
 
         mainEventManager.publish('archive-data-ready', arg);

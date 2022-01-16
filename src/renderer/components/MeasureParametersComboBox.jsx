@@ -1,6 +1,6 @@
 import React from 'react';
 import './MeasureParametersComboBox.css';
-import MeasureParameters from './../MeasureParameters';
+import MeasureParameters from '../../common/MeasureParameters';
 import ComboBoxMixin from './ComboBoxMixin';
 
 let measureParameters = new MeasureParameters();

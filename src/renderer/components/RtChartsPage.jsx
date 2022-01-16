@@ -5,7 +5,7 @@ import MeasureParametersComboBox from './MeasureParametersComboBox';
 import NumberButtonsGroup from './NumberButtonsGroup';
 import HorzDivider from './HorzDivider';
 import Constants from '../../common/Constants';
-import MeasureParameters from '../MeasureParameters';
+import MeasureParameters from '../../common/MeasureParameters';
 import MainEventManager from '../../common/MainEventManager';
 import GlobalStorage from '../../common/GlobalStorage';
 import ChartBuilder from '../ChartBuilder';

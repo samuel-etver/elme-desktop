@@ -1,4 +1,4 @@
-import MeasureParameters from './MeasureParameters';
+import MeasureParameters from '../common/MeasureParameters';
 import Constants from '../common/Constants';
 import XScaleParameters from './components/XScaleParameters';
 import Calendar from '../common/Calendar';
