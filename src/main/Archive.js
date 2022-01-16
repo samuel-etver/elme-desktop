@@ -6,11 +6,13 @@ const GlobalStorage = require('../common/GlobalStorage');
 const Constants = require('../common/Constants');
 const DeviceData = require('../common/DeviceData');
 const MeasureParameters = require('../common/MeasureParameters');
+const ChartDataPacker = require('../common/ChartDataPacker');
 const electron = require('electron');
 const ipc = electron.ipcMain;
 
 let mainEventManager = MainEventManager.getInstance();
 let globalStorage = GlobalStorage.getInstance();
+let chartDataPacker = ChartDataPacker.getInstance();
 
 let instance;
 
@@ -72,7 +74,7 @@ class Archive {
 
         let mostRecentArchive = archives[0];
         if (mostRecentArchive.isOpened()) {
-            if ( this.appendDataOnLoad ) {
+            if (this.appendDataOnLoad) {
                 this.appendDataOnLoad = false;
                 this.appendDummyData(mostRecentArchive);
             }
@@ -120,17 +122,17 @@ class Archive {
         let searchArchives = [];
         for (let i = 0; i < archives.length; i++) {
             let currArchive = archives[i];
-            if ( !currArchive.isOpened() ) {
+            if (!currArchive.isOpened()) {
                 break;
             }
-            if ( !currArchive.dateFrom ) {
+            if (!currArchive.dateFrom) {
                 continue;
             }
             let currArchiveDateFromInt = currArchive.dateFrom.getTime();
-            if ( dateToInt >= currArchiveDateFromInt ) {
+            if (dateToInt >= currArchiveDateFromInt) {
                 searchArchives.push(currArchive);
             }
-            if ( dateFromInt >= currArchiveDateFromInt ) {
+            if (dateFromInt >= currArchiveDateFromInt) {
                 break;
             }
         }
@@ -162,88 +164,10 @@ class Archive {
 
         searchArchives.forEach((archive, index) => read(index));
     }
-
-
-    packData (data, interval) {
-        if (!interval || !data || data.length < 1000) {
-            return data;
-        }
-
-        let result = [];
-
-        let dt0 = new Date(data[0][0].getTime());
-        dt0.setMilliseconds(0);
-        dt0.setSeconds(0);
-        dt0.setMinutes(2*(dt0.getMinutes() >> 1));
-        let dt0Int = dt0.getTime();
-
-        let dt1 = data[data.length - 1][0];
-        let dt1Int = dt1.getTime();
-
-
-        let index = 0;
-
-        while (dt0Int <= dt1Int) {
-            let dtNextInt = dt0Int + interval;
-
-            let minY;
-            let maxY;
-            let minIndex;
-            let maxIndex
-            let dotCount = 0;
-
-            for(; index < data.length; index++) {
-                let [x, y] = data[index];
-                if (x.getTime() >= dtNextInt) {
-                    break;
-                }
-                dotCount++;
-                if (y !== undefined) {
-                    if (minY === undefined) {
-                        minY = y;
-                        maxY = y;
-                    }
-                    else {
-                        if (minY > y) {
-                            minY = y;
-                            minIndex = index;
-                        }
-                        if (maxY < y) {
-                            maxY = y;
-                            maxIndex = index;
-                        }
-                    }
-                }
-            }
-
-            if (dotCount) {
-                if (minIndex === undefined) {
-                    result.push(data[index - 1]);
-                }
-                else {
-                    if (dotCount === 1 || minIndex === maxIndex) {
-                        result.push(data[minIndex]);
-                    }
-                    else {
-                        if (minIndex < maxIndex ) {
-                            result.push(data[minIndex], data[maxIndex]);
-                        }
-                        else {
-                            result.push(data[maxIndex], data[minIndex]);
-                        }
-                    }
-                }
-            }
-
-            dt0Int = dtNextInt;
-        }
-
-        return result;
-    }
 }
 
 
-(function() {
+(function () {
     new Archive();
 })();
 
