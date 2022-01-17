@@ -52,7 +52,7 @@ class Archive {
 
 
     onArchiveDataReady (event, arg) {
-        if (arg.packedArchivedData === undefined) {
+        if (arg.packedArchiveData === undefined) {
             let interval = arg.interval;
             let measureParameterId = arg.measureParameterId;
             let measureParameterName = measureParameters.byId(measureParameterId).name;

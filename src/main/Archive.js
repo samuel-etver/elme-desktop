@@ -13,6 +13,7 @@ const ipc = electron.ipcMain;
 let mainEventManager = MainEventManager.getInstance();
 let globalStorage = GlobalStorage.getInstance();
 let chartDataPacker = ChartDataPacker.getInstance();
+let measureParameters = new MeasureParameters();
 
 let instance;
 
@@ -143,22 +144,28 @@ class Archive {
 
         let allData = [];
         let allDataCount = 0;
-        searchArchives.forEach(() => allData.push ( undefined ));
+        searchArchives.forEach(() => allData.push (undefined));
 
         let read = function(index) {
             archives[index].read(options.dateFrom, options.dateTo, (result, data) => {
                 allData[index] = result === 'success' ? data : null;
-                if ( allData.length == ++allDataCount) {
+                if (allData.length == ++allDataCount) {
                     globalStorage.mainWindow.send('archive-data-ready', joinData());
                 }
             });
         };
 
         function joinData () {
+            let measureParameterName = measureParameters.byId(measureParameterId).name;
+            let measures = allData[0];
+            let xs  = measures['date'];
+            let ys  = measures[measureParameterName];
+            let data = chartDataPacker.pack(Array.from(xs, (x, i) => [x, ys[i]]), interval);
             return {
-                measures: allData[0],
+                //measures: measures,
                 interval: interval,
                 measureParameterId: measureParameterId,
+                packedArchiveData: data
             };
         }
 

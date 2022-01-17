@@ -25,16 +25,11 @@ class LocalArchive {
         this.opened = false;
         this.dbPath = undefined;
         this.db = undefined;
+        this.openSequence = this.createOpenSequence();
     }
 
 
-    open(callback) {
-        if ( this.opening ) {
-            return;
-        }
-
-        this.opening = true;
-
+    createOpenSequence () {
         let goNext = function(command, ...restArgs) {
             new Promise(() => {
                 this.eventManager.publish('open', command, ...restArgs)
@@ -45,6 +40,30 @@ class LocalArchive {
             goNext('error', ...restArgs);
         }.bind(this);
 
+        let commandStart = function () {
+            goNext('close-old');
+        }.bind(this);
+
+        let commandCloseOld = function() {
+            this.close();
+            goNext('open-or-create');
+        }.bind(this);
+
+        return {
+            'start': commandStart,
+            'close-old': commandCloseOld
+        };
+    }
+
+
+    open (callback) {
+        if (this.opening) {
+            return;
+        }
+
+        this.opening = true;
+
+/*
         let onOpen = function(event, command, ...restArgs) {
             mainEventManager.publish('to-console', command);
 
@@ -275,15 +294,15 @@ class LocalArchive {
                     this.openening = false;
                     if ( callback ) {
                         callback('success');
-                    }
+                    }*/
 
-                    /*this.deleteAll((result) => {
-                        mainEventManager.publish('to-console', result);
-                    });
-                    this.delete(new Date(), (result) => {
-                        mainEventManager.publish('to-cosole', result);
-                    });*/
-                    break;
+                  //  /*this.deleteAll((result) => {
+                //        mainEventManager.publish('to-console', result);
+                //    });
+                //    this.delete(new Date(), (result) => {
+              //          mainEventManager.publish('to-cosole', result);
+                //    });*/
+              /*      break;
 
                 case 'error':
                     this.opening = false;
@@ -297,17 +316,17 @@ class LocalArchive {
         }.bind(this);
 
         this.eventManager.subscribe('open', onOpen);
-        goNext('start');
+        goNext('start');*/
     }
 
 
     close() {
         this.opened = false;
-        if ( this.db ) {
+      /*  if ( this.db ) {
             let db = this.db;
             this.db = undefined;
             db.close();
-        }
+        }*/
     }
 
 
@@ -317,7 +336,7 @@ class LocalArchive {
 
 
     read(dateFrom, dateTo, callback) {
-        if ( !this.isOpened() ) {
+        /*if ( !this.isOpened() ) {
             callback('failure', 'not opened');
             return;
         }
@@ -352,12 +371,13 @@ class LocalArchive {
             }
 
             callback('success', results);
-        });
+        });*/
+        callback('success', []);
     }
 
 
     write(data, callback) {
-        if ( !this.isOpened() ) {
+        /*if ( !this.isOpened() ) {
             callback('failure', 'not opened');
             return;
         }
@@ -404,12 +424,12 @@ class LocalArchive {
             if ( callback ) {
                 callback(err ? 'failure' : 'success', err);
             }
-        });
+        });*/
     }
 
 
     delete(dateTo, callback) {
-        if ( !this.isOpened() ) {
+        /*if ( !this.isOpened() ) {
             callback('failure');
             return;
         }
@@ -437,12 +457,12 @@ class LocalArchive {
             });
         }
 
-        deleteData();
+        deleteData();*/
     }
 
 
     deleteAll(callback) {
-        if ( !this.isOpened() ) {
+        /*if ( !this.isOpened() ) {
             callback('failure');
             return;
         }
@@ -465,7 +485,7 @@ class LocalArchive {
             });
         }
 
-        clearTables();
+        clearTables();*/
     }
 }
 
