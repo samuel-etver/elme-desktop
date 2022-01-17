@@ -19,24 +19,26 @@ const pipesTableIndexName = 'PipesIndex';
 const availableDatesTableIndexName = 'AvailableDatesIndex';
 
 class LocalArchive {
-    constructor() {
+    constructor () {
         this.name = 'local';
         this.eventManager = new EventManager();
         this.opened = false;
         this.dbPath = undefined;
         this.db = undefined;
         this.openSequence = this.createOpenSequence();
+        this.onOpen = this.onOpen.bind(this);
+        this.eventManager.subscribe('open', this.onOpen);
     }
 
 
     createOpenSequence () {
-        let goNext = function(command, ...restArgs) {
+        let goNext = function (command, ...restArgs) {
             new Promise(() => {
                 this.eventManager.publish('open', command, ...restArgs)
             });
         }.bind(this);
 
-        let goError = function(...restArgs) {
+        let goError = function (...restArgs) {
             goNext('error', ...restArgs);
         }.bind(this);
 
@@ -44,24 +46,53 @@ class LocalArchive {
             goNext('close-old');
         }.bind(this);
 
-        let commandCloseOld = function() {
+        let commandCloseOld = function () {
             this.close();
             goNext('open-or-create');
         }.bind(this);
 
+        let commandOpenOrCreate = function () {
+            this.dbPath = path.join(globalStorage.homeDir, dbName);
+            mainEventManager.publish('to-console', this.dbPath);
+            this.db = new sqlite3.Database(this.dbPath, err => {
+                err ? goError(err)
+                    : goNext('properties-table-begin')
+            });
+        }.bind(this);
+
+        let commandPropertiesTableBegin = function () {
+            this.db.all(`SELECT name FROM sqlite_master WHERE type='table' AND name=?`,
+              [propertiesTableName], (err, rows) => {
+                  err ? goError(err)
+                      : goNext(rows.length
+                                ? 'properties-table-check'
+                                : 'properties-table-create');
+            });
+        }.bind(this);
+
         return {
             'start': commandStart,
-            'close-old': commandCloseOld
+            'close-old': commandCloseOld,
+            'open-or-create': commandOpenOrCreate,
+            'properties-table-begin': commandPropertiesTableBegin
         };
     }
 
 
+    async onOpen (event, command) {
+        mainEventManager.publish('to-console', "ARCHIVE COMMAND: " + command);
+        let commandFunc = this.openSequence[command];
+        commandFunc && commandFunc();
+    }
+
+
     open (callback) {
-        if (this.opening) {
+        if (this.opened || this.opening) {
             return;
         }
 
         this.opening = true;
+        this.eventManager.publish('open', 'start');
 
 /*
         let onOpen = function(event, command, ...restArgs) {
@@ -322,11 +353,11 @@ class LocalArchive {
 
     close() {
         this.opened = false;
-      /*  if ( this.db ) {
+        if (this.db) {
             let db = this.db;
             this.db = undefined;
             db.close();
-        }*/
+        }
     }
 
 
