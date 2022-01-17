@@ -77,15 +77,23 @@ let ArchivePageMixin = {
 
 
     onChartNumberButtonClickImpl (index) {
-        this.setState(oldState => {
-            let newState = Object.assign({}, oldState);
-            newState.selectedMeasureParameterId = this.measureParameters.byIndex(index).id;
-            return newState;
-        });
+        this.onChartSelectById(this.measureParameters.byIndex(index).id);
     },
 
 
     onChartSelectImpl (event, id) {
+        this.onChartSelectById(id);
+    },
+
+
+    onChartSelectById (id) {
+        let dateTo = this.state.xMax;
+        this.archiveMessageManager.publish({
+            dateFrom: new Date(dateTo.getTime() - xScaleParameters.get(this.state.xScale).value*60*1000),
+            dateTo: dateTo,
+            interval: this.getInterval(),
+            measureParameterId: id
+        });
         this.setState(oldState => {
             let newState = Object.assign({}, oldState);
             newState.selectedMeasureParameterId = id;
