@@ -70,11 +70,110 @@ class LocalArchive {
             });
         }.bind(this);
 
+        let commandPropertiesTableCreate = function () {
+            this.db.run('CREATE TABLE ' + propertiesTableName + ' (Key TEXT, Value TEXT)',
+              [], (err) => {
+                  err ? goError(err)
+                      : goNext('properties-table-fill');
+            });
+        }.bind(this);
+
+        let commandPropertiesTableFill = function () {
+            let data = [
+                ['AppId', Constants.appId],
+                ['DbVersion', dbVersion]
+            ];
+            let placeholders = data.map(() => '(?,?)').join(',');
+            this.db.run('INSERT INTO ' + propertiesTableName + '(Key,Value) VALUES ' + placeholders,
+              data.flat(), err => {
+                  err ? goError(err)
+                      : goNext('properties-table-end');
+            });
+        }.bind(this);
+
+        let commandPropertiesTableCheck = function () {
+            this.db.all('SELECT Key, Value FROM ' + propertiesTableName, [], (err, rows) => {
+                if (err) {
+                    goError(err);
+                } else {
+                    let properties = {};
+                    rows.forEach(item => {
+                        properties[item.Key] = item.Value;
+                    });
+
+                    if (properties['AppId'] !== Constants.appId) {
+                        goError('Wrong Application Id');
+                    } else if (properties['DbVersion'] !== dbVersion) {
+                        goError('Wrong DB Version');
+                    } else {
+                        goNext('properties-table-end');
+                    }
+                }
+            });
+        }.bind(this);
+
+        let commandPropertiesTableEnd = function () {
+            goNext('measures-table-begin');
+        }.bind(this);
+
+        let commandMeasuresTableBegin = function () {
+            this.db.all(`SELECT name FROM sqlite_master WHERE type='table' AND name=?`,
+              [measuresTableName], (err, rows) => {
+                  err ? goError(err)
+                      : goNext(rows.length
+                                  ? 'measures-table-end'
+                                  : 'measures-table-create');
+            });
+        }.bind(this);
+
+        let commandMeasuresTableCreate = function () {
+            this.db.run('CREATE TABLE ' + measuresTableName
+              + ' (Dt INTEGER PRIMARY KEY'
+              + ',InductorTemperature1 REAL'
+              + ',InductorTemperature2 REAL'
+              + ',ThermostatTemperature1 REAL'
+              + ',ThermostatTemperature2 REAL'
+              + ',SprayerTemperature REAL'
+              + ',HeatingTemperature REAL'
+              + ',WaterFlow REAL'
+              + ')',
+              [], err => {
+                  err ? goError(err)
+                      : goNext('measures-table-end');
+            });
+        }.bind(this);
+
+        let commandMeasuresTableEnd = function () {
+            goNext('measures-table-index-begin');
+        }.bind(this);
+
+        let commandMeasureTableIndexBegin = function () {
+            this.db.all('PRAGMA index_list(' + measuresTableName + ')', [], (err, rows) => {
+                if (err) {
+                    goError(err);
+                }
+                else {
+                    let found = rows.find(record => record.name === measuresTableIndexName);
+                    goNext(found ? 'measures-table-index-end'
+                                 : 'measures-table-index-create');
+                }
+            });
+        }.bind(this);
+
+
         return {
             'start': commandStart,
             'close-old': commandCloseOld,
             'open-or-create': commandOpenOrCreate,
-            'properties-table-begin': commandPropertiesTableBegin
+            'properties-table-begin': commandPropertiesTableBegin,
+            'properties-table-create': commandPropertiesTableCreate,
+            'properties-table-fill': commandPropertiesTableFill,
+            'properties-table-check': commandPropertiesTableCheck,
+            'properties-table-end': commandPropertiesTableEnd,
+            'measures-table-begin': commandMeasuresTableBegin,
+            'measures-table-create': commandMeasuresTableCreate,
+            'measures-table-end': commandMeasuresTableEnd,
+            'measures-table-index-begin': commandMeasureTableIndexBegin,
         };
     }
 
