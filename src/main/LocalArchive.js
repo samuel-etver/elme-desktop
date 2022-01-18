@@ -26,6 +26,7 @@ class LocalArchive {
         this.dbPath = undefined;
         this.db = undefined;
         this.openSequence = this.createOpenSequence();
+        this.openError = false;
         this.onOpen = this.onOpen.bind(this);
         this.eventManager.subscribe('open', this.onOpen);
     }
@@ -160,6 +161,20 @@ class LocalArchive {
             });
         }.bind(this);
 
+        let commandError = function (...args) {
+            this.opening = false;
+            this.openError = true;
+            this.close();
+            let callback = this.openSequence.callback;
+            callback && callback('failure', ...args);
+        }.bind(this);
+
+        let commandSuccess = function () {
+            this.opened = true;
+            this.openening = false;
+            let callback = this.openSequence.callback;
+            callback && callback('success');
+        }.bind(this);
 
         return {
             'start': commandStart,
@@ -174,23 +189,26 @@ class LocalArchive {
             'measures-table-create': commandMeasuresTableCreate,
             'measures-table-end': commandMeasuresTableEnd,
             'measures-table-index-begin': commandMeasureTableIndexBegin,
+            'error': commandError,
+            'success': commandSuccess
         };
     }
 
 
-    async onOpen (event, command) {
+    async onOpen (event, command, ...restArgs) {
         mainEventManager.publish('to-console', "ARCHIVE COMMAND: " + command);
         let commandFunc = this.openSequence[command];
-        commandFunc && commandFunc();
+        commandFunc && commandFunc(...restArgs);
     }
 
 
     open (callback) {
-        if (this.opened || this.opening) {
+        if (this.openError || this.opened || this.opening) {
             return;
         }
 
         this.opening = true;
+        this.openSequence.callback = callback;
         this.eventManager.publish('open', 'start');
 
 /*
@@ -451,7 +469,7 @@ class LocalArchive {
 
 
     close() {
-        this.opened = false;
+        this.opened = false;        
         if (this.db) {
             let db = this.db;
             this.db = undefined;
