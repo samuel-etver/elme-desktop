@@ -179,9 +179,16 @@ class LocalArchive {
         let commandDeleteAll = function () {
             this.deleteAll((result, err) => {
                 if (result === 'success')
-                  goNext(result);
+                  goNext('write-dummy-measures');
                 else
                   goError(err);
+            });
+        }.bind(this);
+
+
+        let commandWriteDummyMeasures = function () {
+            this.writeDummyMeasures(() => {
+                goNext('success');
             });
         }.bind(this);
 
@@ -216,6 +223,7 @@ class LocalArchive {
             'measures-table-index-create': commandMeasuresTableIndexCreate,
             'measures-table-index-end': commandMeasuresTableIndexEnd,
             'delete-all': commandDeleteAll,
+            'write-dummy-measures': commandWriteDummyMeasures,
             'error': commandError,
             'success': commandSuccess
         };
@@ -551,6 +559,11 @@ class LocalArchive {
     }
 
 
+    writeDummyMeasures (callback) {
+        callback && callback('success')
+    }
+
+
     write(data, callback) {
         /*if ( !this.isOpened() ) {
             callback('failure', 'not opened');
@@ -641,23 +654,22 @@ class LocalArchive {
 //                          pipesTableName,
 //                          availableDatesTableName
                          ];
+        var resultCount = 0;
         let clearTables = function () {
-            tableNames.forEach(name => {  this.db.run("DELETE FROM " + name, [], err => {
-                    /*if ( err ) {
-                        callback('failure', err);
-                    }
-                    else {
-                        tableNames.length - 1 > index
-                          ? clearTables(index + 1)
-                          : callback('success');
-                    }*/
-                });//);
+            tableNames.forEach(name => {
+              this.db.run("DELETE FROM " + name, [], err => {
+                if (err) {
+                    mainEventManager.publish('to-console',
+                      'ERROR (delete all from local storage). ' + err.toString());
+                }
+                if (++resultCount === tableNames.length) {
+                    callback && callback('success');
+                }
+              });
             });
         }.bind(this);
 
         clearTables();
-
-        callback && callback('success');
     }
 }
 
