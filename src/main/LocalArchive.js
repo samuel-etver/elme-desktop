@@ -161,6 +161,19 @@ class LocalArchive {
             });
         }.bind(this);
 
+        let commandMeasuresTableIndexCreate = function () {
+            this.db.run('CREATE INDEX ' + measuresTableIndexName + ' ON '
+              + measuresTableName  + ' (Dt)', [], err => {
+              err ? goError(err)
+                  : goNext('measures-table-index-end');
+            });
+        }.bind(this);
+
+        let commandMeasuresTableIndexEnd = function () {
+            //goNext('pipes-table-begin');
+            goNext('success');
+        }.bind(this);
+
         let commandError = function (...args) {
             this.opening = false;
             this.openError = true;
@@ -189,6 +202,8 @@ class LocalArchive {
             'measures-table-create': commandMeasuresTableCreate,
             'measures-table-end': commandMeasuresTableEnd,
             'measures-table-index-begin': commandMeasureTableIndexBegin,
+            'measures-table-index-create': commandMeasuresTableIndexCreate,
+            'measures-table-index-end': commandMeasuresTableIndexEnd,
             'error': commandError,
             'success': commandSuccess
         };
@@ -469,7 +484,7 @@ class LocalArchive {
 
 
     close() {
-        this.opened = false;        
+        this.opened = false;
         if (this.db) {
             let db = this.db;
             this.db = undefined;
