@@ -171,7 +171,18 @@ class LocalArchive {
 
         let commandMeasuresTableIndexEnd = function () {
             //goNext('pipes-table-begin');
-            goNext('success');
+            goNext('delete-all');
+            //goNext('success');
+        }.bind(this);
+
+
+        let commandDeleteAll = function () {
+            this.deleteAll((result, err) => {
+                if (result === 'success')
+                  goNext(result);
+                else
+                  goError(err);
+            });
         }.bind(this);
 
         let commandError = function (...args) {
@@ -204,6 +215,7 @@ class LocalArchive {
             'measures-table-index-begin': commandMeasureTableIndexBegin,
             'measures-table-index-create': commandMeasuresTableIndexCreate,
             'measures-table-index-end': commandMeasuresTableIndexEnd,
+            'delete-all': commandDeleteAll,
             'error': commandError,
             'success': commandSuccess
         };
@@ -624,31 +636,28 @@ class LocalArchive {
     }
 
 
-    deleteAll(callback) {
-        /*if ( !this.isOpened() ) {
-            callback('failure');
-            return;
-        }
-
+    deleteAll (callback) {
         let tableNames = [measuresTableName,
-                          pipesTableName,
-                          availableDatesTableName
+//                          pipesTableName,
+//                          availableDatesTableName
                          ];
-        let clearTables = (index) => {
-            index = index ?? 0;
-            this.db.run("DELETE FROM " + tableNames[index], [], (err) => {
-                if ( err ) {
-                    callback('failure', err);
-                }
-                else {
-                    tableNames.length - 1 > index
-                      ? clearTables(index + 1)
-                      : callback('success');
-                }
+        let clearTables = function () {
+            tableNames.forEach(name => {  this.db.run("DELETE FROM " + name, [], err => {
+                    /*if ( err ) {
+                        callback('failure', err);
+                    }
+                    else {
+                        tableNames.length - 1 > index
+                          ? clearTables(index + 1)
+                          : callback('success');
+                    }*/
+                });//);
             });
-        }
+        }.bind(this);
 
-        clearTables();*/
+        clearTables();
+
+        callback && callback('success');
     }
 }
 
