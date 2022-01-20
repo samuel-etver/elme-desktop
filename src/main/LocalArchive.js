@@ -5,6 +5,7 @@ const MainEventManager = require('../common/MainEventManager')
 const EventManager = require('../common/EventManager');
 const path = require('path');
 const DeviceData = require('../common/DeviceData');
+const Measures = require('../common/Measures');
 
 let globalStorage = GlobalStorage.getInstance();
 let mainEventManager = MainEventManager.getInstance();
@@ -560,7 +561,19 @@ class LocalArchive {
 
 
     writeDummyMeasures (callback) {
-        callback && callback('success')
+        let measures = new Measures();
+        let date = new Date();
+        measures.date = date;
+        measures.inductorTemperature1 = 1.0;
+        measures.inductorTemperature2 = 2.0;
+        measures.thermostatTemperature1 = 3.0;
+        measures.thermostatTemperature2 = 4.0;
+        measures.sprayerTemperature = 5.0;
+        measures.heatingTemperature = 6.0;
+        measures.waterFlow = 7.0;
+        this.write ([measures], () => {
+            callback && callback('success')
+        });
     }
 
 
@@ -568,14 +581,14 @@ class LocalArchive {
         /*if ( !this.isOpened() ) {
             callback('failure', 'not opened');
             return;
-        }
+        }*/
 
-        if ( !data || !data.length ) {
-            callback('success');
+        if (!data || !data.length) {
+            callback && callback('success');
             return;
         }
 
-        if ( !this.measuresTableInsertPattern ) {
+        if (!this.measuresTableInsertPattern) {
             let fields = [
                 'Dt',
                 'InductorTemperature1',
@@ -586,33 +599,29 @@ class LocalArchive {
                 'HeatingTemperature',
                 'WaterFlow'
             ];
-            this.measureTableInsertPattern = 'INSERT OR REPLACE INTO '
+            this.measuresTableInsertPattern = 'INSERT OR REPLACE INTO '
               + measuresTableName
-              + ' (' + fields.join(',') + ') VALUES ';
-            this.measureTableInsertRecordPlaceholders =
+              + ' VALUES ';
+            this.measuresTableInsertPlaceholders =
               '(' + fields.map(() => '?').join(',') + ')';
         }
 
-        let query = this.measureTableInsertPattern +
-          data.map(() => this.measureTableInsertRecordPlaceholders).join(',');
-        let records = data.map(item =>
-            [
-                item.date.getTime(),
-                item.inductorTemperature1,
-                item.inductorTemperature2,
-                item.thermostatTemperature1,
-                item.thermostatTemperature2,
-                item.sprayerTemperature,
-                item.heatingTemperature,
-                item.waterFlow
-            ]
-        );
-
-        this.db.run(query, records.flat(), (err) => {
-            if ( callback ) {
-                callback(err ? 'failure' : 'success', err);
-            }
-        });*/
+        let query = this.measuresTableInsertPattern +
+          data.map(() => this.measuresTableInsertPlaceholders).join(',');
+        let item = data[0];
+        let records = [
+            item.date.getTime(),
+            item.inductorTemperature1,
+            item.inductorTemperature2,
+            item.thermostatTemperature1,
+            item.thermostatTemperature2,
+            item.sprayerTemperature,
+            item.heatingTemperature,
+            item.waterFlow
+        ];
+        this.db.run(query, records, err => {
+            callback && callback(err ? 'failure' : 'success', err);
+        });
     }
 
 
