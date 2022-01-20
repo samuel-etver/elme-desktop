@@ -519,18 +519,17 @@ class LocalArchive {
     }
 
 
-    read(dateFrom, dateTo, callback) {
-        /*if ( !this.isOpened() ) {
-            callback('failure', 'not opened');
+    read (dateFrom, dateTo, callback) {
+        if ( !this.isOpened() ) {
+            callback && callback('failure', 'Not opened');
             return;
         }
 
-        if ( !this.measuresTableSelectPattern ) {
+        if (!this.measuresTableSelectPattern) {
             this.measuresTableSelectPattern = 'SELECT * FROM '
-              + measuresTableName
-              + ' WHERE  Dt >= ? AND Dt <= ?'
+              + measuresTableName + ' WHERE  Dt >= ? AND Dt <= ?';
         }
-
+/*
         this.db.all(this.measuresTableSelectPattern,
           [dateFrom, dateTo], (err, rows) => {
             if ( err ) {
@@ -577,7 +576,7 @@ class LocalArchive {
     }
 
 
-    write(data, callback) {
+    write (data, callback) {
         /*if ( !this.isOpened() ) {
             callback('failure', 'not opened');
             return;
@@ -600,16 +599,14 @@ class LocalArchive {
                 'WaterFlow'
             ];
             this.measuresTableInsertPattern = 'INSERT OR REPLACE INTO '
-              + measuresTableName
-              + ' VALUES ';
+              + measuresTableName + ' VALUES ';
             this.measuresTableInsertPlaceholders =
               '(' + fields.map(() => '?').join(',') + ')';
         }
 
         let query = this.measuresTableInsertPattern +
           data.map(() => this.measuresTableInsertPlaceholders).join(',');
-        let item = data[0];
-        let records = [
+        let records = data.map(item => [
             item.date.getTime(),
             item.inductorTemperature1,
             item.inductorTemperature2,
@@ -618,19 +615,19 @@ class LocalArchive {
             item.sprayerTemperature,
             item.heatingTemperature,
             item.waterFlow
-        ];
+        ]).flat();
         this.db.run(query, records, err => {
             callback && callback(err ? 'failure' : 'success', err);
         });
     }
 
 
-    delete(dateTo, callback) {
-        /*if ( !this.isOpened() ) {
-            callback('failure');
+    delete (dateTo, callback) {
+        if (!this.isOpened()) {
+            callback && callback('failure', 'Not opened');
             return;
         }
-
+/*
         if ( !this.tableDeletePatterns ) {
             this.tableDeletePatterns = [
               'DELETE FROM ' + measuresTableName  + ' WHERE Dt < ?',
