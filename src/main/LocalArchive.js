@@ -560,17 +560,31 @@ class LocalArchive {
 
 
     writeDummyMeasures (callback) {
-        let measures = new Measures();
-        let date = new Date();
-        measures.date = date;
-        measures.inductorTemperature1 = 1.0;
-        measures.inductorTemperature2 = 2.0;
-        measures.thermostatTemperature1 = 3.0;
-        measures.thermostatTemperature2 = 4.0;
-        measures.sprayerTemperature = 5.0;
-        measures.heatingTemperature = 6.0;
-        measures.waterFlow = 7.0;
-        this.write ([measures], () => {
+        let records = [];
+
+        let addSeconds = function (dt, seconds) {
+            return new Date(dt.getTime() * seconds*1000);
+        };
+        let addMinutes = function (dt, minutes) {
+            return addSeconds(dt, minutes*60);
+        };
+
+        let nextDate = addSeconds(new Date(), -5);
+        for (let i = 0; i < 100; i++) {
+            let measures = new Measures();
+            measures.date = nextDate;
+            measures.inductorTemperature1 = 1.0;
+            measures.inductorTemperature2 = 2.0;
+            measures.thermostatTemperature1 = 3.0;
+            measures.thermostatTemperature2 = 4.0;
+            measures.sprayerTemperature = 5.0;
+            measures.heatingTemperature = 6.0;
+            measures.waterFlow = 7.0;
+            records.push(measures);
+            nextDate = addSeconds(nextDate, -1);
+        }
+
+        this.write (records, () => {
             callback && callback('success')
         });
     }
