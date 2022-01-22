@@ -545,7 +545,7 @@ class LocalArchive {
 
             for (let record of rows) {
                 let deviceData = new DeviceData();
-                deviceData.date = record['Dt'];
+                deviceData.date = new Date(record['Dt']);
                 deviceData.inductorTemperature1 = record['InductorTemperature1'];
                 deviceData.inductorTemperature2 = record['InductorTemperature2'];
                 deviceData.thermostatTemperature1 = record['ThermostatTemperature1'];
@@ -556,7 +556,7 @@ class LocalArchive {
                 results.push(deviceData);
             }
 
-            callback('success', results);
+            callback('success', []);//results);
         });
     }
 
@@ -565,7 +565,7 @@ class LocalArchive {
         let measuresList = [];
 
         let addSeconds = function (dt, seconds) {
-            return new Date(dt.getTime() * seconds*1000);
+            return new Date(dt.getTime() + seconds*1000);
         };
         let addMinutes = function (dt, minutes) {
             return addSeconds(dt, minutes*60);
@@ -695,7 +695,7 @@ class LocalArchive {
     }
 
     getDateFrom () {
-        return undefined;
+        return this.dateFrom;
     }
 
 
@@ -703,6 +703,15 @@ class LocalArchive {
         if (!this.isOpened()) {
             return;
         }
+
+        let self = this;
+
+        this.db.get("SELECT MIN(Dt) FROM " + measuresTableName, [], (err, row) => {
+            if (!err && row !== undefined) {
+                self.dateFrom =  new Date(row['MIN(Dt)']);
+                mainEventManager.publish('to-console', self.dateFrom);
+            }
+        });
     }
 }
 

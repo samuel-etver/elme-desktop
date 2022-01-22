@@ -91,8 +91,8 @@ module.exports = {
     monthsGenetive: monthsGenetive,
     archiveDateMin: new Date(2000, 0, 1),
     appId: "794D66AB-D85B-4CD5-9FFF-F8763D9FDC39",
-    memoryArchiveEnabled: false,
-    localArchiveEnabled: true,
+    memoryArchiveEnabled: true,
+    localArchiveEnabled: false,
     remoteArchiveEnabled: false,
     loggerFolder: 'Log',
 };
