@@ -4,7 +4,7 @@ const MainEventManager = require('../common/MainEventManager');
 let mainEventManager = MainEventManager.getInstance();
 
 class MemoryArchive {
-    constructor() {
+    constructor () {
         this.name = 'memory';
         this.measures = new Measures();
         this.pipes = [];
@@ -13,43 +13,43 @@ class MemoryArchive {
     }
 
 
-    isOpened() {
+    isOpened () {
         return this.opened;
     }
 
 
-    open(callback) {
+    open (callback) {
         this.opened = true;
         this.success(callback);
     }
 
 
-    close(callback) {
+    close (callback) {
         this.opened = false;
         this.success(callback);
     }
 
 
-    read(dateFrom, dateTo, callback) {
+    read (dateFrom, dateTo, callback) {
         let result = this.measures.read(dateFrom, dateTo);
         this.success(callback, result);
     }
 
 
-    appendMeasures(newMeasures, callback) {
-        this.measures.append(newMeasures)
+    appendMeasures (measuresList, callback) {
+        this.measures.append(measuresList)
           ? this.success(callback)
           : this.failure(callback, {});
     }
 
 
-    delete(dateTo, callback) {
+    delete (dateTo, callback) {
         this.measures.delete(dateTo);
         this.success(callback);
     }
 
 
-    deleteAll(callback) {
+    deleteAll (callback) {
         this.measures = new Measures();
         this.pipes = [];
         this.availableDates = [];
@@ -57,17 +57,17 @@ class MemoryArchive {
     }
 
 
-    get dateFrom() {
+    getDateFrom () {
         return this.measures.dateFrom;
     }
 
 
-    success(callback, ...restArgs) {
+    success (callback, ...restArgs) {
         callback && callback('success', ...restArgs);
     }
 
 
-    failure(callback, error) {
+    failure (callback, error) {
         callback && callback('failure', error);
     }
 }

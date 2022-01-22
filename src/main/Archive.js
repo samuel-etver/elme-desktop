@@ -73,7 +73,7 @@ class Archive {
             }
         });
 
-        let mostRecentArchive = archives[0];
+        /*let mostRecentArchive = archives[0];
         if (mostRecentArchive.isOpened()) {
             if (this.appendDataOnLoad) {
                 this.appendDataOnLoad = false;
@@ -87,7 +87,7 @@ class Archive {
                 this.lastDeviceData = newDeviceData;
                 mostRecentArchive.appendMeasures([newDeviceData]);
             }
-        }
+        }*/
     }
 
 
@@ -123,13 +123,16 @@ class Archive {
         let searchArchives = [];
         for (let i = 0; i < archives.length; i++) {
             let currArchive = archives[i];
+            mainEventManager.publish('to-console', currArchive.name);
+            mainEventManager.publish('to-console', currArchive.isOpened());
             if (!currArchive.isOpened()) {
                 break;
             }
-            if (!currArchive.dateFrom) {
+            mainEventManager.publish('to-console', currArchive.getDateFrom());
+            if (!currArchive.getDateFrom()) {
                 continue;
             }
-            let currArchiveDateFromInt = currArchive.dateFrom.getTime();
+            let currArchiveDateFromInt = currArchive.getDateFrom().getTime();
             if (dateToInt >= currArchiveDateFromInt) {
                 searchArchives.push(currArchive);
             }
@@ -137,6 +140,7 @@ class Archive {
                 break;
             }
         }
+        mainEventManager.publish('to-console', searchArchives.length.toString());
 
         if (searchArchives.length == 0) {
             return;

@@ -176,7 +176,6 @@ class LocalArchive {
             //goNext('success');
         }.bind(this);
 
-
         let commandDeleteAll = function () {
             this.deleteAll((result, err) => {
                 if (result === 'success')
@@ -185,7 +184,6 @@ class LocalArchive {
                   goError(err);
             });
         }.bind(this);
-
 
         let commandWriteDummyMeasures = function () {
             this.writeDummyMeasures(() => {
@@ -204,6 +202,7 @@ class LocalArchive {
         let commandSuccess = function () {
             this.opened = true;
             this.openening = false;
+            this.readDateFrom();
             let callback = this.openSequence.callback;
             callback && callback('success');
         }.bind(this);
@@ -520,7 +519,8 @@ class LocalArchive {
 
 
     read (dateFrom, dateTo, callback) {
-        if ( !this.isOpened() ) {
+      mainEventManager.publish('to-console', "READ");
+        if (!this.isOpened()) {
             callback && callback('failure', 'Not opened');
             return;
         }
@@ -529,13 +529,16 @@ class LocalArchive {
             this.measuresTableSelectPattern = 'SELECT * FROM '
               + measuresTableName + ' WHERE  Dt >= ? AND Dt <= ?';
         }
-/*
+        mainEventManager.publish('to-console', "READ");
+
         this.db.all(this.measuresTableSelectPattern,
           [dateFrom, dateTo], (err, rows) => {
-            if ( err ) {
+            if (err) {
                 callback('error', err);
                 return;
             }
+
+            mainEventManager.publish('to-console', "READ");
 
 
             let results = [];
@@ -554,13 +557,12 @@ class LocalArchive {
             }
 
             callback('success', results);
-        });*/
-        callback('success', []);
+        });
     }
 
 
     writeDummyMeasures (callback) {
-        let records = [];
+        let measuresList = [];
 
         let addSeconds = function (dt, seconds) {
             return new Date(dt.getTime() * seconds*1000);
@@ -580,23 +582,23 @@ class LocalArchive {
             measures.sprayerTemperature = 5.0;
             measures.heatingTemperature = 6.0;
             measures.waterFlow = 7.0;
-            records.push(measures);
+            measuresList.push(measures);
             nextDate = addSeconds(nextDate, -1);
         }
 
-        this.write (records, () => {
+        this.appendMeasures (measuresList, () => {
             callback && callback('success')
         });
     }
 
 
-    write (data, callback) {
+    appendMeasures (newMeasures, callback) {
         /*if ( !this.isOpened() ) {
             callback('failure', 'not opened');
             return;
         }*/
 
-        if (!data || !data.length) {
+        if (!newMeasures || !newMeasures.length) {
             callback && callback('success');
             return;
         }
@@ -619,8 +621,8 @@ class LocalArchive {
         }
 
         let query = this.measuresTableInsertPattern +
-          data.map(() => this.measuresTableInsertPlaceholders).join(',');
-        let records = data.map(item => [
+          newMeasures.map(() => this.measuresTableInsertPlaceholders).join(',');
+        let records = newMeasures.map(item => [
             item.date.getTime(),
             item.inductorTemperature1,
             item.inductorTemperature2,
@@ -690,6 +692,17 @@ class LocalArchive {
         }.bind(this);
 
         clearTables();
+    }
+
+    getDateFrom () {
+        return undefined;
+    }
+
+
+    readDateFrom () {
+        if (!this.isOpened()) {
+            return;
+        }
     }
 }
 
