@@ -24,13 +24,16 @@ class Archive {
         }
         this.archives = [];
         if (Constants.memoryArchiveEnabled) {
-            this.archives.push(new MemoryArchive());
+            this.memoryArchive = new MemoryArchive();
+            this.archives.push(this.memoryArchive);
         }
         if (Constants.localArchiveEnabled) {
-            this.archives.push(new LocalArchive());
+            this.localArchive = new LocalArchive();
+            this.archives.push(this.localArchive);
         }
         if (Constants.remoteArchiveEnabled) {
-            this.archives.push(new RemoteArchive());
+            this.remoteArchive = new RemoteArchive();
+            this.archives.push(this.remoteArchive);
         }
 
         this.onAppLoad = this.onAppLoad.bind(this);
@@ -38,7 +41,6 @@ class Archive {
         this.onTimer = this.onTimer.bind(this);
         this.timerId = undefined;
         this.onReadArchiveData = this.onReadArchiveData.bind(this);
-        this.appendDataOnLoad = true;
         this.lastDeviceData = undefined;
         mainEventManager.subscribe('app-load', this.onAppLoad);
         instance = this;
@@ -75,10 +77,6 @@ class Archive {
 
         let mostRecentArchive = archives[0];
         if (mostRecentArchive.isOpened()) {
-            if (this.appendDataOnLoad) {
-                this.appendDataOnLoad = false;
-                this.appendDummyData(mostRecentArchive);
-            }
             let newDeviceData = globalStorage['deviceData'];
             if (!newDeviceData) {
                 newDeviceData = DeviceData.now();
@@ -88,28 +86,6 @@ class Archive {
                 mostRecentArchive.appendMeasures([newDeviceData]);
             }
         }
-    }
-
-
-    appendDummyData (archive) {
-        let genValue =
-          (baseValue) => baseValue + Math.random()*10 - 5;
-        let now = Date.now();
-        let n = 60*60;
-        let measures = [];
-        for (let i = 0; i < n; i++) {
-            let deviceData = new DeviceData();
-            deviceData.date = new Date(now - (n-i)*1000);
-            deviceData.inductorTemperature1 = genValue(1000);
-            deviceData.inductorTemperature2 = genValue(900);
-            deviceData.thermostatTemperature1 = genValue(800);
-            deviceData.thermostatTemperature2 = genValue(700);
-            deviceData.sprayerTemperature = genValue(600);
-            deviceData.heatingTemperature = genValue(500);
-            deviceData.waterFlow = genValue(150);
-            measures.push(deviceData);
-        }
-        archive.appendMeasures(measures);
     }
 
 
@@ -126,7 +102,6 @@ class Archive {
             if (!currArchive.isOpened()) {
                 break;
             }
-            mainEventManager.publish('to-console', currArchive.getDateFrom());
             if (!currArchive.getDateFrom()) {
                 continue;
             }
@@ -138,7 +113,6 @@ class Archive {
                 break;
             }
         }
-        mainEventManager.publish('to-console', searchArchives.length.toString());
 
         if (searchArchives.length == 0) {
             return;

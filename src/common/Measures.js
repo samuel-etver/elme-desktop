@@ -15,8 +15,8 @@ const fields = [
 ];
 const fieldsCount = fields.length;
 
-function addFields(src) {
-    if ( !src ) {
+function addFields (src) {
+    if (!src) {
         src = {};
     }
     fields.forEach(fieldName => {
@@ -27,36 +27,36 @@ function addFields(src) {
 
 
 class Measures {
-    constructor() {
+    constructor () {
         this.fields = fields;
         this.fieldsCount = fieldsCount;
         addFields(this);
     }
 
 
-    get dateFrom() {
+    get dateFrom () {
         return this.isEmpty() ? undefined : this.date[0];
     }
 
 
-    get dateTo() {
+    get dateTo () {
         return this.isEmpty() ? undefined : this.date[this.date.length - 1];
     }
 
 
-    append(newData) {
-        if ( !newData || !newData.length) {
+    append (newData) {
+        if (!newData || !newData.length) {
             return true;
         }
 
-        for ( let i = 1; i < newData.length; i++ ) {
-            if ( newData[i].date.getTime() <= newData[i-1].date.getTime() ) {
+        for (let i = 1; i < newData.length; i++) {
+            if (newData[i].date.getTime() <= newData[i-1].date.getTime()) {
                 return false;
             }
         }
 
-        if ( !this.isEmpty() ) {
-            if ( newData[newData.length - 1].date.getTime() <= this.dateTo.getTime() ) {
+        if (!this.isEmpty()) {
+            if (newData[newData.length - 1].date.getTime() <= this.dateTo.getTime()) {
                 return false;
             }
         }
@@ -67,8 +67,8 @@ class Measures {
     }
 
 
-    delete(toDate) {
-        if ( this.isEmpty() ) {
+    delete (toDate) {
+        if (this.isEmpty()) {
             return;
         }
 
@@ -85,22 +85,22 @@ class Measures {
     }
 
 
-    isEmpty() {
+    isEmpty () {
         return !this.date.length;
     }
 
 
-    read(dateFrom, dateTo) {
+    read (dateFrom, dateTo) {
         let dateFromInt = dateFrom.getTime();
         let dateToInt = dateTo.getTime();
 
         let dateFromIndex = this.date.findIndex(dt => dt.getTime() >= dateFromInt);
-        if ( dateFromIndex < 0) {
+        if (dateFromIndex < 0) {
             return addFields();
         }
         let dateToIndex;
         for (dateToIndex = dateFromIndex + 1; dateToIndex < this.date.length; dateToIndex++) {
-            if ( this.date[dateToIndex].getTime() > dateToInt ) {
+            if (this.date[dateToIndex].getTime() > dateToInt) {
                 break;
             }
         }

@@ -1,5 +1,6 @@
 const Measures = require('../common/Measures');
 const MainEventManager = require('../common/MainEventManager');
+const DeviceData = require('../common/DeviceData');
 
 let mainEventManager = MainEventManager.getInstance();
 
@@ -20,6 +21,7 @@ class MemoryArchive {
 
     open (callback) {
         this.opened = true;
+        this.appendDummyData();
         this.success(callback);
     }
 
@@ -69,6 +71,28 @@ class MemoryArchive {
 
     failure (callback, error) {
         callback && callback('failure', error);
+    }
+
+
+    appendDummyData () {
+        let genValue =
+          baseValue => baseValue + Math.random()*10 - 5;
+        let now = Date.now();
+        let n = 60*60;
+        let measures = [];
+        for (let i = 0; i < n; i++) {
+            let deviceData = new DeviceData();
+            deviceData.date = new Date(now - (n-i)*1000);
+            deviceData.inductorTemperature1 = genValue(1000);
+            deviceData.inductorTemperature2 = genValue(900);
+            deviceData.thermostatTemperature1 = genValue(800);
+            deviceData.thermostatTemperature2 = genValue(700);
+            deviceData.sprayerTemperature = genValue(600);
+            deviceData.heatingTemperature = genValue(500);
+            deviceData.waterFlow = genValue(150);
+            measures.push(deviceData);
+        }
+        this.appendMeasures(measures);
     }
 }
 

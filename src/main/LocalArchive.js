@@ -503,7 +503,7 @@ class LocalArchive {
     }
 
 
-    close() {
+    close () {
         this.opened = false;
         if (this.db) {
             let db = this.db;
@@ -513,13 +513,12 @@ class LocalArchive {
     }
 
 
-    isOpened() {
+    isOpened () {
         return this.opened;
     }
 
 
     read (dateFrom, dateTo, callback) {
-      mainEventManager.publish('to-console', "READ");
         if (!this.isOpened()) {
             callback && callback('failure', 'Not opened');
             return;
@@ -529,7 +528,6 @@ class LocalArchive {
             this.measuresTableSelectPattern = 'SELECT * FROM '
               + measuresTableName + ' WHERE  Dt >= ? AND Dt <= ?';
         }
-        mainEventManager.publish('to-console', "READ");
 
         this.db.all(this.measuresTableSelectPattern,
           [dateFrom, dateTo], (err, rows) => {
@@ -538,25 +536,22 @@ class LocalArchive {
                 return;
             }
 
-            mainEventManager.publish('to-console', "READ");
+            let results = new Measures();
 
-
-            let results = [];
-
-            for (let record of rows) {
-                let deviceData = new DeviceData();
-                deviceData.date = new Date(record['Dt']);
-                deviceData.inductorTemperature1 = record['InductorTemperature1'];
-                deviceData.inductorTemperature2 = record['InductorTemperature2'];
-                deviceData.thermostatTemperature1 = record['ThermostatTemperature1'];
-                deviceData.thermostatTemperature2 = record['ThermostatTemperature2'];
-                deviceData.sprayerTemperature = record['SprayerTemperature'];
-                deviceData.heatingTemperature = record['HeatingTemperature'];
-                deviceData.waterFlow = record['WaterFlow'];
-                results.push(deviceData);
+            if (rows !== undefined) {
+                for (let record of rows) {
+                    results.date.push(new Date(record['Dt']));
+                    results.inductorTemperature1.push(record['InductorTemperature1']);
+                    results.inductorTemperature2.push(record['InductorTemperature2']);
+                    results.thermostatTemperature1.push(record['ThermostatTemperature1']);
+                    results.thermostatTemperature2.push(record['ThermostatTemperature2']);
+                    results.sprayerTemperature.push(record['SprayerTemperature']);
+                    results.heatingTemperature.push(record['HeatingTemperature']);
+                    results.waterFlow.push(record['WaterFlow']);
+                }
             }
 
-            callback('success', []);//results);
+            callback('success', results);
         });
     }
 
@@ -575,13 +570,13 @@ class LocalArchive {
         for (let i = 0; i < 100; i++) {
             let measures = new Measures();
             measures.date = nextDate;
-            measures.inductorTemperature1 = 1.0;
-            measures.inductorTemperature2 = 2.0;
-            measures.thermostatTemperature1 = 3.0;
-            measures.thermostatTemperature2 = 4.0;
-            measures.sprayerTemperature = 5.0;
-            measures.heatingTemperature = 6.0;
-            measures.waterFlow = 7.0;
+            measures.inductorTemperature1 = 450;
+            measures.inductorTemperature2 = 550;
+            measures.thermostatTemperature1 = 650;
+            measures.thermostatTemperature2 = 750;
+            measures.sprayerTemperature = 850;
+            measures.heatingTemperature = 950;
+            measures.waterFlow = 150;
             measuresList.push(measures);
             nextDate = addSeconds(nextDate, -1);
         }
@@ -680,13 +675,13 @@ class LocalArchive {
         let clearTables = function () {
             tableNames.forEach(name => {
               this.db.run("DELETE FROM " + name, [], err => {
-                if (err) {
-                    mainEventManager.publish('to-console',
-                      'ERROR (delete all from local storage). ' + err.toString());
-                }
-                if (++resultCount === tableNames.length) {
-                    callback && callback('success');
-                }
+                  if (err) {
+                      mainEventManager.publish('to-console',
+                        'ERROR (delete all from local storage). ' + err.toString());
+                  }
+                  if (++resultCount === tableNames.length) {
+                      callback && callback('success');
+                  }
               });
             });
         }.bind(this);
@@ -709,7 +704,6 @@ class LocalArchive {
         this.db.get("SELECT MIN(Dt) FROM " + measuresTableName, [], (err, row) => {
             if (!err && row !== undefined) {
                 self.dateFrom =  new Date(row['MIN(Dt)']);
-                mainEventManager.publish('to-console', self.dateFrom);
             }
         });
     }
