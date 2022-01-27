@@ -1,1 +1,1 @@
-#  elme-server + elme-desktop + elme-webclien
+#  elme-server + elme-desktop + elme-webclient
