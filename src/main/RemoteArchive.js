@@ -1,31 +1,56 @@
 Constants = require('../common/Constants');
+MainEventManager = require('../common/MainEventManager');
+EventManager = require('../common/EventManager');
+
+let mainEventManager = MainEventManager.getInstance();
 
 class RemoteArchive {
-    constructor() {
+    constructor () {
         this.name = 'remote';
+        this.eventManager = new EventManager();
+        this.openSequence = this.createOpenSequence();
+        this.opened = false;
     }
 
 
-    open() {
-    }
-
-
-    close() {
-
-    }
-
-
-    isOpened() {
-        return false;
-    }
-
-
-    read() {
+    createOpenSequence () {
 
     }
 
 
-    write() {
+    open (callback) {
+    }
+
+
+    close () {
+    }
+
+
+    isOpened () {
+        return this.opened;
+    }
+
+
+    read (dateFrom, dateTo, callback) {
+
+    }
+
+
+    appendMeasures (newMeasures, callback) {
+    }
+
+
+    delete () {
+
+    }
+
+
+    getDateFrom () {
+
+    }
+
+
+    readDateFrom (callback) {
 
     }
 }

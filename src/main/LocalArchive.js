@@ -146,31 +146,6 @@ class LocalArchive {
         }.bind(this);
 
         let commandMeasuresTableEnd = function () {
-            goNext('measures-table-index-begin');
-        }.bind(this);
-
-        let commandMeasureTableIndexBegin = function () {
-            this.db.all('PRAGMA index_list(' + measuresTableName + ')', [], (err, rows) => {
-                if (err) {
-                    goError(err);
-                }
-                else {
-                    let found = rows.find(record => record.name === measuresTableIndexName);
-                    goNext(found ? 'measures-table-index-end'
-                                 : 'measures-table-index-create');
-                }
-            });
-        }.bind(this);
-
-        let commandMeasuresTableIndexCreate = function () {
-            this.db.run('CREATE INDEX ' + measuresTableIndexName + ' ON '
-              + measuresTableName  + ' (Dt)', [], err => {
-              err ? goError(err)
-                  : goNext('measures-table-index-end');
-            });
-        }.bind(this);
-
-        let commandMeasuresTableIndexEnd = function () {
             //goNext('pipes-table-begin');
             goNext('delete-all');
             //goNext('success');
@@ -219,9 +194,6 @@ class LocalArchive {
             'measures-table-begin': commandMeasuresTableBegin,
             'measures-table-create': commandMeasuresTableCreate,
             'measures-table-end': commandMeasuresTableEnd,
-            'measures-table-index-begin': commandMeasureTableIndexBegin,
-            'measures-table-index-create': commandMeasuresTableIndexCreate,
-            'measures-table-index-end': commandMeasuresTableIndexEnd,
             'delete-all': commandDeleteAll,
             'write-dummy-measures': commandWriteDummyMeasures,
             'error': commandError,
@@ -638,15 +610,15 @@ class LocalArchive {
             callback && callback('failure', 'Not opened');
             return;
         }
-/*
-        if ( !this.tableDeletePatterns ) {
+
+        if (!this.tableDeletePatterns) {
             this.tableDeletePatterns = [
               'DELETE FROM ' + measuresTableName  + ' WHERE Dt < ?',
-              'DELETE FROM ' + pipesTableName + ' WHERE DtStart < ?',
-              'DELETE FROM ' + availableDatesTableName + ' WHERE Dt < ?'
+              //'DELETE FROM ' + pipesTableName + ' WHERE DtStart < ?',
+              //'DELETE FROM ' + availableDatesTableName + ' WHERE Dt < ?'
             ];
         }
-
+/*
 
         let deleteData = (index) => {
             index = index ?? 0;
