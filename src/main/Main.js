@@ -11,6 +11,7 @@ const GlobalStorage = require('../common/GlobalStorage');
 const MainEventManager = require('../common/MainEventManager');
 const Config = require('./Config');
 const DeviceComm = require('./DeviceComm');
+const RtRemoteComm = require('./RtRemoteComm');
 const Archive = require('./Archive');
 const AlertsStorage = require('./AlertsStorage');
 const MainLogger = require('./MainLogger');
@@ -21,6 +22,7 @@ let globalStorage;
 let mainLogger;
 let deviceComm;
 let mainWindow;
+let optionsWindow;
 let aboutWindow;
 let archive;
 
@@ -29,7 +31,7 @@ init();
 loadConfig();
 saveConfig();
 
-function createWindow() {
+function createWindow () {
     mainWindow = new BrowserWindow(
       {
         width: 1100,
@@ -64,6 +66,13 @@ function createWindow() {
             label: "Файл",
             submenu: [
                 {
+                    label: "Настройки",
+                    click: onOptionsClick
+                },
+                {
+                    type: 'separator'
+                },
+                {
                     label: "Выход",
                     click: onExitClick
                 }
@@ -97,7 +106,7 @@ app.on('activate', () => {
 });
 
 
-function init() {
+function init () {
     mainEventManager = MainEventManager.getInstance();
     mainEventManager.subscribe('to-console', (event, arg) => console.log(arg));
     globalStorage = GlobalStorage.getInstance();
@@ -117,7 +126,7 @@ function init() {
 }
 
 
-function loadConfig() {
+function loadConfig () {
     let cfg = new Config();
     cfg.load(globalStorage.configFilePath);
     for (let key of Constants.configVars) {
@@ -128,7 +137,7 @@ function loadConfig() {
 }
 
 
-function saveConfig() {
+function saveConfig () {
     if ( !fs.existsSync(globalStorage.configDir) )  {
         fs.mkdirSync(globalStorage.configDir, {recursive: true});
     }
@@ -141,22 +150,47 @@ function saveConfig() {
 }
 
 
-function onDeviceDataReady() {
+function onDeviceDataReady () {
     sendDeviceData();
 }
 
 
-function onDeviceDataFailure() {
+function onDeviceDataFailure () {
     sendDeviceData();
 }
 
 
-function sendDeviceData() {
+function sendDeviceData () {
     mainWindow.send('device-data-ready', globalStorage.deviceData);
 }
 
 
-function onAboutClick() {
+function onOptionsClick () {
+    optionsWindow = new BrowserWindow({
+        parent: mainWindow,
+        modal: true,
+        center: true,
+        resizable: false,
+        minimizable: false,
+        width: 400,
+        height: 500,
+        webPreferences: {
+          nodeIntegration: true
+        }
+    });
+    optionsWindow.removeMenu ();
+    optionsWindow.loadFile('./public/options.html');
+    ipc.once('options-window-close', onCloseOptionsWindow);
+}
+
+
+function onCloseOptionsWindow () {
+    optionsWindow.close();
+    optionsWindow = undefined;
+}
+
+
+function onAboutClick () {
     aboutWindow = new BrowserWindow({
         parent: mainWindow,
         modal: true,
@@ -169,19 +203,18 @@ function onAboutClick() {
           nodeIntegration: true
         }
     });
-    aboutWindow.removeMenu();
+    aboutWindow.removeMenu ();
     aboutWindow.loadFile(`./public/about.html`);
-    ipc.removeListener('about-window-close', onCloseAboutWindow)
     ipc.once('about-window-close', onCloseAboutWindow);
 }
 
 
-function onExitClick() {
-    app.quit();
+function onCloseAboutWindow () {
+    aboutWindow.close();
+    aboutWindow = undefined;
 }
 
 
-function onCloseAboutWindow() {
-    aboutWindow.close();
-    aboutWindow = undefined;
+function onExitClick () {
+    app.quit();
 }
