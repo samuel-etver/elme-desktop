@@ -171,7 +171,7 @@ class LocalArchive {
             this.openError = true;
             this.close();
             let callback = this.openSequence.callback;
-            callback && callback('failure', ...args);
+            this.failure(callback, ...args);
         }.bind(this);
 
         let commandSuccess = function () {
@@ -199,6 +199,16 @@ class LocalArchive {
             'error': commandError,
             'success': commandSuccess
         };
+    }
+
+
+    success (callback, ...restArgs) {
+        callback && callback('success', ...restArgs);
+    }
+
+
+    failure (callback, error) {
+        callback && callback('failure', error);
     }
 
 
@@ -492,7 +502,7 @@ class LocalArchive {
 
     read (dateFrom, dateTo, callback) {
         if (!this.isOpened()) {
-            callback && callback('failure', 'Not opened');
+            this.failure(callback, 'Not opened');
             return;
         }
 

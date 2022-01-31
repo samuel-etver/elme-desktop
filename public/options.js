@@ -25,6 +25,14 @@ window.onload = function () {
     deviceIpEdit.value = config.deviceIp;
     devicePortEdit.value = config.devicePort;
     serverIpEdit.value = config.serverIp;
+
+    window.addEventListener('keydown', event => {
+      switch( event.key ) {
+        case 'Escape':
+          this.onCancelButtonClick();
+          break;
+      }
+    });
 };
 
 function onOkButtonClick () {
