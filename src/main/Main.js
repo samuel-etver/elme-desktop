@@ -29,7 +29,6 @@ let archive;
 
 init();
 loadConfig();
-saveConfig();
 
 function createWindow () {
     mainWindow = new BrowserWindow(
@@ -59,6 +58,7 @@ function createWindow () {
         console.log(arg);
         event.returnValue = null;
     });
+    ipc.on('global-get', onGlobalGet);
 
 
     let mainMenu = Menu.buildFromTemplate([
@@ -66,7 +66,7 @@ function createWindow () {
             label: "Файл",
             submenu: [
                 {
-                    label: "Настройки",
+                    label: "Настройки...",
                     click: onOptionsClick
                 },
                 {
@@ -100,7 +100,7 @@ app.on('window-all-closed', () => {
     }
 });
 app.on('activate', () => {
-    if ( mainWindow === null ) {
+    if (mainWindow === null) {
         createWindow();
     }
 });
@@ -138,7 +138,7 @@ function loadConfig () {
 
 
 function saveConfig () {
-    if ( !fs.existsSync(globalStorage.configDir) )  {
+    if (!fs.existsSync(globalStorage.configDir))  {
         fs.mkdirSync(globalStorage.configDir, {recursive: true});
     }
 
@@ -180,13 +180,18 @@ function onOptionsClick () {
     });
     optionsWindow.removeMenu ();
     optionsWindow.loadFile('./public/options.html');
+    ipc.removeListener('options-window-close', onCloseOptionsWindow);
     ipc.once('options-window-close', onCloseOptionsWindow);
 }
 
 
-function onCloseOptionsWindow () {
+function onCloseOptionsWindow (event, closeType, config) {
     optionsWindow.close();
     optionsWindow = undefined;
+    if (closeType === 'ok') {
+        Object.assign(globalStorage.config, config);
+        saveConfig();
+    }
 }
 
 
@@ -205,6 +210,7 @@ function onAboutClick () {
     });
     aboutWindow.removeMenu ();
     aboutWindow.loadFile(`./public/about.html`);
+    ipc.removeListener('about-window-close', onCloseAboutWindow);
     ipc.once('about-window-close', onCloseAboutWindow);
 }
 
@@ -217,4 +223,13 @@ function onCloseAboutWindow () {
 
 function onExitClick () {
     app.quit();
+}
+
+
+function onGlobalGet (event, args) {
+    let data = {};
+    for (item of args) {
+        data[item] = globalStorage.config[item];
+    }
+    event.returnValue = data;
 }

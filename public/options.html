@@ -1,7 +1,32 @@
 <html>
   <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link href="./../node_modules/bootstrap/dist/css/bootstrap.min.css" type="text/css" rel="stylesheet">
+    <link rel="stylesheet" href="./options.css">
+    <script src="./options.js"></script>
+    <script src="./../node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <title>Настройки</title>
   </head>
-<body>
-</body>
+
+  <body>
+    <div>
+      <div class="mb-4">
+        <label for="input-device-ip" class="form-label">Device IP:</label>
+        <input type="text" class="form-control" id="input-device-ip">
+      </div>
+      <div class="mb-4">
+        <label for="input-device-port" class="form-label">Device Port:</label>
+        <input type="text" class="form-control" id="input-device-port">
+      </div>
+      <div class="mb-4">
+        <label for="input-server-ip" class="form-label">Server IP:</label>
+        <input type="text" class="form-control" id="input-server-ip">
+      </div>
+    </div>
+    <div>
+      <button type="button" class="btn btn-primary" id="button-ok">Ввод</button>
+      <button type="button" class="btn btn-secondary" id="button-cancel">Отмена</button>
+    </div>
+  </body>
 </html>

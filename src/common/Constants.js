@@ -82,6 +82,7 @@ module.exports = {
     configVars: [
         'deviceIp',
         'devicePort',
+        'serverIp',
     ],
     deviceReadInterval: 1000,
     deviceMock: true,
