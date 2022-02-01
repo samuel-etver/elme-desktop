@@ -1,8 +1,13 @@
-Constants = require('../common/Constants');
-MainEventManager = require('../common/MainEventManager');
-EventManager = require('../common/EventManager');
+const Constants = require('../common/Constants');
+const MainEventManager = require('../common/MainEventManager');
+const EventManager = require('../common/EventManager');
+const GlobalStorage = require('../common/GlobalStorage');
+const axios = require('axios');
+
 
 let mainEventManager = MainEventManager.getInstance();
+let globalStorage = GlobalStorage.getInstance();
+
 
 class RemoteArchive {
     constructor () {
@@ -10,6 +15,7 @@ class RemoteArchive {
         this.eventManager = new EventManager();
         this.openSequence = this.createOpenSequence();
         this.opened = false;
+        this.dateFrom = undefined;
     }
 
 
@@ -46,7 +52,7 @@ class RemoteArchive {
 
 
     getDateFrom () {
-
+        return this.dateFrom;
     }
 
 
@@ -54,5 +60,6 @@ class RemoteArchive {
 
     }
 }
+
 
 module.exports = RemoteArchive;

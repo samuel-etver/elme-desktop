@@ -27,11 +27,11 @@ window.onload = function () {
     serverIpEdit.value = config.serverIp;
 
     window.addEventListener('keydown', event => {
-      switch( event.key ) {
-        case 'Escape':
-          this.onCancelButtonClick();
-          break;
-      }
+        switch( event.key ) {
+          case 'Escape':
+            this.onCancelButtonClick();
+            break;
+        }
     });
 };
 

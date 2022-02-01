@@ -178,8 +178,7 @@ class LocalArchive {
             this.opened = true;
             this.openening = false;
             this.readDateFrom();
-            let callback = this.openSequence.callback;
-            callback && callback('success');
+            this.success(this.openSequence.callback);
         }.bind(this);
 
         return {
@@ -533,7 +532,7 @@ class LocalArchive {
                 }
             }
 
-            callback('success', results);
+            this.success(callback, results);
         });
     }
 
@@ -564,7 +563,7 @@ class LocalArchive {
         }
 
         this.appendMeasures (measuresList, () => {
-            callback && callback('success')
+            this.success(callback);
         });
     }
 
@@ -576,7 +575,7 @@ class LocalArchive {
         }*/
 
         if (!newMeasures || !newMeasures.length) {
-            callback && callback('success');
+            this.success(callback);
             return;
         }
 
@@ -610,14 +609,19 @@ class LocalArchive {
             item.waterFlow
         ]).flat();
         this.db.run(query, records, err => {
-            callback && callback(err ? 'failure' : 'success', err);
+            if (err) {
+              this.failure(callback, err);
+            }
+            else {
+              this.success(callback);
+            }
         });
     }
 
 
     delete (dateTo, callback) {
         if (!this.isOpened()) {
-            callback && callback('failure', 'Not opened');
+            this.failure(callback, 'Not opened');
             return;
         }
 
@@ -662,7 +666,7 @@ class LocalArchive {
                         'ERROR (delete all from local storage). ' + err.toString());
                   }
                   if (++resultCount === tableNames.length) {
-                      callback && callback('success');
+                      this.success(callback);
                   }
               });
             });
@@ -670,6 +674,7 @@ class LocalArchive {
 
         clearTables();
     }
+
 
     getDateFrom () {
         return this.dateFrom;

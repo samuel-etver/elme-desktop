@@ -7,6 +7,7 @@ const Constants = require('../common/Constants');
 const DeviceData = require('../common/DeviceData');
 const MeasureParameters = require('../common/MeasureParameters');
 const ChartDataPacker = require('../common/ChartDataPacker');
+const DummyArchiveDataGenerator = require('./DummyArchiveDataGenerator');
 const electron = require('electron');
 const ipc = electron.ipcMain;
 
@@ -14,6 +15,10 @@ let mainEventManager = MainEventManager.getInstance();
 let globalStorage = GlobalStorage.getInstance();
 let chartDataPacker = ChartDataPacker.getInstance();
 let measureParameters = new MeasureParameters();
+let dummyArchiveDataGenerator;
+if (DummyArchiveDataGenerator) {
+    dummyArchiveDataGenerator = new DummyArchiveDataGenerator();
+}
 
 let instance;
 
@@ -47,9 +52,20 @@ class Archive {
     }
 
 
+    open () {
+        let onOpen = function (result) {
+            if (result === 'success' && dummyArchiveDataGenerator) {
+                let dummyMeasures = dummyArchiveDataGenerator.getMeasures();
+            }
+        };
+        this.archives.forEach(a => a.open(onOpen));
+    }
+
+
     onAppLoad () {
         mainEventManager.unsubscribe('app-load', this.onAppLoad);
         mainEventManager.subscribe('app-close', this.onAppClose);
+        this.open();
         this.timerId = setTimeout(this.onTimer, 1000);
         ipc.on('archive-data-read', this.onReadArchiveData);
     }
@@ -69,11 +85,6 @@ class Archive {
 
     run () {
         let archives = this.archives;
-        archives.forEach(a => {
-            if (!a.isOpened()) {
-                a.open();
-            }
-        });
 
         let mostRecentArchive = archives[0];
         if (mostRecentArchive.isOpened()) {
