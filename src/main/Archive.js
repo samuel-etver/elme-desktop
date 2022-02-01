@@ -63,6 +63,7 @@ class Archive {
 
 
     onAppLoad () {
+        console.log("ARCHIVE ON APP LOAD");
         mainEventManager.unsubscribe('app-load', this.onAppLoad);
         mainEventManager.subscribe('app-close', this.onAppClose);
         this.open();
@@ -74,6 +75,7 @@ class Archive {
     onAppClose () {
         clearTimeout(this.timerId);
         mainEventManager.unsubscribe('app-close', this.onAppClose);
+        this.archives.forEach(a => a.close());
     }
 
 

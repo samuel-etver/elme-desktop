@@ -21,6 +21,7 @@ let mainEventManager;
 let globalStorage;
 let mainLogger;
 let deviceComm;
+let rtRemoteComm;
 let mainWindow;
 let optionsWindow;
 let aboutWindow;
@@ -120,9 +121,9 @@ function init () {
     mainLogger = MainLogger.getInstance();
 
     deviceComm = DeviceComm.getInstance();
+    rtRemoteComm = RtRemoteComm.getInstance();
 
     archive = Archive.getInstance();
-    archive.onAppLoad();
 }
 
 
