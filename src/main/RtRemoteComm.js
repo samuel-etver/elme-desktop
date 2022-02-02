@@ -1,11 +1,17 @@
 const MainEventManager = require('./../common/MainEventManager');
 const GlobalStorage = require('./../common/GlobalStorage');
+const Constants = require('./../common/Constants');
 const axios = require('axios');
 
 let mainEventManager = MainEventManager.getInstance();
 let globalStorage = GlobalStorage.getInstance();
 
 let instance;
+
+function getServerUrl (path) {
+    let config = globalStorage.config;
+    return 'http://' + config.serverIp + ':8000/' + path;
+}
 
 class RtRemoteComm {
     constructor () {
@@ -36,7 +42,22 @@ class RtRemoteComm {
 
 
     onPingTimer () {
-        console.log("PING");
+        axios({
+            method: 'get',
+            url:  getServerUrl('ping'),
+            data: {
+                appIp: Constants.appId
+            }
+        }).then(function () {
+          console.log("PING-SUCCESS");
+
+        }).catch(function () {
+          console.log("PING-ERROR");
+
+        }).
+        then(function () {
+          console.log("PING");
+        });
     }
 
 

@@ -20,7 +20,8 @@ window.onload = function () {
     config = ipc.sendSync('global-get', [
         'deviceIp',
         'devicePort',
-        'serverIp'
+        'serverIp',
+        'serverPort'
     ]);
     deviceIpEdit.value = config.deviceIp;
     devicePortEdit.value = config.devicePort;
