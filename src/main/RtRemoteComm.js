@@ -10,8 +10,9 @@ let instance;
 
 function getServerUrl (path) {
     let config = globalStorage.config;
-    return 'http://' + config.serverIp + ':8000/' + path;
+    return 'http://' + config.serverIp + ':' + config.serverPort + '/' + path;
 }
+
 
 class RtRemoteComm {
     constructor () {
@@ -49,26 +50,41 @@ class RtRemoteComm {
                 appIp: Constants.appId
             }
         }).then(function () {
-          console.log("PING-SUCCESS");
-
         }).catch(function () {
-          console.log("PING-ERROR");
-
-        }).
-        then(function () {
-          console.log("PING");
+        }).then(function () {
         });
     }
 
 
     onSendRtValuesTimer () {
-        console.log("RT-VALUES");
         let deviceData = globalStorage.deviceData;
+        if (!deviceData) {
+            return;
+        }
+        let data = {
+            appIp: Constants.appId,
+            date: deviceData.date.getTime(),
+            inductorTemperature1: deviceData.inductorTemperature1,
+            inductorTemperature2: deviceData.inductorTemperature2,
+            thermostatTemperature1: deviceData.thermostatTemperature1,
+            thermostatTemperature2: deviceData.thermostatTemperature2,
+            sprayerTemperature: deviceData.sprayerTemperature,
+            heatingTemperature: deviceData.heatingTemperature,
+            waterFlow: deviceData.waterFlow
+        };
+
+        axios({
+            method: 'post',
+            url:  getServerUrl('rt-values'),
+            data: data
+        }).then(function () {
+        }).catch(function () {
+        }).then(function () {
+        });
     }
 
 
     onSendAlertsTimer () {
-        console.log("RT-ALERTS");
     }
 };
 

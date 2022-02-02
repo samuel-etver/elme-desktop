@@ -174,7 +174,7 @@ function onOptionsClick () {
         resizable: false,
         minimizable: false,
         width: 300,
-        height: 400,
+        height: 500,
         webPreferences: {
           nodeIntegration: true
         }

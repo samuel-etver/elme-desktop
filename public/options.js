@@ -5,6 +5,8 @@ let config = {};
 let deviceIpEdit;
 let devicePortEdit;
 let serverIpEdit;
+let serverPortEdit;
+
 
 window.onload = function () {
     let getEl = id => document.getElementById(id);
@@ -16,6 +18,7 @@ window.onload = function () {
     deviceIpEdit = getEl('input-device-ip');
     devicePortEdit = getEl('input-device-port');
     serverIpEdit = getEl('input-server-ip');
+    serverPortEdit = getEl('input-server-port');
 
     config = ipc.sendSync('global-get', [
         'deviceIp',
@@ -26,6 +29,7 @@ window.onload = function () {
     deviceIpEdit.value = config.deviceIp;
     devicePortEdit.value = config.devicePort;
     serverIpEdit.value = config.serverIp;
+    serverPortEdit.value = config.serverPort;
 
     window.addEventListener('keydown', event => {
         switch( event.key ) {
@@ -36,12 +40,16 @@ window.onload = function () {
     });
 };
 
+
 function onOkButtonClick () {
     config.deviceIp = deviceIpEdit.value;
     config.devicePort = devicePortEdit.value;
     config.serverIp = serverIpEdit.value;
+    config.serverPort = serverPortEdit.value;
+
     closeWindow('ok');
 }
+
 
 function onCancelButtonClick () {
     closeWindow('cancel');
