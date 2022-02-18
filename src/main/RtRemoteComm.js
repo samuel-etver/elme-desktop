@@ -45,7 +45,7 @@ class RtRemoteComm {
     onPingTimer () {
         axios({
             method: 'get',
-            url:  getServerUrl('ping'),
+            url:  getServerUrl(Constants.serverPrefixV1 + '/ping'),
             data: {
                 appIp: Constants.appId
             }
@@ -74,8 +74,8 @@ class RtRemoteComm {
         };
 
         axios({
-            method: 'post',
-            url:  getServerUrl('rt-values'),
+            method: 'put',
+            url:  getServerUrl(Constants.serverPrefixV1 + '/rt-values'),
             data: data
         }).then(function () {
         }).catch(function () {
