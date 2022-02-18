@@ -62,7 +62,7 @@ class RtRemoteComm {
             return;
         }
         let data = {
-            appIp: Constants.appId,
+            appId: Constants.appId,
             date: deviceData.date.getTime(),
             inductorTemperature1: deviceData.inductorTemperature1,
             inductorTemperature2: deviceData.inductorTemperature2,
