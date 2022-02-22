@@ -44,10 +44,10 @@ class RtRemoteComm {
 
     onPingTimer () {
         axios({
-            method: 'get',
+            method: 'put',
             url:  getServerUrl(Constants.serverPrefixV1 + '/ping'),
             data: {
-                appIp: Constants.appId
+                appId: Constants.appId
             }
         }).then(function () {
         }).catch(function () {
